@@ -129,22 +129,4 @@ public final class Constants {
   }
 
   public static HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
-
-public static final class AprilTagFieldLayouts {
-  private static final double kGridTagHeight = 18.22 / kInchesToMeters;
-  private static final double kSubstationTagHeight = 27.38 / kInchesToMeters;
-  private static final double kBlueTagX = 40.45 / kInchesToMeters;
-  public static final AprilTag TagId1 = new AprilTag(1, new Pose3d(kBlueTagX, 174.19 / kInchesToMeters, kGridTagHeight, new Rotation3d(0, 0, 0)));
-  public static final AprilTag TagId2 = new AprilTag(2, new Pose3d(kBlueTagX, 108.19 / kInchesToMeters, kGridTagHeight, new Rotation3d(0, 0, 0)));
-  public static final AprilTag TagId3 = new AprilTag(3, new Pose3d(kBlueTagX, 42.19 / kInchesToMeters, kGridTagHeight, new Rotation3d(0, 0, 0)));
-  public static final AprilTag TagId4 = new AprilTag(4, new Pose3d(14.25 / kInchesToMeters, -49.36 / kInchesToMeters, kSubstationTagHeight, new Rotation3d(0, 0, 180)));
-  public static final AprilTag TagId5 = new AprilTag(5, new Pose3d(14.25 / kInchesToMeters, 265.74 / kInchesToMeters, kSubstationTagHeight, new Rotation3d(0, 0, 0)));
-  public static final AprilTag TagId6 = new AprilTag(6, new Pose3d(kBlueTagX, 174.19 / kInchesToMeters, kGridTagHeight, new Rotation3d(0, 0, 0)));
-  public static final AprilTag TagId7 = new AprilTag(7, new Pose3d(kBlueTagX, 108.19 / kInchesToMeters, kGridTagHeight, new Rotation3d(0, 0, 0)));
-  public static final AprilTag TagId8 = new AprilTag(8, new Pose3d(kBlueTagX, 42.19 / kInchesToMeters, kGridTagHeight, new Rotation3d(0, 0, 0)));
-  public static final List<AprilTag> AprilTagList = Arrays.asList(TagId1, TagId2, TagId3, TagId4, TagId5, TagId6, TagId7, TagId8);
-  public static final AprilTagFieldLayout AprilTagFullFieldLayout = new AprilTagFieldLayout(AprilTagList, 50.0, 50.0);
-
-}
-
 }
