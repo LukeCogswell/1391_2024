@@ -240,8 +240,9 @@ public class Drivetrain extends SubsystemBase {
       var xOffset = Math.abs(speakerX-robotX);
       var yOffset = Math.abs(speakerY-robotY);
       return Math.atan(xOffset/yOffset) * 180 / Math.PI;
-  } else {
-    return 0.0;
+    } else {
+      return 0.0;
+    }
   }
 
 
