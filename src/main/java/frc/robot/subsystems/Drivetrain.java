@@ -13,6 +13,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,6 +28,8 @@ import static frc.robot.Constants.CANConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   
+  public NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
+
   private SwerveModule m_frontLeft, m_frontRight, m_backLeft, m_backRight;
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
@@ -115,6 +119,14 @@ public class Drivetrain extends SubsystemBase {
     return Rotation2d.fromDegrees(-m_navX.getFusedHeading());
   }
 
+  public double getTX() {
+    return m_limelight.getEntry("tx").getDouble(0.0);
+  }
+  
+  public double getTY() {
+    return m_limelight.getEntry("ty").getDouble(0.0);
+  }
+  
   public void updateOdometry() { // updates the odometry of the robot
     m_odometry.update(
       getGyroRotation2d(),
