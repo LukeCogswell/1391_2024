@@ -69,8 +69,8 @@ public final class Constants {
     public static final double kSpeakerHoodDepth = 0.46; //METERS    
     public static final double shooterReleaseHeight = 0.9144; //0.9144 METERS = 36 INCHES, 0.762 METERS = 30 INCHES
   
-    public static final Translation2d kRedSpeakerCoords = new Translation2d(0, 0);
-    public static final Translation2d kBlueSpeakerCoords = new Translation2d(0, 0);
+    public static final Translation2d kRedSpeakerCoords = new Translation2d(0, 0);  // POSITION OF THE SPEAKER ON THE RED FIELD (METERS)
+    public static final Translation2d kBlueSpeakerCoords = new Translation2d(0, 0); // POSITION OF THE SPEAKER ON THE BLUE FIELD (METERS)
   
   
     }
