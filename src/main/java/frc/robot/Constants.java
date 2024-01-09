@@ -12,6 +12,7 @@ import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
 
@@ -60,7 +61,19 @@ public final class Constants {
       public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = kMaxSpeedMetersPerSecond /
       Math.hypot(kModuleXOffsetMeters / 2.0, kModuleYOffsetMeters / 2.0);
-  }
+  
+
+
+    public static final double kSpeakerOpeningMinHeight = 1.98; //METERS      
+    public static final double kSpeakerOpeningMaxHeight = 2.11; //METERS  
+    public static final double kSpeakerHoodDepth = 0.46; //METERS    
+    public static final double shooterReleaseHeight = 0.9144; //0.9144 METERS = 36 INCHES, 0.762 METERS = 30 INCHES
+  
+    public static final Translation2d kRedSpeakerCoords = new Translation2d(0, 0);
+    public static final Translation2d kBlueSpeakerCoords = new Translation2d(0, 0);
+  
+  
+    }
 
   public static final class SwerveModuleConstants {
     public static final double kSpeedMultiplier = 1; // limits robot speed

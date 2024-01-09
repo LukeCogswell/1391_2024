@@ -198,4 +198,51 @@ public class Drivetrain extends SubsystemBase {
     System.out.println("BL" + m_backLeft.getAbsoluteAngle());
     System.out.println("BR" + m_backRight.getAbsoluteAngle());
   }
+
+  public double getDistanceToSpeaker() {
+    double speakerX, speakerY;
+    if (DriverStation.getAlliance().isPresent()) {
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
+        speakerX = kRedSpeakerCoords.getX();
+        speakerY = kRedSpeakerCoords.getY();
+      } else {
+        speakerX = kBlueSpeakerCoords.getX();
+        speakerY = kBlueSpeakerCoords.getY();
+      }
+      var robotPose = getFieldPosition();
+      var robotX = robotPose.getX();
+      var robotY = robotPose.getY();
+      var xOffset = Math.abs(speakerX-robotX);
+      var yOffset = Math.abs(speakerY-robotY);
+      var distance = Math.sqrt( (xOffset*xOffset) + (yOffset*yOffset));
+      return distance;
+
+    } else {
+      return 999.9;
+
+    }
+
+  }
+
+  public double getAngleToSpeaker() {
+    double speakerX, speakerY;
+    if (DriverStation.getAlliance().isPresent()) {
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
+        speakerX = kRedSpeakerCoords.getX();
+        speakerY = kRedSpeakerCoords.getY();
+      } else {
+        speakerX = kBlueSpeakerCoords.getX();
+        speakerY = kBlueSpeakerCoords.getY();
+      }
+      var robotPose = getFieldPosition();
+      var robotX = robotPose.getX();
+      var robotY = robotPose.getY();
+      var xOffset = Math.abs(speakerX-robotX);
+      var yOffset = Math.abs(speakerY-robotY);
+      return Math.atan(xOffset/yOffset) * 180 / Math.PI;
+  } else {
+    return 0.0;
+  }
+
+
 }
