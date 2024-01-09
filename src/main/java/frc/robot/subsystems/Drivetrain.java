@@ -13,6 +13,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MeasurementConstants.*;
@@ -26,10 +29,10 @@ public class Drivetrain extends SubsystemBase {
   private SwerveModule m_frontLeft, m_frontRight, m_backLeft, m_backRight;
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
-    new Translation2d( kModuleXOffsetMeters, -kModuleYOffsetMeters),
-    new Translation2d( kModuleXOffsetMeters,  kModuleYOffsetMeters),
-    new Translation2d(-kModuleXOffsetMeters, -kModuleYOffsetMeters),
-    new Translation2d(-kModuleXOffsetMeters,  kModuleYOffsetMeters)
+    new Translation2d(  kModuleXOffsetMeters, kModuleYOffsetMeters), // BACK RIGHT
+    new Translation2d( kModuleXOffsetMeters, -kModuleYOffsetMeters), // BACK LEFT
+    new Translation2d(  -kModuleXOffsetMeters, kModuleYOffsetMeters),  // FRONT RIGHT
+    new Translation2d( -kModuleXOffsetMeters, -kModuleYOffsetMeters)   // FRONT LEFT
   );
 
   private SwerveDrivePoseEstimator m_odometry;
@@ -44,7 +47,10 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-
+    SmartDashboard.putBoolean("init-PRESENT?", DriverStation.getAlliance().isPresent());
+    if (DriverStation.getAlliance().isPresent()) {
+      SmartDashboard.putBoolean("init-RED?", DriverStation.getAlliance().get() == Alliance.Red);
+    }
     m_frontLeft = new SwerveModule(
       kFrontLeftDriveMotorID,
       kFrontLeftSteerMotorID,
@@ -80,6 +86,11 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
+
+    SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
+    if (DriverStation.getAlliance().isPresent()) {
+      SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
+    }
     // This method will be called once per scheduler run
   }
   

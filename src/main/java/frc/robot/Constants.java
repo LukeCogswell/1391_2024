@@ -49,10 +49,10 @@ public final class Constants {
     public static final double kFieldX = 649 / kInchesToMeters;
     public static final double kFieldY = 319 / kInchesToMeters;
 
-    public static final double kFrontLeftEncoderOffset = 323.17;
-    public static final double kBackLeftEncoderOffset = 260.33;
-    public static final double kFrontRightEncoderOffset = 149.24;
-    public static final double kBackRightEncoderOffset = 0.0; 
+    public static final double kFrontLeftEncoderOffset = 180.0;
+    public static final double kBackLeftEncoderOffset = 0.0;
+    public static final double kFrontRightEncoderOffset = 180.0;
+    public static final double kBackRightEncoderOffset = 180.0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
       SwerveModuleConstants.kDriveReduction *
@@ -107,20 +107,20 @@ public final class Constants {
   }
 
   public static final class CANConstants {
-    public static final int kFrontLeftDriveMotorID = 1;
-    public static final int kBackLeftDriveMotorID = 3;
-    public static final int kFrontRightDriveMotorID = 2;
-    public static final int kBackRightDriveMotorID = 4;
+    public static final int kFrontLeftDriveMotorID = 2;
+    public static final int kBackLeftDriveMotorID = 4;
+    public static final int kFrontRightDriveMotorID = 1;
+    public static final int kBackRightDriveMotorID = 3;
 
-    public static final int kFrontLeftSteerMotorID = 5;
-    public static final int kBackLeftSteerMotorID = 7;
-    public static final int kFrontRightSteerMotorID = 6;
-    public static final int kBackRightSteerMotorID = 8;
+    public static final int kFrontLeftSteerMotorID = 6;
+    public static final int kBackLeftSteerMotorID = 8;
+    public static final int kFrontRightSteerMotorID = 5;
+    public static final int kBackRightSteerMotorID = 7;
 
-    public static final int kFrontLeftEncoderID = 9;
-    public static final int kBackLeftEncoderID = 11;
-    public static final int kFrontRightEncoderID = 10;
-    public static final int kBackRightEncoderID = 12;
+    public static final int kFrontLeftEncoderID = 10;
+    public static final int kBackLeftEncoderID = 12;
+    public static final int kFrontRightEncoderID = 9;
+    public static final int kBackRightEncoderID = 11;
 
 
     public static final double kEncoderResolution = 4096;

@@ -20,6 +20,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class DriveWithJoysticks extends Command {
 
@@ -85,12 +86,6 @@ public class DriveWithJoysticks extends Command {
     if (m_faceForwards.getAsBoolean()) {
       m_PIDcontrol = true;
       m_toAngle = 0;
-    //} else if (m_holdAngle) {
-      // if(MathUtil.applyDeadband(m_theta.getAsDouble(), kDriveDeadband) == 0.0) {
-        // m_PIDcontrol = true;
-      // } else {
-        // m_PIDcontrol = false;
-      // }
     } else {
       m_PIDcontrol = false;
     }
@@ -114,50 +109,9 @@ public class DriveWithJoysticks extends Command {
       m_thetaSpeed =
         -m_thetaLimiter.calculate(MathUtil.applyDeadband(Math.pow(m_theta.getAsDouble(), 2) * Math.signum(m_theta.getAsDouble()), kDriveDeadband))
         * kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier * kRotationSpeedMultiplier * m_precisionFactor;
-      // if(m_thetaSpeed == 0.0) {
-        // m_toAngle = m_drivetrain.getOdometryYaw();
-        // m_holdAngle = true;
-      // } else {
-        // m_holdAngle = false;
-      // }
     }
-
-    // if (leftRoll.getAsBoolean()) {
-    //   if (!leftWasPressed) {
-    //     if (m_xSpeed < 0) {
-    //       offsetDirection = new Rotation2d(-m_drivetrain.getFieldPosition().getRotation().getRadians() + Math.PI - (Math.PI/4));
-    //       m_thetaSpeed = 3.0;
-    //       }
-    //     else {
-    //       offsetDirection =  new Rotation2d(-m_drivetrain.getFieldPosition().getRotation().getRadians() + (Math.PI/4));
-    //       m_thetaSpeed = -3.0;
-    //     } 
-    //     leftWasPressed = true;
-    //   }
-    //   if (m_xSpeed < 0) m_thetaSpeed = 3.0;
-    //   else m_thetaSpeed = -3.0;
-    //   m_drivetrain.drive(m_xSpeed, m_ySpeed, m_thetaSpeed, true, new Translation2d(kDiagModuleOffsetMeters, offsetDirection));
-    // } else if(rightRoll.getAsBoolean()) {
-    //   if (!rightWasPressed) {
-    //     if (m_xSpeed < 0) {
-    //       offsetDirection =  new Rotation2d(-m_drivetrain.getFieldPosition().getRotation().getRadians() + Math.PI + (Math.PI/4));
-    //       m_thetaSpeed = -3.0;
-    //     }
-    //     else {
-    //       offsetDirection =  new Rotation2d(-m_drivetrain.getFieldPosition().getRotation().getRadians() - (Math.PI/4));
-    //       m_thetaSpeed = 3.0;
-    //     }
-    //     rightWasPressed = true;
-    //   }
-    //   if (m_xSpeed < 0) m_thetaSpeed = -3.0;
-    //   else m_thetaSpeed = 3.0;
-    //   m_drivetrain.drive(m_xSpeed, m_ySpeed, m_thetaSpeed, true, new Translation2d(kDiagModuleOffsetMeters, offsetDirection));
-    // } else{
-    // leftWasPressed = false;
-    // rightWasPressed = false;
-      
+    
     m_drivetrain.drive(m_xSpeed, m_ySpeed, m_thetaSpeed, !fieldRelative.getAsBoolean());
-    // }
   }
 
   // Called once the command ends or is interrupted.
