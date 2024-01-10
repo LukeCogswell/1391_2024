@@ -224,6 +224,12 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
+  public double getChangeInDistanceToSpeaker(Double dx, Double dy) {
+    var pos = getFieldPosition();
+    var dd = (pos.getX() * dx + pos.getY() * dy) / getDistanceToSpeaker();
+    return dd;
+  }
+  
   public double getAngleToSpeaker() {
     double speakerX, speakerY;
     if (DriverStation.getAlliance().isPresent()) {
@@ -245,5 +251,29 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
+  public double getChangeInAngleToSpeaker(Double dx, Double dy) {
+    var pos = getFieldPosition();
+    var dTheta = (1 / (1+Math.pow(pos.getX()/pos.getY(), 2))) * ((pos.getY()*dx - pos.getX()*dy) / (Math.pow(pos.getY(), 2)));
+    return dTheta * 180 / Math.PI; 
+  }
+
+  public double getChangeInShooterAngleToSpeaker(Double dx, Double dy) {
+    var d = getDistanceToSpeaker();
+    var dd = getChangeInDistanceToSpeaker(dx, dy);
+    var dThetaV = 0.5 * 
+      (
+        ( 1 / (1 + Math.pow((2.11 - shooterReleaseHeight) / (d-0.46), 2)) 
+          * 
+          ( (shooterReleaseHeight - 2.11) / (Math.pow(d-0.46, 2)) ) 
+          * 
+          dd)
+         + 
+        (( 1 / (1 + Math.pow((1.98-shooterReleaseHeight) / (d), 2) ) )
+          * 
+          ( (shooterReleaseHeight-1.98) / (Math.pow(d, 2)) ) 
+          * 
+          dd));
+    return dThetaV * 180 / Math.PI;
+  }
 
 }

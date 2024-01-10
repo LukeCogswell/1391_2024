@@ -39,11 +39,7 @@ public class DriveWithJoysticks extends Command {
 
   private PIDController turnController = new PIDController(.01, kTurnI, 0.002);
   
-  double m_toAngle;
-  double m_xSpeed;
-  double m_ySpeed;
-  double m_thetaSpeed;
-  double m_precisionFactor;
+  double m_toAngle, m_xSpeed, m_ySpeed, m_thetaSpeed, m_precisionFactor;
 
   boolean m_holdAngle = false;
 
