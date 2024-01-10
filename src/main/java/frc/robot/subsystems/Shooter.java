@@ -26,4 +26,23 @@ public class Shooter extends SubsystemBase {
     return theta1;
   }
 
+  public double getChangeInShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {
+    var d = distanceToSpeaker;
+    var dd = dDistanceToSpeaker;
+    var dThetaV = 0.5 * 
+      (
+        ( 1 / (1 + Math.pow((2.11 - shooterReleaseHeight) / (d-0.46), 2)) 
+          * 
+          ( (shooterReleaseHeight - 2.11) / (Math.pow(d-0.46, 2)) ) 
+          * 
+          dd)
+         + 
+        (( 1 / (1 + Math.pow((1.98-shooterReleaseHeight) / (d), 2) ) )
+          * 
+          ( (shooterReleaseHeight-1.98) / (Math.pow(d, 2)) ) 
+          * 
+          dd));
+    return dThetaV * 180 / Math.PI;
+  }
+
 }

@@ -257,23 +257,4 @@ public class Drivetrain extends SubsystemBase {
     return dTheta * 180 / Math.PI; 
   }
 
-  public double getChangeInShooterAngleToSpeaker(Double dx, Double dy) {
-    var d = getDistanceToSpeaker();
-    var dd = getChangeInDistanceToSpeaker(dx, dy);
-    var dThetaV = 0.5 * 
-      (
-        ( 1 / (1 + Math.pow((2.11 - shooterReleaseHeight) / (d-0.46), 2)) 
-          * 
-          ( (shooterReleaseHeight - 2.11) / (Math.pow(d-0.46, 2)) ) 
-          * 
-          dd)
-         + 
-        (( 1 / (1 + Math.pow((1.98-shooterReleaseHeight) / (d), 2) ) )
-          * 
-          ( (shooterReleaseHeight-1.98) / (Math.pow(d, 2)) ) 
-          * 
-          dd));
-    return dThetaV * 180 / Math.PI;
-  }
-
 }
