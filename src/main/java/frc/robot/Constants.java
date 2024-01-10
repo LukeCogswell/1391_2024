@@ -69,8 +69,8 @@ public final class Constants {
     public static final double kSpeakerHoodDepth = 0.46; //METERS    
     public static final double shooterReleaseHeight = 0.9144; //0.9144 METERS = 36 INCHES, 0.762 METERS = 30 INCHES
   
-    public static final Translation2d kRedSpeakerCoords = new Translation2d(0, 0);  // POSITION OF THE SPEAKER ON THE RED FIELD (METERS)
-    public static final Translation2d kBlueSpeakerCoords = new Translation2d(0, 0); // POSITION OF THE SPEAKER ON THE BLUE FIELD (METERS)
+    public static final Translation2d kRedSpeakerCoords = new Translation2d(16.579342, 5.547868);  // POSITION OF THE SPEAKER ON THE RED FIELD (METERS)
+    public static final Translation2d kBlueSpeakerCoords = new Translation2d(-0.0381, 5.547868); // POSITION OF THE SPEAKER ON THE BLUE FIELD (METERS)
   
   
     }
@@ -142,4 +142,22 @@ public final class Constants {
   }
 
   public static HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+  public static final class AprilTags {
+    public static final Pose3d ID1  = new Pose3d(593.68 / kInchesToMeters,   9.68 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 120 / 180 * Math.PI));
+    public static final Pose3d ID2  = new Pose3d(637.21 / kInchesToMeters,  34.79 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 120 / 180 * Math.PI));
+    public static final Pose3d ID3  = new Pose3d(652.73 / kInchesToMeters, 196.17 / kInchesToMeters, 57.13 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 180 / 180 * Math.PI));
+    public static final Pose3d ID4  = new Pose3d(652.73 / kInchesToMeters, 218.42 / kInchesToMeters, 57.13 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 180 / 180 * Math.PI));
+    public static final Pose3d ID5  = new Pose3d(578.77 / kInchesToMeters, 323.00 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 270 / 180 * Math.PI));
+    public static final Pose3d ID6  = new Pose3d( 72.50 / kInchesToMeters, 323.00 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 270 / 180 * Math.PI));
+    public static final Pose3d ID7  = new Pose3d( -1.50 / kInchesToMeters, 218.42 / kInchesToMeters, 57.13 / kInchesToMeters, new Rotation3d(0.0 , 0.0,   0 / 180 * Math.PI));
+    public static final Pose3d ID8  = new Pose3d( -1.50 / kInchesToMeters, 196.17 / kInchesToMeters, 57.13 / kInchesToMeters, new Rotation3d(0.0 , 0.0,   0 / 180 * Math.PI));
+    public static final Pose3d ID9  = new Pose3d( 14.02 / kInchesToMeters,  34.79 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0,  60 / 180 * Math.PI));
+    public static final Pose3d ID10 = new Pose3d( 57.54 / kInchesToMeters,   9.68 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0,  60 / 180 * Math.PI));
+    public static final Pose3d ID11 = new Pose3d(468.69 / kInchesToMeters, 146.19 / kInchesToMeters, 52.00 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 300 / 180 * Math.PI));
+    public static final Pose3d ID12 = new Pose3d(468.69 / kInchesToMeters, 177.10 / kInchesToMeters, 52.00 / kInchesToMeters, new Rotation3d(0.0 , 0.0,  60 / 180 * Math.PI));
+    public static final Pose3d ID13 = new Pose3d(441.74 / kInchesToMeters, 161.62 / kInchesToMeters, 52.00 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 180 / 180 * Math.PI));
+    public static final Pose3d ID14 = new Pose3d(209.48 / kInchesToMeters, 161.62 / kInchesToMeters, 52.00 / kInchesToMeters, new Rotation3d(0.0 , 0.0,   0 / 180 * Math.PI));
+    public static final Pose3d ID15 = new Pose3d(182.73 / kInchesToMeters, 177.10 / kInchesToMeters, 52.00 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 120 / 180 * Math.PI));
+    public static final Pose3d ID16 = new Pose3d(182.73 / kInchesToMeters, 146.19 / kInchesToMeters, 52.00 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 240 / 180 * Math.PI));
+  }
 }
