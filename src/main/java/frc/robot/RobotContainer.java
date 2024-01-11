@@ -12,6 +12,11 @@ import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter;
+
+import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -64,6 +69,8 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, m_driverController.getLeftX(), m_driverController.getLeftY(), m_driverController.getRightTriggerAxis()));
+    
+    m_driverController.x().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(56.5 / kInchesToMeters, 171 / kInchesToMeters, new Rotation2d(0.0)))));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   }
