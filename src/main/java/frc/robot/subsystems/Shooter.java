@@ -23,7 +23,7 @@ public class Shooter extends SubsystemBase {
     var theta2 = Math.atan( (kSpeakerOpeningMinHeight-shooterReleaseHeight) / distanceToSpeaker);
     var theta3 = Math.atan( (kSpeakerOpeningMaxHeight-shooterReleaseHeight) / (distanceToSpeaker - kSpeakerHoodDepth));
     var theta1 = 0.5 * (theta3-theta2);
-    return theta1;
+    return theta1 * 180 / Math.PI;
   }
 
   public double getChangeInShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {

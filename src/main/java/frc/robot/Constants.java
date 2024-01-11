@@ -105,9 +105,9 @@ public final class Constants {
       public static final double kDriveI = 0.0; // Used in pose control
       public static final double kDriveD = 0.0;
 
-      public static final double kTurnP = 0.05;
+      public static final double kTurnP = 0.075;// 0.075
       public static final double kTurnI = 0.0; // Used in pose control
-      public static final double kTurnD = 0.0;
+      public static final double kTurnD = 0.0075; //0.0075
 
       public static final double kTiltP = 0.01;
       public static final double kTiltI = 0.0;
