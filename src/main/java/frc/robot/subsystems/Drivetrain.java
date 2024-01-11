@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,8 +41,6 @@ public class Drivetrain extends SubsystemBase {
 
   private SwerveDrivePoseEstimator m_odometry;
   private AHRS m_navX = new AHRS();
-
-  private PIDController m_xController, m_yController, m_thetaController;
 
   public double desiredVelocityAverage = 0;
   public double actualVelocityAverage = 0;
@@ -90,7 +88,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
-
+    updateOdometryWithAprilTags();
     SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
     if (DriverStation.getAlliance().isPresent()) {
       SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
@@ -98,6 +96,14 @@ public class Drivetrain extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   
+  public void updateOdometryWithAprilTags() {
+    var botpose = getBOTPOSE();
+    if (botpose.length != 0) {
+      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
+      m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
+    }
+  }
+
    public double getNavxYaw() { // returns the current yaw of the robot
     var pos = m_navX.getYaw();
     return pos < -180 ? pos + 360 : pos;
@@ -125,6 +131,10 @@ public class Drivetrain extends SubsystemBase {
   
   public double getTY() {
     return m_limelight.getEntry("ty").getDouble(0.0);
+  }
+
+  public double[] getBOTPOSE() {
+    return m_limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[]{});
   }
   
   public void updateOdometry() { // updates the odometry of the robot
