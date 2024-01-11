@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,8 +36,6 @@ public class Drivetrain extends SubsystemBase {
 
   private SwerveDrivePoseEstimator m_odometry;
   private AHRS m_navX = new AHRS();
-
-  private PIDController m_xController, m_yController, m_thetaController;
 
   public double desiredVelocityAverage = 0;
   public double actualVelocityAverage = 0;
