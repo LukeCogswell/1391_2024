@@ -7,6 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
@@ -27,7 +29,7 @@ public class TrackWhileMoving extends Command {
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private DoubleSupplier xSpeed, ySpeed, m_precision;
-  private Double X, Y, rot, m_precisionFactor, m_xSpeed, m_ySpeed, angleDirection;
+  private Double X, Y, rot, m_precisionFactor, m_xSpeed, m_ySpeed;
 
   /** Creates a new TrackWhileMoving. */
   public TrackWhileMoving(Drivetrain drivetrain, Shooter shooter, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision) {
