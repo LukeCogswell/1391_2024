@@ -87,10 +87,10 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     updateOdometry();
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
-    SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
-    if (DriverStation.getAlliance().isPresent()) {
-      SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
-    }
+    // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
+    // if (DriverStation.getAlliance().isPresent()) {
+    //   SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
+    // }
     // This method will be called once per scheduler run
   }
   
@@ -251,12 +251,12 @@ public class Drivetrain extends SubsystemBase {
       var robotY = robotPose.getY();
       var xOffset = speakerX-robotX;
       var yOffset = speakerY-robotY;
-      var angle = -Math.atan(yOffset/xOffset) * 180 / Math.PI;
+      var angle = Math.atan(yOffset/xOffset) * 180 / Math.PI;
       SmartDashboard.putNumber("Raw Angle", angle);
       if (DriverStation.getAlliance().get() == Alliance.Red) {
         return angle; 
       } else {
-        angle = 180 - angle;
+        angle = 180 + angle;
         angle = angle > 180 ? angle - 360: angle;
         return angle;
       }
@@ -267,7 +267,7 @@ public class Drivetrain extends SubsystemBase {
 
   public double getChangeInAngleToSpeaker(Double dx, Double dy) {
     var pos = getFieldPosition();
-    var dTheta = (1 / (1+Math.pow(pos.getX()/pos.getY(), 2))) * ((pos.getY()*dx - pos.getX()*dy) / (Math.pow(pos.getY(), 2)));
+    var dTheta = (1 / (1+Math.pow(pos.getX()/pos.getY(), 2))) * ((pos.getY()*dx - pos.getX()*-dy) / (Math.pow(pos.getY(), 2)));
     return dTheta * 180 / Math.PI; 
   }
 

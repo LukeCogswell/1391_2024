@@ -94,7 +94,7 @@ public class SwerveModule extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber(("Module "+(m_driveMotor.getDeviceId())), getAbsoluteAngle());
+    // SmartDashboard.putNumber(("Module "+(m_driveMotor.getDeviceId())), getAbsoluteAngle());
   }
 
   private void setMotorSettings(CANSparkMax motor, int currentLimit) { // sets the settings of the motor(s)

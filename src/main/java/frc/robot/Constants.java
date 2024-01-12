@@ -4,12 +4,8 @@
 
 package frc.robot;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -39,6 +35,9 @@ public final class Constants {
 
   }
 
+  public static final class Shooter {
+    public static final double kShootingAdjustmentMultiplier = 1.0;
+  }
   public static final class MeasurementConstants {
     // This is based on the CAD model (divided by two to represent distance from center of robot) 
     public static final double kInchesToMeters = 39.37;
@@ -79,6 +78,7 @@ public final class Constants {
     public static final double kSpeedMultiplier = 1; // limits robot speed
     public static final double kRotationSpeedMultiplier = 0.7;
     public static final double kDriveDeadband = 0.05;
+    public static final double kAutoDriveSpeedLimiter = 0.75;
 
     public static final double kMaxVoltage = 12.0;
     public static final double kAccelerationSeconds = 0.15; // 0.5 seconds to reach full speed

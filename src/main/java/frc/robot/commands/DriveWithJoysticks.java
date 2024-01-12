@@ -21,6 +21,8 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveWithJoysticks extends Command {
 
@@ -107,6 +109,11 @@ public class DriveWithJoysticks extends Command {
         * kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier * kRotationSpeedMultiplier * m_precisionFactor;
     }
     
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+      m_xSpeed = -m_xSpeed;
+      m_ySpeed = -m_ySpeed;
+    }
+
     m_drivetrain.drive(m_xSpeed, m_ySpeed, m_thetaSpeed, !fieldRelative.getAsBoolean());
   }
 
