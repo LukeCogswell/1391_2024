@@ -6,11 +6,19 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shooter;
+
+import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import static frc.robot.Constants.MeasurementConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
+  private final Shooter m_shooter = new Shooter();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -57,7 +66,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
+    m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+    
+    m_driverController.x().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(56.5 / kInchesToMeters, 171 / kInchesToMeters, new Rotation2d(0.0)))));
+    m_driverController.b().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 56.5 / kInchesToMeters, kFieldY - 171 / kInchesToMeters, new Rotation2d(Math.PI)))));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
   }

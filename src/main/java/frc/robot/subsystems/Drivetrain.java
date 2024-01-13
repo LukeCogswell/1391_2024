@@ -83,15 +83,19 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
-
-    SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
-    if (DriverStation.getAlliance().isPresent()) {
-      SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
-    }
+    SmartDashboard.putString("Field Position", getFieldPosition().toString());
+    // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
+    // if (DriverStation.getAlliance().isPresent()) {
+    //   SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
+    // }
     // This method will be called once per scheduler run
   }
   
-   public double getNavxYaw() { // returns the current yaw of the robot
+  public void setFieldPosition(Pose2d fieldPosition) {
+    m_odometry.resetPosition(new Rotation2d(-getNavxYaw() * Math.PI / 180), getModulePositions(), fieldPosition);
+  }
+
+  public double getNavxYaw() { // returns the current yaw of the robot
     var pos = m_navX.getYaw();
     return pos < -180 ? pos + 360 : pos;
   }
@@ -127,6 +131,8 @@ public class Drivetrain extends SubsystemBase {
       m_backRight.getPosition()
     };
   }
+
+
 
   public Pose2d getFieldPosition() { // returns the current position of the robot
     return m_odometry.getEstimatedPosition();
@@ -221,6 +227,12 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
+  public double getChangeInDistanceToSpeaker(Double dx, Double dy) {
+    var pos = getFieldPosition();
+    var dd = (pos.getX() * dx + pos.getY() * dy) / getDistanceToSpeaker();
+    return dd;
+  }
+  
   public double getAngleToSpeaker() {
     double speakerX, speakerY;
     if (DriverStation.getAlliance().isPresent()) {
@@ -234,13 +246,26 @@ public class Drivetrain extends SubsystemBase {
       var robotPose = getFieldPosition();
       var robotX = robotPose.getX();
       var robotY = robotPose.getY();
-      var xOffset = Math.abs(speakerX-robotX);
-      var yOffset = Math.abs(speakerY-robotY);
-      return Math.atan(xOffset/yOffset) * 180 / Math.PI;
+      var xOffset = speakerX-robotX;
+      var yOffset = speakerY-robotY;
+      var angle = Math.atan(yOffset/xOffset) * 180 / Math.PI;
+      SmartDashboard.putNumber("Raw Angle", angle);
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
+        return angle; 
+      } else {
+        angle = 180 + angle;
+        angle = angle > 180 ? angle - 360: angle;
+        return angle;
+      }
     } else {
       return 0.0;
     }
   }
 
+  public double getChangeInAngleToSpeaker(Double dx, Double dy) {
+    var pos = getFieldPosition();
+    var dTheta = (1 / (1+Math.pow(pos.getX()/pos.getY(), 2))) * ((pos.getY()*dx - pos.getX()*-dy) / (Math.pow(pos.getY(), 2)));
+    return dTheta * 180 / Math.PI; 
+  }
 
 }

@@ -17,6 +17,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class DriveWithJoysticks extends Command {
 
@@ -35,11 +37,7 @@ public class DriveWithJoysticks extends Command {
 
   private PIDController turnController = new PIDController(.01, kTurnI, 0.002);
   
-  double m_toAngle;
-  double m_xSpeed;
-  double m_ySpeed;
-  double m_thetaSpeed;
-  double m_precisionFactor;
+  double m_toAngle, m_xSpeed, m_ySpeed, m_thetaSpeed, m_precisionFactor;
 
   boolean m_holdAngle = false;
 
@@ -107,6 +105,11 @@ public class DriveWithJoysticks extends Command {
         * kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier * kRotationSpeedMultiplier * m_precisionFactor;
     }
     
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+      m_xSpeed = -m_xSpeed;
+      m_ySpeed = -m_ySpeed;
+    }
+
     m_drivetrain.drive(m_xSpeed, m_ySpeed, m_thetaSpeed, !fieldRelative.getAsBoolean());
   }
 
