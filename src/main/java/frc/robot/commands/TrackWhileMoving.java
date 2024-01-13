@@ -37,8 +37,8 @@ public class TrackWhileMoving extends Command {
     m_shooter = shooter;
     m_precision = precision;
     xSpeed = x_speed;
-    SmartDashboard.putNumber("x input", x_speed.getAsDouble());
-    SmartDashboard.putNumber("Precision", precision.getAsDouble());
+    // SmartDashboard.putNumber("x input", x_speed.getAsDouble());
+    // SmartDashboard.putNumber("Precision", precision.getAsDouble());
     ySpeed = y_speed;
     addRequirements(drivetrain, shooter);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -62,23 +62,24 @@ public class TrackWhileMoving extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("xSpeed", X);
+    // SmartDashboard.putNumber("xSpeed", X);
     m_xSpeed =
     -m_xLimiter.calculate(MathUtil.applyDeadband(Math.pow(Y, 2) * Math.signum(Y), kDriveDeadband))
     * kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
-    SmartDashboard.putNumber("xSpeed after limiting", Y);
+    // SmartDashboard.putNumber("xSpeed after limiting", Y);
     
     m_ySpeed =
     -m_yLimiter.calculate(MathUtil.applyDeadband(Math.pow(X, 2) * Math.signum(X), kDriveDeadband))
     * kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
+    
     var dis = m_drivetrain.getDistanceToSpeaker();
     var dDis = m_drivetrain.getChangeInDistanceToSpeaker(m_xSpeed, m_ySpeed);
     
     var dTheta = -m_drivetrain.getChangeInAngleToSpeaker(m_xSpeed, m_ySpeed);
     dTheta = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ? -dTheta : dTheta;
   
-    SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
-    SmartDashboard.putNumber("dTheta", dTheta);
+    // SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
+    // SmartDashboard.putNumber("dTheta", dTheta);
     
     rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingAdjustmentMultiplier * dTheta);
 
