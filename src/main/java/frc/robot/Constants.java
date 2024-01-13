@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
+
 import java.util.HashMap;
 
 import edu.wpi.first.math.geometry.Pose3d;

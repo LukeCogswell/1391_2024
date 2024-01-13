@@ -104,7 +104,6 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-   public double getNavxYaw() { // returns the current yaw of the robot
   public void setFieldPosition(Pose2d fieldPosition) {
     m_odometry.resetPosition(new Rotation2d(-getNavxYaw() * Math.PI / 180), getModulePositions(), fieldPosition);
   }
