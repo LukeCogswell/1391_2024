@@ -89,17 +89,18 @@ public class Drivetrain extends SubsystemBase {
   public void periodic() {
     updateOdometry();
     updateOdometryWithAprilTags();
-    SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
-    if (DriverStation.getAlliance().isPresent()) {
-      SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
-    }
+    SmartDashboard.putString("Field Position", getFieldPosition().toString());
+    // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
+    // if (DriverStation.getAlliance().isPresent()) {
+    //   SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
+    // }
     // This method will be called once per scheduler run
   }
   
   public void updateOdometryWithAprilTags() {
     var botpose = getBOTPOSE();
-    if (botpose.length != 0) {
-      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
+    if (botpose.length != 0 && getTV()) {
+      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), getFieldPosition().getRotation());
       m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
     }
   }
@@ -135,6 +136,10 @@ public class Drivetrain extends SubsystemBase {
   
   public double getTY() {
     return m_limelight.getEntry("ty").getDouble(0.0);
+  }
+
+  public boolean getTV() {
+    return m_limelight.getEntry("tv").getDouble(0.0) == 1.0;
   }
 
   public double[] getBOTPOSE() {
