@@ -71,7 +71,7 @@ public class TrackWhileMoving extends Command {
     m_ySpeed =
     -m_yLimiter.calculate(MathUtil.applyDeadband(Math.pow(X, 2) * Math.signum(X), kDriveDeadband))
     * kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
-    
+
     var dis = m_drivetrain.getDistanceToSpeaker();
     var dDis = m_drivetrain.getChangeInDistanceToSpeaker(m_xSpeed, m_ySpeed);
     
@@ -83,8 +83,7 @@ public class TrackWhileMoving extends Command {
     
     rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingAdjustmentMultiplier * dTheta);
 
-    SmartDashboard.putNumber("ShooterAngle", m_shooter.getRequiredShooterAngle(dis));
-    SmartDashboard.putNumber("ShooterChangeInAngle", m_shooter.getChangeInShooterAngle(dis, dDis));
+    SmartDashboard.putNumber("ShooterAngle", m_shooter.getRequiredShooterAngle(dis, dDis));
 
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       m_xSpeed = -m_xSpeed;

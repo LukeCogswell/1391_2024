@@ -110,7 +110,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public double getNavxYaw() { // returns the current yaw of the robot
-    var pos = m_navX.getYaw();
+    var pos = m_navX.getYaw();// - Timer.getFPGATimestamp() * 0.1 / 36.8;
     return pos < -180 ? pos + 360 : pos;
   }
 

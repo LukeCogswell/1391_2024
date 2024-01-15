@@ -38,6 +38,7 @@ public final class Constants {
 
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.0;
+    public static final double kStationaryRobotAngleMultiplier = 0.0101;
   }
   public static final class MeasurementConstants {
     // This is based on the CAD model (divided by two to represent distance from center of robot) 
@@ -107,7 +108,7 @@ public final class Constants {
       public static final double kDriveD = 0.0;
 
       public static final double kTurnP = 0.075;// 0.075
-      public static final double kTurnI = 0.0; // Used in pose control
+      public static final double kTurnI = 0.01; // Used in pose control
       public static final double kTurnD = 0.0075; //0.0075
 
       public static final double kTiltP = 0.01;
