@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MeasurementConstants.kFieldX;
+import static frc.robot.Constants.MeasurementConstants.kFieldY;
 import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
 
 import java.util.HashMap;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -144,6 +148,26 @@ public final class Constants {
   }
 
   public static HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+  public static final class PathfindingPoints {
+    public static final double kGridSize = 0.3;
+    public static final class Red {
+      public static final Pose2d Source = new Pose2d(8 * kGridSize, 4 * kGridSize, new Rotation2d(-Math.PI/4 * 3));
+      public static final Pose2d Amp = new Pose2d(7 * kGridSize, 25 * kGridSize, new Rotation2d(Math.PI/2));
+      public static final Pose2d Speaker = new Pose2d(8 * kGridSize, 20 * kGridSize, new Rotation2d(0));
+      public static final Pose2d CenterStage = new Pose2d(35 * kGridSize, 14 * kGridSize, new Rotation2d(Math.PI));
+      public static final Pose2d StageLeft = new Pose2d(40 * kGridSize, 11 * kGridSize, new Rotation2d(Math.PI / 4 * 3));
+      public static final Pose2d StageRight = new Pose2d(40 * kGridSize, 16.5 * kGridSize, new Rotation2d(-Math.PI / 4 * 3));
+      
+    }
+    public static final class Blue {
+      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), kFieldY - Red.Source.getY(), new Rotation2d(-Math.PI/4));
+      public static final Pose2d Amp = new Pose2d(kFieldX - Red.Amp.getX(), kFieldY - Red.Amp.getY(), new Rotation2d(-Math.PI/2));
+      public static final Pose2d Speaker = new Pose2d(kFieldX - Red.Speaker.getX(), kFieldY - Red.Speaker.getY(), new Rotation2d(Math.PI));
+      public static final Pose2d CenterStage = new Pose2d(kFieldX - Red.CenterStage.getX(), kFieldY - Red.CenterStage.getY(), new Rotation2d(0));
+      public static final Pose2d StageLeft = new Pose2d(kFieldX - Red.StageLeft.getX(), kFieldY - Red.StageLeft.getY(), new Rotation2d(-Math.PI/4));
+      public static final Pose2d StageRight = new Pose2d(kFieldX - Red.StageRight.getX(), kFieldY - Red.StageRight.getY(), new Rotation2d(Math.PI/4));
+    }
+  }
   public static final class AprilTags {
     public static final Pose3d ID1  = new Pose3d(593.68 / kInchesToMeters,   9.68 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 120 / 180 * Math.PI));
     public static final Pose3d ID2  = new Pose3d(637.21 / kInchesToMeters,  34.79 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 120 / 180 * Math.PI));
