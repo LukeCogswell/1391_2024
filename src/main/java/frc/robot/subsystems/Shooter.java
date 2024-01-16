@@ -4,20 +4,77 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.MeasurementConstants.*;
+import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Constants.Shooter.kStationaryRobotAngleMultiplier;
 
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+
 public class Shooter extends SubsystemBase {
+  private final CANSparkMax m_angleMotor = new CANSparkMax(11, MotorType.kBrushless);
+  private final CANSparkMax m_loaderMotor = new CANSparkMax(12, MotorType.kBrushless);
+  private final CANSparkMax m_shooterMotorTop = new CANSparkMax(13, MotorType.kBrushless); 
+  private final CANSparkMax m_shooterMotorBottom = new CANSparkMax(14, MotorType.kBrushless);
+  
+  private DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
+
   /** Creates a new Shooter. */
   public Shooter() {
-
+    m_shooterMotorTop.setInverted(false);
+    m_shooterMotorBottom.setInverted(true);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public void setLoaderMotor(Double power) {
+    m_loaderMotor.set(power);
+  }
+
+  public void setShooterSpeed(Double speed) {
+    m_shooterMotorTop.set(speed/kMaxSpeedRPM);
+    m_shooterMotorBottom.set(speed/kMaxSpeedRPM);
+    
+  }
+  
+  public void stopShooter() {
+    m_shooterMotorTop.set(0);
+    m_shooterMotorBottom.set(0);
+
+  }
+
+  public void setTopShooterSpeed(Double speed) {
+    m_shooterMotorTop.set(speed/kMaxSpeedRPM);
+  }
+  
+  public void setBottomShooterSpeed(Double speed) {
+    m_shooterMotorBottom.set(speed/kMaxSpeedRPM);
+
+  }
+
+  public double getTopShooterSpeed() {
+    return m_shooterMotorTop.getEncoder().getVelocity();  
+  }
+  
+  public double getBottomShooterSpeed() {
+    return m_shooterMotorBottom.getEncoder().getVelocity();  
+  }
+
+
+  public void setAngleMotor(Double power) {
+    m_angleMotor.set(power);
+  }
+
+  public double getShooterAngle() {
+    var angle = (m_angleEncoder.getAbsolutePosition()*360 - kAngleEncoderOffset - 180) % 360 + 180;
+    return angle > 180 ? angle - 360: angle;
+  }
+
 
   public double getRequiredShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {
     var theta2 = Math.atan( (kSpeakerOpeningMinHeight-shooterReleaseHeight) / distanceToSpeaker);
@@ -26,7 +83,7 @@ public class Shooter extends SubsystemBase {
     var theta = theta1 + kStationaryRobotAngleMultiplier * (distanceToSpeaker) - robotSpeedAdjustementFunction(distanceToSpeaker) * (dDistanceToSpeaker / distanceToSpeaker);
     return theta;
   }
-  
+
   private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
     var x = distanceToSpeaker; 
     return -0.0109 

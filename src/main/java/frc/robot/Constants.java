@@ -43,6 +43,18 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.0;
     public static final double kStationaryRobotAngleMultiplier = 0.0101;
+    public static final double kAngleEncoderOffset = 0.0;
+    public static final double kMaxSpeedRPM = 5676;
+    public static final class PID {
+      public static final double kP = 0.01;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+      
+      public static final double kAngleP = 0.01;
+      public static final double kAngleI = 0.0;
+      public static final double kAngleD = 0.0;
+
+    }
   }
   public static final class MeasurementConstants {
     // This is based on the CAD model (divided by two to represent distance from center of robot) 

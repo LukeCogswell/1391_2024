@@ -8,6 +8,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +32,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Shooter m_shooter = new Shooter();
+  private final Intake m_intake = new Intake();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -81,6 +83,9 @@ public class RobotContainer {
     m_driverController.b().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 56.5 / kInchesToMeters, kFieldY - 171 / kInchesToMeters, new Rotation2d(Math.PI)))));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+
+    m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntake(0.5))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+
   }
 
   /**
