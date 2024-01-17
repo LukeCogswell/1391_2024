@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.commands.SetShooterAngle;
 import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -84,7 +85,14 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntake(0.5))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+    m_driverController.y().onTrue(new SetShooterAngle(m_shooter, 45.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
+
+    m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
+    m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));
+    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(300.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
+    // m_driverController.povDown().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(300.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));
+    // m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.setLoaderMotor(0.4))).onFalse(new InstantCommand(() -> m_shooter.setLoaderMotor(0.0)));
+    // m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntake(0.5))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
 
   }
 

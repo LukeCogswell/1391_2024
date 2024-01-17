@@ -325,13 +325,13 @@ public class Drivetrain extends SubsystemBase {
       var xOffset = speakerX-robotX;
       var yOffset = speakerY-robotY;
       var angle = Math.atan(yOffset/xOffset) * 180 / Math.PI;
-      SmartDashboard.putNumber("Raw Angle", angle);
+      // SmartDashboard.putNumber("Raw Angle", angle);
       if (DriverStation.getAlliance().get() == Alliance.Red) {
-        return angle; 
-      } else {
         angle = 180 + angle;
         angle = angle > 180 ? angle - 360: angle;
         return angle;
+      } else {
+        return angle; 
       }
     } else {
       return 0.0;

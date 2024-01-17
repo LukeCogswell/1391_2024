@@ -43,14 +43,14 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.0;
     public static final double kStationaryRobotAngleMultiplier = 0.0101;
-    public static final double kAngleEncoderOffset = 0.0;
+    public static final double kAngleEncoderOffset = 24.27;
     public static final double kMaxSpeedRPM = 5676;
     public static final class PID {
       public static final double kP = 0.01;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
       
-      public static final double kAngleP = 0.01;
+      public static final double kAngleP = 0.0001;
       public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
@@ -67,10 +67,10 @@ public final class Constants {
     public static final double kFieldX = 649 / kInchesToMeters;
     public static final double kFieldY = 319 / kInchesToMeters;
 
-    public static final double kFrontLeftEncoderOffset = 180.0;
-    public static final double kBackLeftEncoderOffset = 0.0;
-    public static final double kFrontRightEncoderOffset = 180.0;
-    public static final double kBackRightEncoderOffset = 180.0; 
+    public static final double kFrontLeftEncoderOffset = 0.0;
+    public static final double kBackLeftEncoderOffset = 180.0;
+    public static final double kFrontRightEncoderOffset = 0.0;
+    public static final double kBackRightEncoderOffset = 0.0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
       SwerveModuleConstants.kDriveReduction *

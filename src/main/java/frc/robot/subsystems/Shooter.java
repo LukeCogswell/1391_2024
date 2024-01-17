@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.Shooter.*;
@@ -23,12 +24,16 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public Shooter() {
-    m_shooterMotorTop.setInverted(false);
+    m_shooterMotorTop.setInverted(true);
     m_shooterMotorBottom.setInverted(true);
+    m_loaderMotor.setInverted(true);
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("ShooterAngle", getShooterAngle());
+    SmartDashboard.putNumber("TopShooterSpeed", getTopShooterSpeed());
+    SmartDashboard.putNumber("BotShooterSpeed", getBottomShooterSpeed());
     // This method will be called once per scheduler run
   }
 
@@ -41,7 +46,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotorBottom.set(speed/kMaxSpeedRPM);
     
   }
-  
+
   public void stopShooter() {
     m_shooterMotorTop.set(0);
     m_shooterMotorBottom.set(0);
