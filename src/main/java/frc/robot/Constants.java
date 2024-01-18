@@ -5,7 +5,6 @@
 package frc.robot;
 
 import static frc.robot.Constants.MeasurementConstants.kFieldX;
-import static frc.robot.Constants.MeasurementConstants.kFieldY;
 import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
 
 import java.util.HashMap;
@@ -172,12 +171,12 @@ public final class Constants {
       
     }
     public static final class Blue {
-      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), kFieldY - Red.Source.getY(), new Rotation2d(-Math.PI/4));
-      public static final Pose2d Amp = new Pose2d(kFieldX - Red.Amp.getX(), kFieldY - Red.Amp.getY(), new Rotation2d(-Math.PI/2));
-      public static final Pose2d Speaker = new Pose2d(kFieldX - Red.Speaker.getX(), kFieldY - Red.Speaker.getY(), new Rotation2d(Math.PI));
-      public static final Pose2d CenterStage = new Pose2d(kFieldX - Red.CenterStage.getX(), kFieldY - Red.CenterStage.getY(), new Rotation2d(0));
-      public static final Pose2d StageLeft = new Pose2d(kFieldX - Red.StageLeft.getX(), kFieldY - Red.StageLeft.getY(), new Rotation2d(-Math.PI/4));
-      public static final Pose2d StageRight = new Pose2d(kFieldX - Red.StageRight.getX(), kFieldY - Red.StageRight.getY(), new Rotation2d(Math.PI/4));
+      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), Red.Source.getY(), new Rotation2d(-Math.PI/4));
+      public static final Pose2d Amp = new Pose2d(kFieldX - Red.Amp.getX(), Red.Amp.getY(), new Rotation2d(-Math.PI/2));
+      public static final Pose2d Speaker = new Pose2d(kFieldX - Red.Speaker.getX(), Red.Speaker.getY(), new Rotation2d(Math.PI));
+      public static final Pose2d CenterStage = new Pose2d(kFieldX - Red.CenterStage.getX(), Red.CenterStage.getY(), new Rotation2d(0));
+      public static final Pose2d StageLeft = new Pose2d(kFieldX - Red.StageLeft.getX(), Red.StageLeft.getY(), new Rotation2d(-Math.PI/4));
+      public static final Pose2d StageRight = new Pose2d(kFieldX - Red.StageRight.getX(), Red.StageRight.getY(), new Rotation2d(Math.PI/4));
     }
   }
   public static final class AprilTags {

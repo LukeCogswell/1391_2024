@@ -39,8 +39,9 @@ public class ShootNoteAtSpeed extends Command {
     var botMotSpeed = bottomShooterController.calculate(m_shooter.getBottomShooterSpeed());
     var topMotSpeed = topShooterController.calculate(m_shooter.getTopShooterSpeed());
 
-    m_shooter.setBottomShooterSpeed(botMotSpeed);
-    m_shooter.setTopShooterSpeed(topMotSpeed);
+    m_shooter.setBottomShooterSpeed(botMotSpeed/5676);
+    m_shooter.setTopShooterSpeed(topMotSpeed/5676);
+    
     if (bottomShooterController.atSetpoint() && topShooterController.atSetpoint()) {
       m_shooter.setLoaderMotor(0.4);
     }

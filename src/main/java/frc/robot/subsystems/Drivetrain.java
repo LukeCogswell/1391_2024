@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MeasurementConstants.*;
+
+import org.ejml.simple.SimpleMatrix;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -108,10 +111,14 @@ public class Drivetrain extends SubsystemBase {
     );
     
     SmartDashboard.putBoolean("init-PRESENT?", DriverStation.getAlliance().isPresent());
+    setFieldPosition(new Pose2d(new Translation2d(1, kFieldY/2), new Rotation2d(0.0)));
     if (DriverStation.getAlliance().isPresent()) {
       SmartDashboard.putBoolean("init-RED?", DriverStation.getAlliance().get() == Alliance.Red);
-      setFieldPosition(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+      setFieldPosition(new Pose2d(new Translation2d(kFieldX-1, kFieldY/2), new Rotation2d(Math.PI)));
     }
+
+    setVisionStdDvs(3.0, 3.0, 999.0);
+
   }
   
   @Override
@@ -120,7 +127,7 @@ public class Drivetrain extends SubsystemBase {
     updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
     SmartDashboard.putData("Field", field);
-    SmartDashboard.putString("Field Position", getFieldPosition().toString());
+    // SmartDashboard.putString("Field Position", getFieldPosition().toString());
     // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
     // if (DriverStation.getAlliance().isPresent()) {
     //   SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
@@ -130,10 +137,18 @@ public class Drivetrain extends SubsystemBase {
   
   public void updateOdometryWithAprilTags() {
     var botpose = getBOTPOSE();
-    if (botpose.length != 0 && getTV()) {
-      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), getFieldPosition().getRotation());
+    if (botpose[6] != 0 && getTV()) {
+      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(-getNavxYaw()*Math.PI / 180));
       m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
     }
+  }
+
+  public void setVisionStdDvs(Double x, Double y, Double theta) {
+    SimpleMatrix StdDvs = new SimpleMatrix(3,1);
+    StdDvs.set(0, 0, x);
+    StdDvs.set(1, 0, y);
+    StdDvs.set(2, 0, theta);
+    m_odometry.setVisionMeasurementStdDevs(new Matrix<>(StdDvs));
   }
 
   public void setFieldPosition(Pose2d fieldPosition) {

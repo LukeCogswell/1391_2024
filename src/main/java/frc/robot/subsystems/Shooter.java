@@ -32,8 +32,8 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ShooterAngle", getShooterAngle());
-    SmartDashboard.putNumber("TopShooterSpeed", getTopShooterSpeed());
-    SmartDashboard.putNumber("BotShooterSpeed", getBottomShooterSpeed());
+    // SmartDashboard.putNumber("TopShooterSpeed", getTopShooterSpeed());
+    // SmartDashboard.putNumber("BotShooterSpeed", getBottomShooterSpeed());
     // This method will be called once per scheduler run
   }
 

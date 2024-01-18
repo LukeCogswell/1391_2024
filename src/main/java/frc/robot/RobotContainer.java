@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.SetShooterAngle;
+import frc.robot.commands.ShootNoteAtSpeed;
 import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.MeasurementConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,12 +41,23 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+      
+      /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    autoChooser = AutoBuilder.buildAutoChooser();
+  
+    NamedCommands.registerCommand("Intake Down", new InstantCommand(() -> {
+      m_intake.setIntake(0.7);
+      
+      }));
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+  
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     // Configure the trigger bindings
     configureBindings();
-
+    
     m_drivetrain.setDefaultCommand(
       new DriveWithJoysticks(
         m_drivetrain, 
@@ -63,13 +76,7 @@ public class RobotContainer {
         // m_driverController.rightBumper()
         )
     );
-        // Build an auto chooser. This will use Commands.none() as the default option.
-    autoChooser = AutoBuilder.buildAutoChooser();
-
-    // Another option that allows you to specify the default auto by its name
-    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    
   }
 
   /**
@@ -90,15 +97,21 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
+    m_driverController.b().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676.0));
+    
+    m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
     // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+
 
     m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
       m_shooter.setLoaderMotor(0.5);
       m_intake.setIntake(0.5);
+      m_shooter.setShooterSpeed(-400.0);
     }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
       m_shooter.setLoaderMotor(0.0);
       m_intake.setIntake(0.0);
+      m_shooter.setShooterSpeed(0.0);
     }, m_shooter, m_intake));
 
     m_driverController.b().onTrue(new InstantCommand(() -> {
