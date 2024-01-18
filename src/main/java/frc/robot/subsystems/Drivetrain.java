@@ -41,7 +41,7 @@ public class Drivetrain extends SubsystemBase {
   
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
     new Translation2d(  kModuleXOffsetMeters, kModuleYOffsetMeters), // BACK RIGHT
-    new Translation2d( kModuleXOffsetMeters, -kModuleYOffsetMeters), // BACK LEFT
+    new Translation2d( kModuleXOffsetMeters,  -kModuleYOffsetMeters), // BACK LEFT
     new Translation2d(  -kModuleXOffsetMeters, kModuleYOffsetMeters),  // FRONT RIGHT
     new Translation2d( -kModuleXOffsetMeters, -kModuleYOffsetMeters)   // FRONT LEFT
   );
@@ -58,25 +58,21 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-    SmartDashboard.putBoolean("init-PRESENT?", DriverStation.getAlliance().isPresent());
-    if (DriverStation.getAlliance().isPresent()) {
-      SmartDashboard.putBoolean("init-RED?", DriverStation.getAlliance().get() == Alliance.Red);
-    }
     m_frontLeft = new SwerveModule(
       kFrontLeftDriveMotorID,
       kFrontLeftSteerMotorID,
       kFrontLeftEncoderID,
       kFrontLeftEncoderOffset
-    );
+      );
 
     m_frontRight = new SwerveModule(
       kFrontRightDriveMotorID,
       kFrontRightSteerMotorID,
       kFrontRightEncoderID,
       kFrontRightEncoderOffset
-    );
+      );
 
-    m_backLeft = new SwerveModule(
+      m_backLeft = new SwerveModule(
       kBackLeftDriveMotorID,
       kBackLeftSteerMotorID,
       kBackLeftEncoderID,
@@ -88,37 +84,42 @@ public class Drivetrain extends SubsystemBase {
       kBackRightSteerMotorID,
       kBackRightEncoderID,
       kBackRightEncoderOffset
-    );
-
-    m_odometry = new SwerveDrivePoseEstimator(m_kinematics, getGyroRotation2d(), getModulePositions(), new Pose2d());
-
-    // Configure the AutoBuilder last
-    AutoBuilder.configureHolonomic(
+      );
+      
+      m_odometry = new SwerveDrivePoseEstimator(m_kinematics, getGyroRotation2d(), getModulePositions(), new Pose2d());
+      
+      // Configure the AutoBuilder last
+      AutoBuilder.configureHolonomic(
         this::getFieldPosition, // Robot pose supplier
         this::setFieldPosition, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-            kMaxSpeedMetersPerSecond, // Max module speed, in m/s
-            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-            new ReplanningConfig() // Default path replanning config. See the API for the options here
+        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+        kMaxSpeedMetersPerSecond, // Max module speed, in m/s
+        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+        new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
         () -> {if (DriverStation.getAlliance().isPresent()) {
           return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;}
           return false;},
-        this // Reference to this subsystem to set requirements
+          this // Reference to this subsystem to set requirements
     );
-
-    SmartDashboard.putData("Field", field);
+    
+    SmartDashboard.putBoolean("init-PRESENT?", DriverStation.getAlliance().isPresent());
+    if (DriverStation.getAlliance().isPresent()) {
+      SmartDashboard.putBoolean("init-RED?", DriverStation.getAlliance().get() == Alliance.Red);
+      setFieldPosition(new Pose2d(new Translation2d(), new Rotation2d(Math.PI)));
+    }
   }
-
+  
   @Override
   public void periodic() {
     updateOdometry();
     updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
+    SmartDashboard.putData("Field", field);
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
     // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
     // if (DriverStation.getAlliance().isPresent()) {

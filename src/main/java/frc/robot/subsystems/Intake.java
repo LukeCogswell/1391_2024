@@ -15,7 +15,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     m_motorLeft.setInverted(true);
-    m_motorRight.setInverted(false);
+    m_motorRight.setInverted(true);
   }
 
   @Override

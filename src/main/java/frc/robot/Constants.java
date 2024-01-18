@@ -41,7 +41,7 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final double kShootingAdjustmentMultiplier = 1.0;
+    public static final double kShootingAdjustmentMultiplier = 1.5;
     public static final double kStationaryRobotAngleMultiplier = 0.0101;
     public static final double kAngleEncoderOffset = 24.27;
     public static final double kMaxSpeedRPM = 5676;
@@ -50,8 +50,8 @@ public final class Constants {
       public static final double kI = 0.0;
       public static final double kD = 0.0;
       
-      public static final double kAngleP = 0.0001;
-      public static final double kAngleI = 0.0;
+      public static final double kAngleP = 0.005 ;
+      public static final double kAngleI = 0.01;
       public static final double kAngleD = 0.0;
 
     }
@@ -68,8 +68,8 @@ public final class Constants {
     public static final double kFieldY = 319 / kInchesToMeters;
 
     public static final double kFrontLeftEncoderOffset = 0.0;
-    public static final double kBackLeftEncoderOffset = 180.0;
-    public static final double kFrontRightEncoderOffset = 0.0;
+    public static final double kBackLeftEncoderOffset = 0.0;
+    public static final double kFrontRightEncoderOffset = 180.0;
     public static final double kBackRightEncoderOffset = 0.0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
@@ -138,20 +138,20 @@ public final class Constants {
   }
 
   public static final class CANConstants {
-    public static final int kFrontLeftDriveMotorID = 2;
-    public static final int kBackLeftDriveMotorID = 4;
-    public static final int kFrontRightDriveMotorID = 1;
-    public static final int kBackRightDriveMotorID = 3;
+    public static final int kFrontLeftDriveMotorID = 3;
+    public static final int kBackLeftDriveMotorID = 1;
+    public static final int kFrontRightDriveMotorID = 4;
+    public static final int kBackRightDriveMotorID = 2;
 
-    public static final int kFrontLeftSteerMotorID = 6;
-    public static final int kBackLeftSteerMotorID = 8;
-    public static final int kFrontRightSteerMotorID = 5;
-    public static final int kBackRightSteerMotorID = 7;
+    public static final int kFrontLeftSteerMotorID = 7;
+    public static final int kBackLeftSteerMotorID = 5;
+    public static final int kFrontRightSteerMotorID = 8;
+    public static final int kBackRightSteerMotorID = 6;
 
-    public static final int kFrontLeftEncoderID = 10;
-    public static final int kBackLeftEncoderID = 12;
-    public static final int kFrontRightEncoderID = 9;
-    public static final int kBackRightEncoderID = 11;
+    public static final int kFrontLeftEncoderID = 11;
+    public static final int kBackLeftEncoderID = 9;
+    public static final int kFrontRightEncoderID = 12;
+    public static final int kBackRightEncoderID = 10;
 
 
     public static final double kEncoderResolution = 4096;

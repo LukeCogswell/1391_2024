@@ -76,7 +76,7 @@ public class TrackWhileMoving extends Command {
     var dDis = m_drivetrain.getChangeInDistanceToSpeaker(m_xSpeed, m_ySpeed);
     
     var dTheta = -m_drivetrain.getChangeInAngleToSpeaker(m_xSpeed, m_ySpeed);
-    dTheta = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red ? -dTheta : dTheta;
+    dTheta = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue ? -dTheta : dTheta;
   
     // SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
     // SmartDashboard.putNumber("dTheta", dTheta);

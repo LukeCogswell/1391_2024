@@ -34,7 +34,7 @@ public class SetShooterAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setAngleMotor(angleController.calculate(m_shooter.getShooterAngle()));
+    m_shooter.setAngleMotor(-angleController.calculate(m_shooter.getShooterAngle()));
   }
 
   // Called once the command ends or is interrupted.

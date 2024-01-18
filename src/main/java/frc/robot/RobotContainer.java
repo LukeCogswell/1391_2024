@@ -52,10 +52,15 @@ public class RobotContainer {
         () -> m_driverController.getLeftY(), 
         () -> m_driverController.getRightX(), 
         () -> m_driverController.getRightTriggerAxis(), 
-        m_driverController.povUp(),
-        m_driverController.b(),
-        m_driverController.leftBumper(),
-        m_driverController.rightBumper()
+        new Trigger(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false)
+        
+        // m_driverController.povDown(),
+        // m_driverController.b(),
+        // m_driverController.leftBumper(),
+        // m_driverController.rightBumper()
         )
     );
         // Build an auto chooser. This will use Commands.none() as the default option.
@@ -78,21 +83,40 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
     
-    m_driverController.x().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(56.5 / kInchesToMeters, 171 / kInchesToMeters, new Rotation2d(0.0)))));
-    m_driverController.b().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 56.5 / kInchesToMeters, kFieldY - 171 / kInchesToMeters, new Rotation2d(Math.PI)))));
+    // m_driverController.x().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(56.5 / kInchesToMeters, 171 / kInchesToMeters, new Rotation2d(0.0)))));
+    // m_driverController.b().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 56.5 / kInchesToMeters, kFieldY - 171 / kInchesToMeters, new Rotation2d(Math.PI)))));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
+    m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
-    m_driverController.y().onTrue(new SetShooterAngle(m_shooter, 45.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+    // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
 
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
-    m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));
+    m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
+      m_shooter.setLoaderMotor(0.5);
+      m_intake.setIntake(0.5);
+    }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
+      m_shooter.setLoaderMotor(0.0);
+      m_intake.setIntake(0.0);
+    }, m_shooter, m_intake));
+
+    m_driverController.b().onTrue(new InstantCommand(() -> {
+      m_shooter.setLoaderMotor(-0.5);
+      m_intake.setIntake(-0.5);
+      m_shooter.setShooterSpeed(-300.0);
+    }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
+      m_shooter.setLoaderMotor(0.0);
+      m_intake.setIntake(0.0);
+      m_shooter.setShooterSpeed(0.0);
+    }, m_shooter, m_intake));
+    // m_driverController.y().onTrue(new SetShooterAngle(m_shooter, 45.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
+
+    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
+    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(300.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
     // m_driverController.povDown().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(300.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));
-    // m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.setLoaderMotor(0.4))).onFalse(new InstantCommand(() -> m_shooter.setLoaderMotor(0.0)));
-    // m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntake(0.5))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+    // m_driverController.start().onTrue(new InstantCommand(() -> m_shooter.setLoaderMotor(0.7))).onFalse(new InstantCommand(() -> m_shooter.setLoaderMotor(0.0)));
 
   }
 
