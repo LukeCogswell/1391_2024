@@ -124,7 +124,7 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
-    updateOdometryWithAprilTags();
+    // updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
     SmartDashboard.putData("Field", field);
     // SmartDashboard.putString("Field Position", getFieldPosition().toString());

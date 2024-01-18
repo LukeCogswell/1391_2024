@@ -49,7 +49,7 @@ public class RobotContainer {
   
     NamedCommands.registerCommand("Intake Down", new InstantCommand(() -> {
       m_intake.setIntake(0.7);
-      
+
       }));
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
@@ -97,9 +97,9 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
-    m_driverController.b().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676.0));
+    m_driverController.y().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676.0));
     
-    m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
+    // m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
     // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
 
@@ -123,7 +123,9 @@ public class RobotContainer {
       m_intake.setIntake(0.0);
       m_shooter.setShooterSpeed(0.0);
     }, m_shooter, m_intake));
-    // m_driverController.y().onTrue(new SetShooterAngle(m_shooter, 45.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
+
+    m_driverController.povUp().onTrue(new SetShooterAngle(m_shooter, 45.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povDown().onTrue(new SetShooterAngle(m_shooter, 9.5)).onFalse(new InstantCommand(() -> {}, m_shooter));
 
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));

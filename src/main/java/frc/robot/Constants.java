@@ -49,8 +49,8 @@ public final class Constants {
       public static final double kI = 0.0;
       public static final double kD = 0.0;
       
-      public static final double kAngleP = 0.005 ;
-      public static final double kAngleI = 0.01;
+      public static final double kAngleP = 0.0075;
+      public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
     }

@@ -29,8 +29,8 @@ public class ShootNoteAtSpeed extends Command {
   public void initialize() {
     bottomShooterController.setSetpoint(shotSpeed);
     topShooterController.setSetpoint(shotSpeed);
-    topShooterController.setTolerance(5);
-    bottomShooterController.setTolerance(5);
+    topShooterController.setTolerance(100);
+    bottomShooterController.setTolerance(100);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,7 +41,7 @@ public class ShootNoteAtSpeed extends Command {
 
     m_shooter.setBottomShooterSpeed(botMotSpeed/5676);
     m_shooter.setTopShooterSpeed(topMotSpeed/5676);
-    
+
     if (bottomShooterController.atSetpoint() && topShooterController.atSetpoint()) {
       m_shooter.setLoaderMotor(0.4);
     }
