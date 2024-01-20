@@ -78,6 +78,8 @@ public class RobotContainer {
         )
     );
     
+    m_shooter.setDefaultCommand(new SetShooterAngle(m_shooter, 25.));
+
   }
 
   /**
@@ -98,8 +100,16 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
-    m_driverController.y().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676.0, m_driverController.start(), m_driverController.back()));
+    // m_driverController.y().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676., m_driverController.start(), m_driverController.povLeft(), m_driverController.povRight()));
     
+    m_driverController.y().onTrue(new InstantCommand(() -> {
+      m_shooter.setLoaderMotor(0.5);
+      m_shooter.setShooterSpeed(-1000.0);
+    }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
+      m_shooter.setLoaderMotor(0.0);
+      m_shooter.setShooterSpeed(0.0);
+    }, m_shooter, m_intake));
+
     // m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
     // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
@@ -126,8 +136,8 @@ public class RobotContainer {
       m_shooter.setShooterSpeed(0.0);
     }, m_shooter, m_intake));
 
-    m_driverController.povUp().onTrue(new SetShooterAngle(m_shooter, 90.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
-    m_driverController.povDown().onTrue(new SetShooterAngle(m_shooter, 9.5)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povUp().onTrue(new SetShooterAngle(m_shooter, 90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povDown().onTrue(new SetShooterAngle(m_shooter, -90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
 
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));

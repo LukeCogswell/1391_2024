@@ -22,9 +22,9 @@ import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Constants.SwerveModuleConstants.PID.*;
 
 public class ShootWhileMoving extends Command {
-  private PIDController angleController;
   private Drivetrain m_drivetrain;
   private Shooter m_shooter;
+  private PIDController angleController = new PIDController(kAngleP, kAngleI, kAngleD);
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
@@ -94,7 +94,11 @@ public class ShootWhileMoving extends Command {
 
     m_shooter.setShooterSpeed(5676.0);
 
-    m_shooter.setAngleMotor(-angleController.calculate(m_shooter.getRequiredShooterAngle(dis, dDis) - m_shooter.getShooterAngle()));
+    // SmartDashboard.putNumber("AnglePID", angleController.calculate((m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI) - m_shooter.getShooterAngle()));
+    // SmartDashboard.putNumber("required angle", m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI);
+
+
+    m_shooter.setAngleMotor(angleController.calculate((m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI) - m_shooter.getShooterAngle()));
 
     m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
 

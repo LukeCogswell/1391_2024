@@ -84,22 +84,21 @@ public class Shooter extends SubsystemBase {
 
 
   public double getRequiredShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {
-    var theta2 = Math.atan( (kSpeakerOpeningMinHeight-shooterReleaseHeight) / distanceToSpeaker);
-    var theta3 = Math.atan( (kSpeakerOpeningMaxHeight-shooterReleaseHeight) / (distanceToSpeaker - kSpeakerHoodDepth));
-    var theta1 = 0.5 * (theta3+theta2);
+    var theta1 = Math.atan(((kSpeakerOpeningMaxHeight + kSpeakerOpeningMinHeight)/2) / (distanceToSpeaker-0.23));
     var theta = theta1 + kStationaryRobotAngleMultiplier * (distanceToSpeaker) - robotSpeedAdjustementFunction(distanceToSpeaker) * (dDistanceToSpeaker / distanceToSpeaker);
     return theta;
   }
 
   private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
     var x = distanceToSpeaker; 
-    return -0.0109 
-      + (0.0739 * x) 
-      - (0.0245 * Math.pow(x, 2)) 
-      + (4.49e-3 * Math.pow(x, 3)) 
-      - (4.93e-4 * Math.pow(x, 4)) 
-      + (2.95e-5 * Math.pow(x, 5)) 
-      - (7.36e-7 * Math.pow(x, 6));
+    return -0.0188 
+      + (0.117 * x) 
+      - (0.0465 * Math.pow(x, 2)) 
+      + (7.75e-3 * Math.pow(x, 3)) 
+      - (4.9e-4 * Math.pow(x, 4)) 
+      // + (2.95e-5 * Math.pow(x, 5)) 
+      // - (7.36e-7 * Math.pow(x, 6))
+      ;
   }
 
   // public double getChangeInShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {

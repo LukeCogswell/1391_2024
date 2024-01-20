@@ -15,13 +15,14 @@ public class ShootNoteAtSpeed extends Command {
   /** Creates a new ShootNote. */
   private Shooter m_shooter;
   private Double shotSpeed;
-  private Trigger shootingTrigger, incrementPowerTrigger;
+  private Trigger shootingTrigger, incrementPowerTrigger, incrementPowerUpTrigger;
 
-  public ShootNoteAtSpeed(Shooter shooter, Double speed, Trigger shootTrigger, Trigger incrementPower) {
+  public ShootNoteAtSpeed(Shooter shooter, Double speed, Trigger shootTrigger, Trigger incrementPower, Trigger incrementUPP) {
     m_shooter = shooter;
     shotSpeed = speed;
     shootingTrigger = shootTrigger;
     incrementPowerTrigger = incrementPower;
+    incrementPowerUpTrigger = incrementUPP;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -40,7 +41,10 @@ public class ShootNoteAtSpeed extends Command {
   @Override
   public void execute() {
     if (incrementPowerTrigger.getAsBoolean()) {
-      shotSpeed = shotSpeed - 500;
+      shotSpeed = shotSpeed - 300;
+    }
+    if (incrementPowerUpTrigger.getAsBoolean()) {
+      shotSpeed = shotSpeed + 300;
     }
 
     m_shooter.setShooterSpeed(shotSpeed);

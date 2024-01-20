@@ -119,8 +119,10 @@ public class Drivetrain extends SubsystemBase {
       setFieldPosition(new Pose2d(new Translation2d(kFieldX-1, kFieldY/2), new Rotation2d(Math.PI)));
     }
 
-    setVisionStdDvs(3.0, 3.0, 10.0);
+    
+    setVisionStdDvs(1.0, 1.0, 9999.0);
 
+    SmartDashboard.putData("Field", field);
   }
   
   @Override
@@ -128,10 +130,13 @@ public class Drivetrain extends SubsystemBase {
     updateOdometry();
     updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
-    SmartDashboard.putString("Field Position", getFieldPosition().toString());
-    SmartDashboard.putNumber("Fused Heading", -m_navX.getFusedHeading());
-    SmartDashboard.putNumber("TagSpace Z", -getBotPoseTagSpace()[2]);
     SmartDashboard.putData("Field", field);
+    // SmartDashboard.putString("Field Position", getFieldPosition().toString());
+    // SmartDashboard.putNumber("Fused Heading", -m_navX.getFusedHeading());
+    // if (getTV()) {
+    //   SmartDashboard.putNumber("TagSpace Z", -getBotPoseTagSpace()[2]);
+    //   SmartDashboard.putNumber("Gyro vs Limelight Diff", getFieldPosition().getRotation().getDegrees() -getBOTPOSE()[5]);
+    // }
     // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
     // if (DriverStation.getAlliance().isPresent()) {
     //   SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
@@ -142,6 +147,8 @@ public class Drivetrain extends SubsystemBase {
   public void updateOdometryWithAprilTags() {
     if (getTV() && -getBotPoseTagSpace()[2] < 5.) {
       var botpose = getBOTPOSE();
+      var botTagSpace = getBotPoseTagSpace();
+      setVisionStdDvs(1.0 * -botTagSpace[2], 1.0 * -botTagSpace[2], 9999.0);
       Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
       m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
     }
