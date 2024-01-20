@@ -63,10 +63,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getTopShooterSpeed() {
+    SmartDashboard.putNumber("Top RPM", m_shooterMotorTop.getEncoder().getVelocity() );
     return m_shooterMotorTop.getEncoder().getVelocity();  
   }
   
   public double getBottomShooterSpeed() {
+    SmartDashboard.putNumber("Bottom RPM", m_shooterMotorBottom.getEncoder().getVelocity() );
     return m_shooterMotorBottom.getEncoder().getVelocity();  
   }
 

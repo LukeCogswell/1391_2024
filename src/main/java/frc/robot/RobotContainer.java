@@ -8,6 +8,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.SetShooterAngle;
 import frc.robot.commands.ShootNoteAtSpeed;
+import frc.robot.commands.ShootWhileMoving;
 import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
@@ -95,13 +96,14 @@ public class RobotContainer {
     // m_driverController.b().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 56.5 / kInchesToMeters, kFieldY - 171 / kInchesToMeters, new Rotation2d(Math.PI)))));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
-    m_driverController.y().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676.0));
+    m_driverController.y().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676.0, m_driverController.start(), m_driverController.back()));
     
     // m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
     // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+
 
 
     m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
@@ -124,7 +126,7 @@ public class RobotContainer {
       m_shooter.setShooterSpeed(0.0);
     }, m_shooter, m_intake));
 
-    m_driverController.povUp().onTrue(new SetShooterAngle(m_shooter, 45.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povUp().onTrue(new SetShooterAngle(m_shooter, 90.0)).onFalse(new InstantCommand(() -> {}, m_shooter));
     m_driverController.povDown().onTrue(new SetShooterAngle(m_shooter, 9.5)).onFalse(new InstantCommand(() -> {}, m_shooter));
 
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));

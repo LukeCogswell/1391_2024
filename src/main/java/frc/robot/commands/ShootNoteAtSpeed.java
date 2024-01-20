@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Shooter;
 import static frc.robot.Constants.Shooter.PID.*;
 
@@ -13,13 +15,13 @@ public class ShootNoteAtSpeed extends Command {
   /** Creates a new ShootNote. */
   private Shooter m_shooter;
   private Double shotSpeed;
-  private PIDController bottomShooterController, topShooterController;
+  private Trigger shootingTrigger, incrementPowerTrigger;
 
-  public ShootNoteAtSpeed(Shooter shooter, Double speed) {
+  public ShootNoteAtSpeed(Shooter shooter, Double speed, Trigger shootTrigger, Trigger incrementPower) {
     m_shooter = shooter;
     shotSpeed = speed;
-    bottomShooterController = new PIDController(kP, kI, kD);
-    topShooterController = new PIDController(kP, kI, kD);
+    shootingTrigger = shootTrigger;
+    incrementPowerTrigger = incrementPower;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -27,23 +29,35 @@ public class ShootNoteAtSpeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    bottomShooterController.setSetpoint(shotSpeed);
-    topShooterController.setSetpoint(shotSpeed);
-    topShooterController.setTolerance(100);
-    bottomShooterController.setTolerance(100);
+    // SmartDashboard.putNumber("Shot Speed", shotSpeed);
+    // bottomShooterController.setSetpoint(shotSpeed);
+    // topShooterController.setSetpoint(shotSpeed);
+    // topShooterController.setTolerance(100);
+    // bottomShooterController.setTolerance(100);
   }
-
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var botMotSpeed = bottomShooterController.calculate(m_shooter.getBottomShooterSpeed());
-    var topMotSpeed = topShooterController.calculate(m_shooter.getTopShooterSpeed());
+    if (incrementPowerTrigger.getAsBoolean()) {
+      shotSpeed = shotSpeed - 500;
+    }
 
-    m_shooter.setBottomShooterSpeed(botMotSpeed/5676);
-    m_shooter.setTopShooterSpeed(topMotSpeed/5676);
+    m_shooter.setShooterSpeed(shotSpeed);
+    // var botMotSpeed = bottomShooterController.calculate(m_shooter.getBottomShooterSpeed());
+    // var topMotSpeed = topShooterController.calculate(m_shooter.getTopShooterSpeed());
+    
+    // SmartDashboard.putNumber("Top Speed", topMotSpeed);
+    
+    // m_shooter.setBottomShooterSpeed(botMotSpeed);
+    // m_shooter.setTopShooterSpeed(topMotSpeed);
 
-    if (bottomShooterController.atSetpoint() && topShooterController.atSetpoint()) {
-      m_shooter.setLoaderMotor(0.4);
+    // if (bottomShooterController.atSetpoint() && topShooterController.atSetpoint()) {
+    //   m_shooter.setLoaderMotor(0.4);
+    // }
+    if (shootingTrigger.getAsBoolean()) {
+        m_shooter.setLoaderMotor(0.7);
+
     }
   }
 
@@ -52,8 +66,6 @@ public class ShootNoteAtSpeed extends Command {
   public void end(boolean interrupted) {
     m_shooter.stopShooter();
     m_shooter.setLoaderMotor(0.0);
-    topShooterController.close();
-    bottomShooterController.close();
   }
 
   // Returns true when the command should end.

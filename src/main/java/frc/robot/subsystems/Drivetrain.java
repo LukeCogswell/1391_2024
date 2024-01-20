@@ -61,33 +61,35 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
+    
     m_frontLeft = new SwerveModule(
       kFrontLeftDriveMotorID,
       kFrontLeftSteerMotorID,
       kFrontLeftEncoderID,
       kFrontLeftEncoderOffset
       );
-
-    m_frontRight = new SwerveModule(
+      
+      m_frontRight = new SwerveModule(
       kFrontRightDriveMotorID,
       kFrontRightSteerMotorID,
       kFrontRightEncoderID,
       kFrontRightEncoderOffset
       );
-
+      
       m_backLeft = new SwerveModule(
       kBackLeftDriveMotorID,
       kBackLeftSteerMotorID,
       kBackLeftEncoderID,
       kBackLeftEncoderOffset
-    );
-
-    m_backRight = new SwerveModule(
-      kBackRightDriveMotorID,
+      );
+      
+      m_backRight = new SwerveModule(
+        kBackRightDriveMotorID,
       kBackRightSteerMotorID,
       kBackRightEncoderID,
       kBackRightEncoderOffset
       );
+      // m_navX.zeroYaw();
       
       m_odometry = new SwerveDrivePoseEstimator(m_kinematics, getGyroRotation2d(), getModulePositions(), new Pose2d());
       
@@ -117,17 +119,19 @@ public class Drivetrain extends SubsystemBase {
       setFieldPosition(new Pose2d(new Translation2d(kFieldX-1, kFieldY/2), new Rotation2d(Math.PI)));
     }
 
-    setVisionStdDvs(3.0, 3.0, 999.0);
+    setVisionStdDvs(3.0, 3.0, 10.0);
 
   }
   
   @Override
   public void periodic() {
     updateOdometry();
-    // updateOdometryWithAprilTags();
+    updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
+    SmartDashboard.putString("Field Position", getFieldPosition().toString());
+    SmartDashboard.putNumber("Fused Heading", -m_navX.getFusedHeading());
+    SmartDashboard.putNumber("TagSpace Z", -getBotPoseTagSpace()[2]);
     SmartDashboard.putData("Field", field);
-    // SmartDashboard.putString("Field Position", getFieldPosition().toString());
     // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
     // if (DriverStation.getAlliance().isPresent()) {
     //   SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
@@ -136,9 +140,9 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public void updateOdometryWithAprilTags() {
-    var botpose = getBOTPOSE();
-    if (botpose[6] != 0 && getTV()) {
-      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(-getNavxYaw()*Math.PI / 180));
+    if (getTV() && -getBotPoseTagSpace()[2] < 5.) {
+      var botpose = getBOTPOSE();
+      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
       m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
     }
   }
@@ -152,12 +156,15 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setFieldPosition(Pose2d fieldPosition) {
-    m_odometry.resetPosition(new Rotation2d(-getNavxYaw() * Math.PI / 180), getModulePositions(), fieldPosition);
+    m_odometry.resetPosition(getGyroRotation2d(), getModulePositions(), fieldPosition);
   }
 
   public double getNavxYaw() { // returns the current yaw of the robot
-    var pos = m_navX.getYaw();// - Timer.getFPGATimestamp() * 0.1 / 36.8;
-    return pos < -180 ? pos + 360 : pos;
+    // var yaw = m_navX.getYaw() - Timer.getFPGATimestamp() * 0.1 / 36.8;
+    var yaw = -m_navX.getFusedHeading();// - Timer.getFPGATimestamp() * 0.1 / 36.8;
+    yaw = yaw > 180 ? yaw - 360 : yaw;
+    yaw = yaw < -180 ? yaw + 360 : yaw;
+    return yaw;
   }
 
   public double getNavxPitch() { // returns the current pitch of the robot
@@ -190,6 +197,10 @@ public class Drivetrain extends SubsystemBase {
 
   public double[] getBOTPOSE() {
     return m_limelight.getEntry("botpose_wpiblue").getDoubleArray(new double[]{});
+  }
+
+  public double[] getBotPoseTagSpace() {
+    return m_limelight.getEntry("botpose_targetspace").getDoubleArray(new double[]{});
   }
   
   public void updateOdometry() { // updates the odometry of the robot

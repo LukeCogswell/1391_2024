@@ -45,11 +45,7 @@ public final class Constants {
     public static final double kAngleEncoderOffset = 24.27;
     public static final double kMaxSpeedRPM = 5676;
     public static final class PID {
-      public static final double kP = 0.01;
-      public static final double kI = 0.0;
-      public static final double kD = 0.0;
-      
-      public static final double kAngleP = 0.0075;
+      public static final double kAngleP = 0.01;
       public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
@@ -83,7 +79,7 @@ public final class Constants {
     public static final double kSpeakerOpeningMinHeight = 1.98; //METERS      
     public static final double kSpeakerOpeningMaxHeight = 2.11; //METERS  
     public static final double kSpeakerHoodDepth = 0.46; //METERS    
-    public static final double shooterReleaseHeight = 0.9144; //0.9144 METERS = 36 INCHES, 0.762 METERS = 30 INCHES
+    public static final double shooterReleaseHeight = 0.5334; //0.5334 METERS = 21 INCHES, 0.9144 METERS = 36 INCHES, 0.762 METERS = 30 INCHES
   
     public static final Translation2d kRedSpeakerCoords = new Translation2d(16.579342, 5.547868);  // POSITION OF THE SPEAKER ON THE RED FIELD (METERS)
     public static final Translation2d kBlueSpeakerCoords = new Translation2d(-0.0381, 5.547868); // POSITION OF THE SPEAKER ON THE BLUE FIELD (METERS)
