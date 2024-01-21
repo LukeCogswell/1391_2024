@@ -6,19 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Turret;
 import static frc.robot.Constants.Shooter.PID.*;
 
-public class SetShooterAngle extends Command {
-  private Shooter m_shooter;
+public class SetTurretAngle extends Command {
+  private Turret m_turret;
   private Double m_angle;
   private PIDController angleController;
   /** Creates a new SetShooterAngle. */
-  public SetShooterAngle(Shooter shooter, Double angle) {
-    m_shooter = shooter;
+  public SetTurretAngle(Turret turret, Double angle) {
+    m_turret = turret;
     m_angle = angle;
 
-    addRequirements(shooter);
+    addRequirements(turret);
     
     angleController = new PIDController(kAngleP, kAngleI, kAngleD);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -34,13 +34,13 @@ public class SetShooterAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setAngleMotor(-angleController.calculate(m_shooter.getShooterAngle()));
+    m_turret.setAngleMotor(-angleController.calculate(m_turret.getShooterAngle()));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setAngleMotor(0.0);
+    m_turret.setAngleMotor(0.0);
     angleController.close();
   }
 

@@ -38,7 +38,7 @@ import static frc.robot.Constants.CANConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   
-  public NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
+  private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 
   private SwerveModule m_frontLeft, m_frontRight, m_backLeft, m_backRight;
   

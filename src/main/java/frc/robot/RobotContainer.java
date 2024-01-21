@@ -5,20 +5,29 @@
 package frc.robot;
 
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoCollect;
+import frc.robot.commands.AutoTrackNote;
+import frc.robot.commands.Collect;
 import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.commands.SetShooterAngle;
+import frc.robot.commands.SetTurretAngle;
 import frc.robot.commands.ShootNoteAtSpeed;
+import frc.robot.commands.ShootNoteAtSpeedAndAngle;
 import frc.robot.commands.ShootWhileMoving;
 import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Turret;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.MeasurementConstants.*;
@@ -37,6 +46,8 @@ public class RobotContainer {
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Shooter m_shooter = new Shooter();
   private final Intake m_intake = new Intake();
+  private final Loader m_loader = new Loader();
+  private final Turret m_turret = new Turret();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -45,16 +56,32 @@ public class RobotContainer {
       
       /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // LiveWindow.disableAllTelemetry();
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
   
     NamedCommands.registerCommand("Intake Down", new InstantCommand(() -> {
       m_intake.setIntake(0.7);
+      m_intake.setIntake(0.5);
+      m_shooter.setShooterSpeed(-400.0); 
+      }, m_shooter, m_intake));
 
-      }));
+    NamedCommands.registerCommand("Intake Up", new InstantCommand(() -> {
+      m_intake.setIntake(0.);
+      m_intake.setIntake(0.);
+      m_shooter.setShooterSpeed(0.);
+    }, m_shooter, m_intake));
+
+    NamedCommands.registerCommand("Transfer", new SetTurretAngle(m_turret, 25.).withTimeout(1));
+
+    NamedCommands.registerCommand("Shoot 45", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 50.).withTimeout(2));
+    NamedCommands.registerCommand("Shoot 50", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 60.).withTimeout(2));
+
+
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-  
+    autoChooser.addOption("4 Piece", AutoBuilder.buildAuto("4 Piece"));
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
     // Configure the trigger bindings
     configureBindings();
@@ -78,7 +105,7 @@ public class RobotContainer {
         )
     );
     
-    m_shooter.setDefaultCommand(new SetShooterAngle(m_shooter, 25.));
+    m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 25.));
 
   }
 
@@ -92,59 +119,41 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    
-    // m_driverController.x().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(56.5 / kInchesToMeters, 171 / kInchesToMeters, new Rotation2d(0.0)))));
-    // m_driverController.b().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 56.5 / kInchesToMeters, kFieldY - 171 / kInchesToMeters, new Rotation2d(Math.PI)))));
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
-    // m_driverController.y().whileTrue(new ShootNoteAtSpeed(m_shooter, 5676., m_driverController.start(), m_driverController.povLeft(), m_driverController.povRight()));
-    
+    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+
+    m_driverController.x().whileTrue(new AutoTrackNote(m_drivetrain, m_intake)
+      .andThen(new RunCommand(() -> m_intake.setIntake(0.2), m_intake).until(() -> m_intake.hasNoteInIntake()))
+      .andThen(new InstantCommand(() -> m_intake.setIntake(0.0), m_intake)));
+
+    // m_driverController.x().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 60.));
+
     m_driverController.y().onTrue(new InstantCommand(() -> {
-      m_shooter.setLoaderMotor(0.5);
+      m_loader.setLoaderMotor(0.5);
       m_shooter.setShooterSpeed(-1000.0);
-    }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
-      m_shooter.setLoaderMotor(0.0);
+    }, m_shooter, m_intake, m_loader)).onFalse(new InstantCommand(() -> {
+      m_loader.setLoaderMotor(0.0);
       m_shooter.setShooterSpeed(0.0);
-    }, m_shooter, m_intake));
+    }, m_shooter, m_intake, m_loader));
 
     // m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
     // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
     // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
 
-
-
-    m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
-      m_shooter.setLoaderMotor(0.5);
-      m_intake.setIntake(0.5);
-      m_shooter.setShooterSpeed(-400.0);
-    }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
-      m_shooter.setLoaderMotor(0.0);
-      m_intake.setIntake(0.0);
-      m_shooter.setShooterSpeed(0.0);
-    }, m_shooter, m_intake));
+    m_driverController.leftTrigger().whileTrue(new AutoCollect(m_intake));
 
     m_driverController.b().onTrue(new InstantCommand(() -> {
-      m_shooter.setLoaderMotor(-0.5);
+      m_loader.setLoaderMotor(-0.5);
       m_intake.setIntake(-0.5);
       m_shooter.setShooterSpeed(-300.0);
     }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
-      m_shooter.setLoaderMotor(0.0);
+      m_loader.setLoaderMotor(0.0);
       m_intake.setIntake(0.0);
       m_shooter.setShooterSpeed(0.0);
     }, m_shooter, m_intake));
 
-    m_driverController.povUp().onTrue(new SetShooterAngle(m_shooter, 90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
-    m_driverController.povDown().onTrue(new SetShooterAngle(m_shooter, -90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
-
-    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
-    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(5676.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));
-    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.setTopShooterSpeed(300.0))).onFalse(new InstantCommand(() -> m_shooter.setTopShooterSpeed(0.0)));
-    // m_driverController.povDown().onTrue(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(300.0))).onFalse(new InstantCommand(() -> m_shooter.setBottomShooterSpeed(0.0)));
-    // m_driverController.start().onTrue(new InstantCommand(() -> m_shooter.setLoaderMotor(0.7))).onFalse(new InstantCommand(() -> m_shooter.setLoaderMotor(0.0)));
-
+    m_driverController.povUp().onTrue(new SetTurretAngle(m_turret, 90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povDown().onTrue(new SetTurretAngle(m_turret, -90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
   }
 
   /**
