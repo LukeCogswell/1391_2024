@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3491521419562087,
-      "y": 6.405827590542485
+      "x": 1.44283883432246,
+      "y": 5.515804013063089
     },
-    "rotation": 36.528855366985304
+    "rotation": 1.0230301886679438
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,25 @@
         {
           "type": "named",
           "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Example Path"
+            "name": "Shoot 50"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "Transfer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot 45"
           }
         }
       ]
