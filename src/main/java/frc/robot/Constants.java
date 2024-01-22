@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MeasurementConstants.kFieldX;
 import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
 
 import java.util.HashMap;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,8 +40,16 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final double kShootingAdjustmentMultiplier = 1.0;
-    public static final double kStationaryRobotAngleMultiplier = 0.0101;
+    public static final double kShootingAdjustmentMultiplier = 1.5;
+    public static final double kStationaryRobotAngleMultiplier = 0.0222;
+    public static final double kAngleEncoderOffset = 24.27;
+    public static final double kMaxSpeedRPM = 5676;
+    public static final class PID {
+      public static final double kAngleP = 0.01;
+      public static final double kAngleI = 0.0;
+      public static final double kAngleD = 0.0;
+
+    }
   }
   public static final class MeasurementConstants {
     // This is based on the CAD model (divided by two to represent distance from center of robot) 
@@ -51,10 +62,10 @@ public final class Constants {
     public static final double kFieldX = 649 / kInchesToMeters;
     public static final double kFieldY = 319 / kInchesToMeters;
 
-    public static final double kFrontLeftEncoderOffset = 180.0;
+    public static final double kFrontLeftEncoderOffset = 0.0;
     public static final double kBackLeftEncoderOffset = 0.0;
     public static final double kFrontRightEncoderOffset = 180.0;
-    public static final double kBackRightEncoderOffset = 180.0; 
+    public static final double kBackRightEncoderOffset = 0.0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
       SwerveModuleConstants.kDriveReduction *
@@ -68,7 +79,7 @@ public final class Constants {
     public static final double kSpeakerOpeningMinHeight = 1.98; //METERS      
     public static final double kSpeakerOpeningMaxHeight = 2.11; //METERS  
     public static final double kSpeakerHoodDepth = 0.46; //METERS    
-    public static final double shooterReleaseHeight = 0.9144; //0.9144 METERS = 36 INCHES, 0.762 METERS = 30 INCHES
+    public static final double shooterReleaseHeight = 0.5334; //0.5334 METERS = 21 INCHES, 0.9144 METERS = 36 INCHES, 0.762 METERS = 30 INCHES
   
     public static final Translation2d kRedSpeakerCoords = new Translation2d(16.579342, 5.547868);  // POSITION OF THE SPEAKER ON THE RED FIELD (METERS)
     public static final Translation2d kBlueSpeakerCoords = new Translation2d(-0.0381, 5.547868); // POSITION OF THE SPEAKER ON THE BLUE FIELD (METERS)
@@ -122,20 +133,20 @@ public final class Constants {
   }
 
   public static final class CANConstants {
-    public static final int kFrontLeftDriveMotorID = 2;
-    public static final int kBackLeftDriveMotorID = 4;
-    public static final int kFrontRightDriveMotorID = 1;
-    public static final int kBackRightDriveMotorID = 3;
+    public static final int kFrontLeftDriveMotorID = 3;
+    public static final int kBackLeftDriveMotorID = 1;
+    public static final int kFrontRightDriveMotorID = 4;
+    public static final int kBackRightDriveMotorID = 2;
 
-    public static final int kFrontLeftSteerMotorID = 6;
-    public static final int kBackLeftSteerMotorID = 8;
-    public static final int kFrontRightSteerMotorID = 5;
-    public static final int kBackRightSteerMotorID = 7;
+    public static final int kFrontLeftSteerMotorID = 7;
+    public static final int kBackLeftSteerMotorID = 5;
+    public static final int kFrontRightSteerMotorID = 8;
+    public static final int kBackRightSteerMotorID = 6;
 
-    public static final int kFrontLeftEncoderID = 10;
-    public static final int kBackLeftEncoderID = 12;
-    public static final int kFrontRightEncoderID = 9;
-    public static final int kBackRightEncoderID = 11;
+    public static final int kFrontLeftEncoderID = 11;
+    public static final int kBackLeftEncoderID = 9;
+    public static final int kFrontRightEncoderID = 12;
+    public static final int kBackRightEncoderID = 10;
 
 
     public static final double kEncoderResolution = 4096;
@@ -144,6 +155,26 @@ public final class Constants {
   }
 
   public static HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+  public static final class PathfindingPoints {
+    public static final double kGridSize = 0.3;
+    public static final class Red {
+      public static final Pose2d Source = new Pose2d(8 * kGridSize, 4 * kGridSize, new Rotation2d(-Math.PI/4 * 3));
+      public static final Pose2d Amp = new Pose2d(7 * kGridSize, 25 * kGridSize, new Rotation2d(Math.PI/2));
+      public static final Pose2d Speaker = new Pose2d(8 * kGridSize, 20 * kGridSize, new Rotation2d(0));
+      public static final Pose2d CenterStage = new Pose2d(35 * kGridSize, 14 * kGridSize, new Rotation2d(Math.PI));
+      public static final Pose2d StageLeft = new Pose2d(40 * kGridSize, 11 * kGridSize, new Rotation2d(Math.PI / 4 * 3));
+      public static final Pose2d StageRight = new Pose2d(40 * kGridSize, 16.5 * kGridSize, new Rotation2d(-Math.PI / 4 * 3));
+      
+    }
+    public static final class Blue {
+      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), Red.Source.getY(), new Rotation2d(-Math.PI/4));
+      public static final Pose2d Amp = new Pose2d(kFieldX - Red.Amp.getX(), Red.Amp.getY(), new Rotation2d(-Math.PI/2));
+      public static final Pose2d Speaker = new Pose2d(kFieldX - Red.Speaker.getX(), Red.Speaker.getY(), new Rotation2d(Math.PI));
+      public static final Pose2d CenterStage = new Pose2d(kFieldX - Red.CenterStage.getX(), Red.CenterStage.getY(), new Rotation2d(0));
+      public static final Pose2d StageLeft = new Pose2d(kFieldX - Red.StageLeft.getX(), Red.StageLeft.getY(), new Rotation2d(-Math.PI/4));
+      public static final Pose2d StageRight = new Pose2d(kFieldX - Red.StageRight.getX(), Red.StageRight.getY(), new Rotation2d(Math.PI/4));
+    }
+  }
   public static final class AprilTags {
     public static final Pose3d ID1  = new Pose3d(593.68 / kInchesToMeters,   9.68 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 120 / 180 * Math.PI));
     public static final Pose3d ID2  = new Pose3d(637.21 / kInchesToMeters,  34.79 / kInchesToMeters, 53.38 / kInchesToMeters, new Rotation3d(0.0 , 0.0, 120 / 180 * Math.PI));

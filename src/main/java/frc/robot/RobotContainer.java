@@ -5,20 +5,28 @@
 package frc.robot;
 
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoCollect;
+import frc.robot.commands.AutoTrackNote;
+import frc.robot.commands.AutoTransfer;
 import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.commands.TrackWhileMoving;
+import frc.robot.commands.SetTurretAngle;
+import frc.robot.commands.ShootNoteAtSpeedAndAngle;
+import frc.robot.commands.ShootWhileMoving;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
-
-import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.subsystems.Turret;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static frc.robot.Constants.MeasurementConstants.*;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,16 +38,47 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final Drivetrain m_drivetrain = new Drivetrain();
   private final Shooter m_shooter = new Shooter();
+  private final Intake m_intake = new Intake();
+  private final Loader m_loader = new Loader();
+  private final Turret m_turret = new Turret();
+  private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OIConstants.kDriverControllerPort);
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+      
+      /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // LiveWindow.disableAllTelemetry();
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    autoChooser = AutoBuilder.buildAutoChooser();
+  
+    NamedCommands.registerCommand("Intake Down", new InstantCommand(() -> {
+      m_intake.setIntake(0.7);
+      m_intake.setIntake(0.5);
+      m_shooter.setShooterSpeed(-400.0); 
+      }, m_shooter, m_intake));
+
+    NamedCommands.registerCommand("Intake Up", new InstantCommand(() -> {
+      m_intake.setIntake(0.);
+      m_intake.setIntake(0.);
+      m_shooter.setShooterSpeed(0.);
+    }, m_shooter, m_intake));
+
+    NamedCommands.registerCommand("Transfer", new SetTurretAngle(m_turret, 25.).withTimeout(1));
+
+    NamedCommands.registerCommand("Shoot 45", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 50.).withTimeout(2));
+    NamedCommands.registerCommand("Shoot 50", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 60.).withTimeout(2));
+
+
+    // Another option that allows you to specify the default auto by its name
+    // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+    autoChooser.addOption("4 Piece", AutoBuilder.buildAuto("4 Piece"));
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     // Configure the trigger bindings
     configureBindings();
-
+    
     m_drivetrain.setDefaultCommand(
       new DriveWithJoysticks(
         m_drivetrain, 
@@ -47,12 +86,20 @@ public class RobotContainer {
         () -> m_driverController.getLeftY(), 
         () -> m_driverController.getRightX(), 
         () -> m_driverController.getRightTriggerAxis(), 
-        m_driverController.povUp(),
-        m_driverController.b(),
-        m_driverController.leftBumper(),
-        m_driverController.rightBumper()
+        new Trigger(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false),
+        new Trigger(() -> false)
+        
+        // m_driverController.povDown(),
+        // m_driverController.b(),
+        // m_driverController.leftBumper(),
+        // m_driverController.rightBumper()
         )
     );
+    
+    m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 25.));
+
   }
 
   /**
@@ -65,13 +112,45 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    m_driverController.a().whileTrue(new TrackWhileMoving(m_drivetrain, m_shooter, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
-    
-    m_driverController.x().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(56.5 / kInchesToMeters, 171 / kInchesToMeters, new Rotation2d(0.0)))));
-    m_driverController.b().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 56.5 / kInchesToMeters, kFieldY - 171 / kInchesToMeters, new Rotation2d(Math.PI)))));
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
+
+    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+
+    m_driverController.x().whileTrue(new AutoTrackNote(m_drivetrain, m_intake)
+      .andThen(new RunCommand(() -> m_intake.setIntake(0.2), m_intake).until(() -> m_intake.hasNoteInIntake()))
+      .andThen(new InstantCommand(() -> m_intake.setIntake(0.0), m_intake)).andThen(
+        new AutoTransfer(m_intake, m_shooter, m_turret, m_loader)
+      ));
+
+
+    m_driverController.start().whileTrue(new AutoTransfer(m_intake, m_shooter, m_turret, m_loader));
+    // m_driverController.x().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 60.));
+
+    m_driverController.y().onTrue(new InstantCommand(() -> {
+      m_loader.setLoaderMotor(0.5);
+      m_shooter.setShooterSpeed(-1000.0);
+    }, m_shooter, m_intake, m_loader)).onFalse(new InstantCommand(() -> {
+      m_loader.setLoaderMotor(0.0);
+      m_shooter.setShooterSpeed(0.0);
+    }, m_shooter, m_intake, m_loader));
+
+    // m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
+    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+    // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
+
+    m_driverController.leftTrigger().whileTrue(new AutoCollect(m_intake));
+
+    m_driverController.b().onTrue(new InstantCommand(() -> {
+      m_loader.setLoaderMotor(-0.5);
+      m_intake.setIntake(-0.5);
+      m_shooter.setShooterSpeed(-300.0);
+    }, m_shooter, m_intake)).onFalse(new InstantCommand(() -> {
+      m_loader.setLoaderMotor(0.0);
+      m_intake.setIntake(0.0);
+      m_shooter.setShooterSpeed(0.0);
+    }, m_shooter, m_intake));
+
+    m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, -90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
   }
 
   /**
@@ -81,6 +160,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new InstantCommand(() -> {});
+    return autoChooser.getSelected();
   }
 }
