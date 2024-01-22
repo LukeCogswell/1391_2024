@@ -8,7 +8,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
 
 public class AutoTrackNote extends Command {
   private Drivetrain m_drivetrain;
@@ -40,9 +39,11 @@ public class AutoTrackNote extends Command {
       rot = rotController.calculate(m_intake.getTX());
       rot = rot > 0.5 ? 0.5 : rot;
       if (ty < 20) {
-        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.3 : 0.6);
+        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.2 : 0.6);
       }
       m_drivetrain.drive(drive, 0., rot, false);
+    } else {
+      m_intake.setIntake(0.2);
     }
   }
 

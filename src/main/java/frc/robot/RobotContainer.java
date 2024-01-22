@@ -7,30 +7,23 @@ package frc.robot;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCollect;
 import frc.robot.commands.AutoTrackNote;
-import frc.robot.commands.Collect;
+import frc.robot.commands.AutoTransfer;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.SetTurretAngle;
-import frc.robot.commands.ShootNoteAtSpeed;
 import frc.robot.commands.ShootNoteAtSpeedAndAngle;
 import frc.robot.commands.ShootWhileMoving;
-import frc.robot.commands.TrackWhileMoving;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import static frc.robot.Constants.MeasurementConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -124,8 +117,12 @@ public class RobotContainer {
 
     m_driverController.x().whileTrue(new AutoTrackNote(m_drivetrain, m_intake)
       .andThen(new RunCommand(() -> m_intake.setIntake(0.2), m_intake).until(() -> m_intake.hasNoteInIntake()))
-      .andThen(new InstantCommand(() -> m_intake.setIntake(0.0), m_intake)));
+      .andThen(new InstantCommand(() -> m_intake.setIntake(0.0), m_intake)).andThen(
+        new AutoTransfer(m_intake, m_shooter, m_turret, m_loader)
+      ));
 
+
+    m_driverController.start().whileTrue(new AutoTransfer(m_intake, m_shooter, m_turret, m_loader));
     // m_driverController.x().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 60.));
 
     m_driverController.y().onTrue(new InstantCommand(() -> {
@@ -152,8 +149,8 @@ public class RobotContainer {
       m_shooter.setShooterSpeed(0.0);
     }, m_shooter, m_intake));
 
-    m_driverController.povUp().onTrue(new SetTurretAngle(m_turret, 90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
-    m_driverController.povDown().onTrue(new SetTurretAngle(m_turret, -90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, -90.)).onFalse(new InstantCommand(() -> {}, m_shooter));
   }
 
   /**

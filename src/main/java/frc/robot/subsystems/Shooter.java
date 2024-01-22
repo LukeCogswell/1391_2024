@@ -4,12 +4,9 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.Shooter.*;
-import static frc.robot.Constants.Shooter.kStationaryRobotAngleMultiplier;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;

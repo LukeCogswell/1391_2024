@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
@@ -24,7 +23,6 @@ import static frc.robot.Constants.Shooter.*;
 
 public class TrackWhileMoving extends Command {
   private Drivetrain m_drivetrain;
-  private Shooter m_shooter;
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
@@ -34,7 +32,6 @@ public class TrackWhileMoving extends Command {
   /** Creates a new TrackWhileMoving. */
   public TrackWhileMoving(Drivetrain drivetrain, Shooter shooter, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision) {
     m_drivetrain = drivetrain;
-    m_shooter = shooter;
     m_precision = precision;
     xSpeed = x_speed;
     // SmartDashboard.putNumber("x input", x_speed.getAsDouble());
