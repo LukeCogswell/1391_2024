@@ -109,9 +109,9 @@ public class ShootWhileMoving extends Command {
 
     SmartDashboard.putBoolean("Angle?", angleController.atSetpoint());
     SmartDashboard.putBoolean("Turn?", turnController.atSetpoint());
-    SmartDashboard.putBoolean("Speed?", m_shooter.getBottomShooterSpeed() >= 5676 * 0.9);
+    SmartDashboard.putBoolean("Speed?", m_shooter.getLeftShooterSpeed() >= 5676 * 0.9);
 
-    if (angleController.atSetpoint() && m_shooter.getBottomShooterSpeed() >= 5676 * 0.9 && turnController.atSetpoint()) {
+    if (angleController.atSetpoint() && m_shooter.getLeftShooterSpeed() >= 5676 * 0.9 && turnController.atSetpoint()) {
       m_loader.setLoaderMotor(0.8);
     }
   }

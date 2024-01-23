@@ -44,7 +44,7 @@ public class ShootNoteAtSpeedAndAngle extends Command {
 
     m_turret.setAngleMotor(-angleController.calculate(m_turret.getShooterAngle()));
 
-    if (m_shooter.getBottomShooterSpeed() >= 0.9 * shotSpeed && angleController.atSetpoint()) {
+    if (m_shooter.getLeftShooterSpeed() >= 0.9 * shotSpeed && angleController.atSetpoint()) {
         m_loader.setLoaderMotor(0.7);
     }
   }

@@ -12,51 +12,51 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 public class Shooter extends SubsystemBase {
-  private final CANSparkMax m_shooterMotorTop = new CANSparkMax(13, MotorType.kBrushless); 
-  private final CANSparkMax m_shooterMotorBottom = new CANSparkMax(14, MotorType.kBrushless);
+  private final CANSparkMax m_shooterMotorRight = new CANSparkMax(13, MotorType.kBrushless); 
+  private final CANSparkMax m_shooterMotorLeft = new CANSparkMax(14, MotorType.kBrushless);
   
 
   /** Creates a new Shooter. */
   public Shooter() {
-    m_shooterMotorTop.setInverted(true);
-    m_shooterMotorBottom.setInverted(true);
+    m_shooterMotorRight.setInverted(false);
+    m_shooterMotorLeft.setInverted(true);
   }
 
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("TopShooterSpeed", getTopShooterSpeed());
-    // SmartDashboard.putNumber("BotShooterSpeed", getBottomShooterSpeed());
+    SmartDashboard.putNumber("Left Shooter Speed", getLeftShooterSpeed());
+    SmartDashboard.putNumber("Right Shooter Speed", getRightShooterSpeed());
     // This method will be called once per scheduler run
   }
 
   public void setShooterSpeed(Double speed) {
-    m_shooterMotorTop.set(speed/kMaxSpeedRPM);
-    m_shooterMotorBottom.set(speed/kMaxSpeedRPM);
+    m_shooterMotorRight.set(speed/kMaxSpeedRPM);
+    m_shooterMotorLeft.set(speed/kMaxSpeedRPM);
     
   }
 
   public void stopShooter() {
-    m_shooterMotorTop.set(0);
-    m_shooterMotorBottom.set(0);
+    m_shooterMotorRight.set(0);
+    m_shooterMotorLeft.set(0);
 
   }
 
-  public void setTopShooterSpeed(Double speed) {
-    m_shooterMotorTop.set(speed/kMaxSpeedRPM);
-  }
-  
-  public void setBottomShooterSpeed(Double speed) {
-    m_shooterMotorBottom.set(speed/kMaxSpeedRPM);
-
-  }
-
-  public double getTopShooterSpeed() {
-    SmartDashboard.putNumber("Top RPM", m_shooterMotorTop.getEncoder().getVelocity() );
-    return m_shooterMotorTop.getEncoder().getVelocity();  
+  public void setRightShooterSpeed(Double speed) {
+    m_shooterMotorRight.set(speed/kMaxSpeedRPM);
   }
   
-  public double getBottomShooterSpeed() {
-    SmartDashboard.putNumber("Bottom RPM", m_shooterMotorBottom.getEncoder().getVelocity() );
-    return m_shooterMotorBottom.getEncoder().getVelocity();  
+  public void setLeftShooterSpeed(Double speed) {
+    m_shooterMotorLeft.set(speed/kMaxSpeedRPM);
+
+  }
+
+  public double getRightShooterSpeed() {
+    SmartDashboard.putNumber("Right RPM", m_shooterMotorRight.getEncoder().getVelocity() );
+    return m_shooterMotorRight.getEncoder().getVelocity();  
+  }
+  
+  public double getLeftShooterSpeed() {
+    SmartDashboard.putNumber("Left RPM", m_shooterMotorLeft.getEncoder().getVelocity() );
+    return m_shooterMotorLeft.getEncoder().getVelocity();  
   }
 }
