@@ -119,7 +119,7 @@ public class RobotContainer {
 
     // m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
     
-    m_driverController.y().whileTrue(new AlignWithAprilTag(m_drivetrain, 1.));
+    // m_driverController.y().whileTrue(new AlignWithAprilTag(m_drivetrain, 1.5));
 
     m_driverController.leftTrigger().whileTrue(new AutoCollect(m_intake)).onFalse(new InstantCommand(() -> m_intake.setIntake(0.)));
 
@@ -127,7 +127,7 @@ public class RobotContainer {
       .onTrue(
       new InstantCommand(() -> {
         m_shooter.setRightShooterSpeed(5676.);
-        m_shooter.setLeftShooterSpeed(5676.*.85);
+        m_shooter.setLeftShooterSpeed(5676./**.85*/);
       }, m_shooter).andThen(
         new WaitUntilCommand(() -> m_shooter.getRightShooterSpeed()>= 0.8 * 5676)
       ).andThen(new InstantCommand(() ->

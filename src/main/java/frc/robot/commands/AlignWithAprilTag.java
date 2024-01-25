@@ -14,8 +14,8 @@ import static frc.robot.Constants.SwerveModuleConstants.PID.*;
 public class AlignWithAprilTag extends Command {
   private Drivetrain m_drivetrain;
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
-  private PIDController xController = new PIDController(5., 0., 0.);
-  private PIDController zController = new PIDController(5., 0., 0.);
+  private PIDController xController = new PIDController(1., 0., 0.);
+  private PIDController zController = new PIDController(1., 0., 0.);
   private Double dis;
   private Double maxSpeed = 1.;
   /** Creates a new AlignWithAprilTag. */
@@ -31,18 +31,19 @@ public class AlignWithAprilTag extends Command {
   public void initialize() {
     xController.setSetpoint(0.);
     xController.setTolerance(0.1);
-    zController.setSetpoint(dis);
+    zController.setSetpoint(-dis);
     zController.setTolerance(0.1);
-    turnController.setSetpoint(0.0);
+    turnController.setSetpoint(180.0);
     turnController.setTolerance(0.5);
+    turnController.enableContinuousInput(-180, 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     var botPose = m_drivetrain.getBotPoseTagSpace();
-    var xSpeed = xController.calculate(botPose[0]);
-    var ySpeed = zController.calculate(botPose[2]);
+    var ySpeed = xController.calculate(botPose[0]);
+    var xSpeed = -zController.calculate(botPose[2]);
     var rot = turnController.calculate(botPose[5]);
 
     xSpeed = MathUtil.clamp(xSpeed, -maxSpeed, maxSpeed);

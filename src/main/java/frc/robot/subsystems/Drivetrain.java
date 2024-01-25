@@ -127,11 +127,15 @@ public class Drivetrain extends SubsystemBase {
   
   @Override
   public void periodic() {
+    // SmartDashboard.putNumber("tagspace x", getBotPoseTagSpace()[0]);
+    // SmartDashboard.putNumber("tagspace y", getBotPoseTagSpace()[1]);
+    // SmartDashboard.putNumber("tagspace z", getBotPoseTagSpace()[2]);
+    // SmartDashboard.putNumber("tagspace yaw", getBotPoseTagSpace()[5]);
     updateOdometry();
     updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
     SmartDashboard.putData("Field", field);
-    // SmartDashboard.putString("Field Position", getFieldPosition().toString());
+    SmartDashboard.putString("Field Position", getFieldPosition().toString());
     // SmartDashboard.putNumber("Fused Heading", -m_navX.getFusedHeading());
     // if (getTV()) {
     //   SmartDashboard.putNumber("TagSpace Z", -getBotPoseTagSpace()[2]);

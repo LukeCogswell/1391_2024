@@ -155,6 +155,7 @@ public final class Constants {
   }
 
   public static HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+  public static final Pose2d RedAmpAlignment = new Pose2d(14.8, 7.3, new Rotation2d(-Math.PI/2));
   public static final class PathfindingPoints {
     public static final double kGridSize = 0.3;
     public static final class Red {

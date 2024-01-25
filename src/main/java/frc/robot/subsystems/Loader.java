@@ -23,7 +23,7 @@ public class Loader extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("IR", getColorProximity());
+    // SmartDashboard.putNumber("IR", getColorProximity());
     SmartDashboard.putBoolean("Note In Shooter", hasNoteInShooter());
   }
 
