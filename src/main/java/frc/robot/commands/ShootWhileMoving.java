@@ -96,8 +96,14 @@ public class ShootWhileMoving extends Command {
       m_ySpeed = -m_ySpeed;
     }
 
+    var distanceMultiplier = dis/3;
+    distanceMultiplier = distanceMultiplier > 1 ? 1 : distanceMultiplier;
 
-    m_shooter.setShooterSpeed(5676.0);
+    var spinMultiplier = 0.85 / distanceMultiplier;
+    spinMultiplier = spinMultiplier > 1 ? 1 : spinMultiplier;
+
+    m_shooter.setRightShooterSpeed(distanceMultiplier * 5676.0);
+    m_shooter.setLeftShooterSpeed(distanceMultiplier * 5676.0 * spinMultiplier);
 
     // SmartDashboard.putNumber("AnglePID", angleController.calculate((m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI) - m_shooter.getShooterAngle()));
     // SmartDashboard.putNumber("required angle", m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI);

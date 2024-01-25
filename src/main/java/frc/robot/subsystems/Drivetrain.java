@@ -145,12 +145,14 @@ public class Drivetrain extends SubsystemBase {
   }
   
   public void updateOdometryWithAprilTags() {
-    if (getTV() && -getBotPoseTagSpace()[2] < 5.) {
-      var botpose = getBOTPOSE();
-      var botTagSpace = getBotPoseTagSpace();
-      setVisionStdDvs(1.0 * -botTagSpace[2], 1.0 * -botTagSpace[2], 9999.0);
-      Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
-      m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
+    if (getTV()){
+      if (-getBotPoseTagSpace()[2] < 5.) {
+        var botpose = getBOTPOSE();
+        var botTagSpace = getBotPoseTagSpace();
+        setVisionStdDvs(1.0 * -botTagSpace[2], 1.0 * -botTagSpace[2], 9999.0);
+        Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
+        m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
+      }
     }
   }
 
