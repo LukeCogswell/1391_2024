@@ -24,7 +24,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -40,7 +44,7 @@ import com.pathplanner.lib.auto.NamedCommands;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Drivetrain m_drivetrain = new Drivetrain();
+  public final Drivetrain m_drivetrain = new Drivetrain();
   private final Shooter m_shooter = new Shooter();
   private final Intake m_intake = new Intake();
   private final Loader m_loader = new Loader();
@@ -57,22 +61,28 @@ public class RobotContainer {
     // Build an auto chooser. This will use Commands.none() as the default option.
     autoChooser = AutoBuilder.buildAutoChooser();
   
+    NamedCommands.registerCommand("AutoCollect", new AutoCollect(m_intake, m_turret, m_loader));
+
     NamedCommands.registerCommand("Intake Down", new InstantCommand(() -> {
       m_intake.setIntake(0.7);
       m_intake.setIntake(0.5);
+      m_loader.setLoaderMotor(0.7);
       m_shooter.setShooterSpeed(-400.0); 
-      }, m_shooter, m_intake));
+      }, m_shooter, m_intake, m_loader));
 
     NamedCommands.registerCommand("Intake Up", new InstantCommand(() -> {
       m_intake.setIntake(0.);
       m_intake.setIntake(0.);
+      m_loader.setLoaderMotor(0.);
       m_shooter.setShooterSpeed(0.);
-    }, m_shooter, m_intake));
+    }, m_shooter, m_intake, m_loader));
 
-    NamedCommands.registerCommand("Transfer", new SetTurretAngle(m_turret, 25.).withTimeout(1));
+    NamedCommands.registerCommand("Spin Up Shooter", new InstantCommand(() -> m_shooter.setShooterSpeed(3000.)));
 
-    NamedCommands.registerCommand("Shoot 45", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 50.).withTimeout(2));
-    NamedCommands.registerCommand("Shoot 50", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 60.).withTimeout(2));
+    NamedCommands.registerCommand("Transfer", new SetTurretAngle(m_turret, 15.).withTimeout(1));
+
+    NamedCommands.registerCommand("Shoot 45", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 3000., 40.).withTimeout(2));
+    NamedCommands.registerCommand("Shoot 50", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 3000., 55.).withTimeout(2));
 
 
     // Another option that allows you to specify the default auto by its name
@@ -102,7 +112,7 @@ public class RobotContainer {
         )
     );
     
-    // m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 40.));
+    m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 15.));
 
   }
 
@@ -117,28 +127,34 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
     
     // m_driverController.y().whileTrue(new AlignWithAprilTag(m_drivetrain, 1.5));
 
-    m_driverController.leftTrigger().whileTrue(new AutoCollect(m_intake)).onFalse(new InstantCommand(() -> m_intake.setIntake(0.)));
+    m_driverController.leftTrigger().whileTrue(new AutoCollect(m_intake, m_turret, m_loader)).onFalse(new InstantCommand(() -> {
+      m_intake.setIntake(0.);
+      m_shooter.setShooterSpeed(0.);
+      m_loader.setLoaderMotor(0.);
+    }));
 
-    m_driverController.a()
-      .onTrue(
-      new InstantCommand(() -> {
-        m_shooter.setRightShooterSpeed(5676.);
-        m_shooter.setLeftShooterSpeed(5676./**.85*/);
-      }, m_shooter).andThen(
-        new WaitUntilCommand(() -> m_shooter.getRightShooterSpeed()>= 0.8 * 5676)
-      ).andThen(new InstantCommand(() ->
-        m_loader.setLoaderMotor(0.7), m_loader)
-      )
-      ).onFalse(
-        new InstantCommand(() -> {
-          m_shooter.setShooterSpeed(0.);
-          m_loader.setLoaderMotor(0.);}, m_shooter, m_loader));
+    m_driverController.start().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 3000., 40.).withTimeout(2));
+
+    // m_driverController.a()
+    //   .onTrue(
+    //   new InstantCommand(() -> {
+    //     m_shooter.setRightShooterSpeed(5676.);
+    //     m_shooter.setLeftShooterSpeed(5676.*.85);
+    //   }, m_shooter).andThen(
+    //     new WaitUntilCommand(() -> m_shooter.getRightShooterSpeed()>= 0.8 * 5676)
+    //   ).andThen(new InstantCommand(() ->
+    //     m_loader.setLoaderMotor(0.7), m_loader)
+    //   )
+    //   ).onFalse(
+    //     new InstantCommand(() -> {
+    //       m_shooter.setShooterSpeed(0.);
+    //       m_loader.setLoaderMotor(0.);}, m_shooter, m_loader));
     
-    m_driverController.x().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.7), m_loader)).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.), m_loader));
+    // m_driverController.x().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.7), m_loader)).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.), m_loader));
 
     m_driverController.b().onTrue(new InstantCommand(() -> {
       m_loader.setLoaderMotor(-0.5);
@@ -150,38 +166,44 @@ public class RobotContainer {
       m_shooter.setShooterSpeed(0.0);
     }, m_shooter, m_intake, m_loader));
 
-    // m_driverController.x().whileTrue(new AutoTrackNote(m_drivetrain, m_intake)
-    //   .andThen(new RunCommand(() -> m_intake.setIntake(0.2), m_intake).until(() -> m_intake.hasNoteInIntake()))
-    //   .andThen(new InstantCommand(() -> m_intake.setIntake(0.0), m_intake)).andThen(
-    //     new AutoTransfer(m_intake, m_shooter, m_turret, m_loader)
-    //   )).onFalse(new InstantCommand(() -> {
-    //    m_shooter.setShooterSpeed(0.);
-    //    m_loader.setLoaderMotor(0.);
-    //    m_intake.setIntake(0.);
-    //    }, m_intake, m_shooter, m_turret, m_loader));
+    m_driverController.x().whileTrue(new AutoTrackNote(m_drivetrain, m_intake)
+      .andThen(new ParallelRaceGroup(
+        new DriveWithJoysticks(
+          m_drivetrain, 
+          () -> m_driverController.getLeftX(), 
+          () -> m_driverController.getLeftY(), 
+          () -> m_driverController.getRightX(), 
+          () -> m_driverController.getRightTriggerAxis(), 
+          new Trigger(() -> false),
+          new Trigger(() -> false),
+          new Trigger(() -> false),
+          new Trigger(() -> false)
+          
+          // m_driverController.povDown(),
+          // m_driverController.b(),
+          // m_driverController.leftBumper(),
+          // m_driverController.rightBumper()
+          ),
+        new SequentialCommandGroup(
+          new WaitCommand(0.2),
+          new RunCommand(() -> m_intake.setIntake(0.3), m_intake).until(() -> m_intake.hasNoteInIntake()),
+          new InstantCommand(() -> m_intake.setIntake(0.0), m_intake),
+          new AutoTransfer(m_intake, m_shooter, m_turret, m_loader)
+        )
+      ))
+      ).onFalse(new InstantCommand(() -> {
+       m_shooter.setShooterSpeed(0.);
+       m_loader.setLoaderMotor(0.);
+       m_intake.setIntake(0.);
+      }, m_intake, m_shooter, m_turret, m_loader));
+      
+    m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 60.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, 0.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    
+    m_driverController.povRight().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));
+    m_driverController.povLeft().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(-0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));
 
 
-    // m_driverController.start().whileTrue(new AutoTransfer(m_intake, m_shooter, m_turret, m_loader));
-    // m_driverController.x().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 60.));
-
-    // m_driverController.y().onTrue(new InstantCommand(() -> {
-    //   m_loader.setLoaderMotor(0.5);
-    //   m_shooter.setShooterSpeed(-1000.0);
-    // }, m_shooter, m_intake, m_loader)).onFalse(new InstantCommand(() -> {
-    //   m_loader.setLoaderMotor(0.0);
-    //   m_shooter.setShooterSpeed(0.0);
-    // }, m_shooter, m_intake, m_loader));
-
-    // m_driverController.a().whileTrue(new EjectNotes(m_drivetrain, m_shooter, m_intake, m_loader));
-
-    // m_driverController.y().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.CenterStage, 0.0));
-    // m_driverController.povUp().onTrue(new InstantCommand(() -> m_intake.setIntake(0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
-    // m_driverController.povDown().onTrue(new InstantCommand(() -> m_intake.setIntake(-0.4))).onFalse(new InstantCommand(() -> m_intake.setIntake(0.0)));
-
-
-
-    // m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 60.)).onFalse(new InstantCommand(() -> {}, m_shooter));
-    // m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, 0.)).onFalse(new InstantCommand(() -> {}, m_shooter));
   }
 
   /**

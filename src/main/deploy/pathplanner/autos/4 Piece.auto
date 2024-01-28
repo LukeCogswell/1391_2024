@@ -2,27 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.44283883432246,
-      "y": 5.515804013063089
+      "x": 1.2849919870243334,
+      "y": 6.93924831795852
     },
-    "rotation": 1.0230301886679438
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot 50"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Transfer"
-          }
-        },
         {
           "type": "path",
           "data": {

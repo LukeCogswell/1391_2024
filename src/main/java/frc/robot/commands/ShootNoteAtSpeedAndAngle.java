@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
@@ -34,7 +35,7 @@ public class ShootNoteAtSpeedAndAngle extends Command {
   @Override
   public void initialize() {
     angleController.setSetpoint(angle);
-    angleController.setTolerance(1.);
+    angleController.setTolerance(3.);
   }
   
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,6 +44,9 @@ public class ShootNoteAtSpeedAndAngle extends Command {
     m_shooter.setShooterSpeed(shotSpeed);
 
     m_turret.setAngleMotor(-angleController.calculate(m_turret.getShooterAngle()));
+
+    SmartDashboard.putBoolean("ShotAngle", angleController.atSetpoint());
+    SmartDashboard.putBoolean("ShotSpeed", m_shooter.getLeftShooterSpeed() >= 0.9 * shotSpeed);
 
     if (m_shooter.getLeftShooterSpeed() >= 0.9 * shotSpeed && angleController.atSetpoint()) {
         m_loader.setLoaderMotor(0.7);
@@ -60,6 +64,6 @@ public class ShootNoteAtSpeedAndAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !m_loader.hasNoteInShooter();
   }
 }

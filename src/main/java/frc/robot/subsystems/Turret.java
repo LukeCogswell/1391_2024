@@ -39,17 +39,27 @@ public class Turret extends SubsystemBase {
     return theta;
   }
 
+  // private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
+  //   var x = distanceToSpeaker; 
+  //   return -0.0188 
+  //     + (0.117 * x) 
+  //     - (0.0465 * Math.pow(x, 2)) 
+  //     + (7.75e-3 * Math.pow(x, 3)) 
+  //     - (4.9e-4 * Math.pow(x, 4)) 
+  //     ;
+  // } //Second iteration
+
   private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
     var x = distanceToSpeaker; 
-    return -0.0188 
-      + (0.117 * x) 
-      - (0.0465 * Math.pow(x, 2)) 
-      + (7.75e-3 * Math.pow(x, 3)) 
-      - (4.9e-4 * Math.pow(x, 4)) 
-      // + (2.95e-5 * Math.pow(x, 5)) 
-      // - (7.36e-7 * Math.pow(x, 6))
-      ;
-  }
+    return -0.0109
+     + 0.0739*x + 
+     -0.0245*Math.pow(x,2) 
+     + 4.49E-03*Math.pow(x,3) 
+     + -4.93E-04*Math.pow(x,4) 
+     + 2.95E-05*Math.pow(x,5) 
+     + -7.36E-07*Math.pow(x,6)
+     ;
+  } // first iteration
 
   public double getShooterAngle() {
     var angle = (m_angleEncoder.getAbsolutePosition()*360 - kAngleEncoderOffset - 180) % 360 + 180;

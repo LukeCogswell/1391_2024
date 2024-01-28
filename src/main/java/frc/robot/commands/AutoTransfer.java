@@ -23,19 +23,19 @@ public class AutoTransfer extends ParallelRaceGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetTurretAngle(turret, 40.),
+      new SetTurretAngle(turret, 25.),
       new SequentialCommandGroup(
-        new WaitUntilCommand(() -> turret.getShooterAngle() - 40 <= 1),
+        new WaitUntilCommand(() -> Math.abs(turret.getShooterAngle() - 25) <= 3),
         new InstantCommand(() -> {
           loader.setLoaderMotor(0.5);
-          intake.setIntake(0.2);
+          intake.setIntake(0.3);
         }, loader, intake),
         new WaitUntilCommand(() -> (!intake.hasNoteInIntake() || loader.hasNoteInShooter())),
         new InstantCommand(() -> {
           intake.setIntake(0.0);
-          loader.setLoaderMotor(-0.5);
+          loader.setLoaderMotor(-0.3);
         }, loader, intake),
-        new WaitCommand(0.06),
+        new WaitCommand(0.02),
         new InstantCommand(() -> loader.setLoaderMotor(0.), loader)
       )
     );

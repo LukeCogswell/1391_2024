@@ -33,17 +33,17 @@ public class AutoTrackNote extends Command {
   @Override
   public void execute() {
     if (m_intake.getTV()) {
-      ty = (m_intake.getTY() + 30);
-      drive = ty/20;
-      drive = drive > 2 ? 2 : drive;
+      ty = (m_intake.getTY() + 30.);
+      drive = ty/20.;
+      drive = drive > 2. ? 2. : drive;
       rot = rotController.calculate(m_intake.getTX());
-      rot = rot > 0.5 ? 0.5 : rot;
+      rot = rot > 0.9 ? 0.9 : rot;
       if (ty < 20) {
-        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.2 : 0.6);
+        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.6 : 0.6);
       }
       m_drivetrain.drive(drive, 0., rot, false);
     } else {
-      m_intake.setIntake(0.2);
+      m_intake.setIntake(0.6);
     }
   }
 
@@ -51,12 +51,16 @@ public class AutoTrackNote extends Command {
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
-    m_intake.setIntake(0.0);
+    if (interrupted) {
+      m_intake.setIntake(0.0);
+    } else {
+      m_intake.setIntake(0.6);
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.hasNoteInIntake();
+    return m_intake.currentHasNoteInIntake() || m_intake.hasNoteInIntake();
   }
 }

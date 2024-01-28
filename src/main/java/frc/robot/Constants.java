@@ -41,12 +41,12 @@ public final class Constants {
 
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.5;
-    public static final double kStationaryRobotAngleMultiplier = 0.0222;
-    public static final double kAngleEncoderOffset = 4.27;
+    public static final double kStationaryRobotAngleMultiplier = 0.0101; // 0.0222
+    public static final double kAngleEncoderOffset = -34.27;
     public static final double kMaxSpeedRPM = 5676;
     public static final class PID {
       public static final double kAngleP = 0.01;
-      public static final double kAngleI = 0.01;
+      public static final double kAngleI = 0.001;
       public static final double kAngleD = 0.0;
 
     }

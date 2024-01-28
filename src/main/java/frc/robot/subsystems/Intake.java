@@ -5,9 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.Rev2mDistanceSensor.Unit;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -20,7 +18,7 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax m_motorLeft = new CANSparkMax(10, MotorType.kBrushless); 
   // private final Rev2mDistanceSensor distSensor = new Rev2mDistanceSensor(com.revrobotics.Rev2mDistanceSensor.Port.kOnboard);
   private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight-twelve");
-  private AnalogInput beamBreakSensor = new AnalogInput(1);
+  private AnalogInput m_beamBreakSensor = new AnalogInput(1);
   /** Creates a new Intake. */
   public Intake() {
     m_motorLeft.setInverted(true);
@@ -61,7 +59,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean currentHasNoteInIntake() {
-    return getBottomIntakeCurrentDraw() >= 15.;
+    return getBottomIntakeCurrentDraw() >= 11.;
   }
 
   public double getBottomIntakeCurrentDraw() {
@@ -72,19 +70,8 @@ public class Intake extends SubsystemBase {
     return m_motorRight.getOutputCurrent();
   }
 
-  // public boolean hasNoteInIntake() {
-  //   if (distSensor.isRangeValid()) {
-  //     return distSensor.getRange() <= 400.;
-  //   }
-  //   return false; 
-  // }
-
-  public int getBeamBreakSensor() {
-      return beamBreakSensor.getValue();
-  }
-
   public boolean hasNoteInIntake() {
-    return beamBreakSensor.getValue() <= 30;
+    return m_beamBreakSensor.getValue() <= 30;
   }
 
 }

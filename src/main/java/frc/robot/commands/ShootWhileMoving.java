@@ -36,7 +36,8 @@ public class ShootWhileMoving extends Command {
   private DoubleSupplier xSpeed, ySpeed, m_precision;
   private Double X, Y, rot, m_precisionFactor, m_xSpeed, m_ySpeed;
   /** Creates a new ShootWhileMoving. */
-  public ShootWhileMoving(Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision) {
+  public 
+  ShootWhileMoving(Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision) {
     m_drivetrain = drivetrain;
     m_shooter = shooter;
     m_loader = loader;
@@ -101,6 +102,7 @@ public class ShootWhileMoving extends Command {
 
     var spinMultiplier = 0.85 / distanceMultiplier;
     spinMultiplier = spinMultiplier > 1 ? 1 : spinMultiplier;
+    spinMultiplier = 1.;
 
     m_shooter.setRightShooterSpeed(distanceMultiplier * 5676.0);
     m_shooter.setLeftShooterSpeed(distanceMultiplier * 5676.0 * spinMultiplier);
@@ -115,9 +117,9 @@ public class ShootWhileMoving extends Command {
 
     SmartDashboard.putBoolean("Angle?", angleController.atSetpoint());
     SmartDashboard.putBoolean("Turn?", turnController.atSetpoint());
-    SmartDashboard.putBoolean("Speed?", m_shooter.getLeftShooterSpeed() >= 5676 * 0.9);
+    SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.9);
 
-    if (angleController.atSetpoint() && m_shooter.getLeftShooterSpeed() >= 5676 * 0.9 && turnController.atSetpoint()) {
+    if (angleController.atSetpoint() && m_shooter.getLeftShooterSpeed() >= distanceMultiplier * 5676.0 * 0.9 && turnController.atSetpoint()) {
       m_loader.setLoaderMotor(0.8);
     }
   }
