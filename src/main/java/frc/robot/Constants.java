@@ -45,8 +45,8 @@ public final class Constants {
     public static final double kAngleEncoderOffset = -34.27;
     public static final double kMaxSpeedRPM = 5676;
     public static final class PID {
-      public static final double kAngleP = 0.01;
-      public static final double kAngleI = 0.001;
+      public static final double kAngleP = 0.01755;
+      public static final double kAngleI = 0.03;
       public static final double kAngleD = 0.0;
 
     }

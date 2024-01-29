@@ -81,7 +81,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Transfer", new SetTurretAngle(m_turret, 15.).withTimeout(1));
 
-    NamedCommands.registerCommand("Shoot 45", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 3000., 40.).withTimeout(2));
+    NamedCommands.registerCommand("Shoot 45", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 3000., 50.).withTimeout(2));
     NamedCommands.registerCommand("Shoot 50", new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 3000., 55.).withTimeout(2));
 
 
@@ -197,8 +197,8 @@ public class RobotContainer {
        m_intake.setIntake(0.);
       }, m_intake, m_shooter, m_turret, m_loader));
       
-    m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 60.)).onFalse(new InstantCommand(() -> {}, m_shooter));
-    m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, 0.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 55.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+    m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, 40.)).onFalse(new InstantCommand(() -> {}, m_shooter));
     
     m_driverController.povRight().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));
     m_driverController.povLeft().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(-0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));

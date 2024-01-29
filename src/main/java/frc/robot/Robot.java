@@ -4,7 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -16,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Alliance currentAlliance = Alliance.Blue;
 
   private RobotContainer m_robotContainer;
 
@@ -44,6 +51,16 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    // if (DriverStation.getAlliance().isPresent()) {
+    //   if (DriverStation.getAlliance().get() != currentAlliance) {
+    //     SmartDashboard.putBoolean("Alliance Color", DriverStation.getAlliance().get() == Alliance.Red);
+    //     if (DriverStation.getAlliance().get() == Alliance.Red) {
+    //       m_robotContainer.m_drivetrain.setFieldPosition(new Pose2d(new Translation2d(Constants.MeasurementConstants.kFieldX-1, Constants.MeasurementConstants.kFieldY/2), new Rotation2d(Math.PI)));
+    //     } else {
+    //       m_robotContainer.m_drivetrain.setFieldPosition(new Pose2d(new Translation2d(1, Constants.MeasurementConstants.kFieldY/2), new Rotation2d(0.0)));
+    //     }
+    //   }
+    // }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -52,7 +69,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

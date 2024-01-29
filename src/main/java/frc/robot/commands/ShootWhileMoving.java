@@ -65,7 +65,7 @@ public class ShootWhileMoving extends Command {
     turnController.enableContinuousInput(-180, 180);
 
     angleController.setSetpoint(0);
-    angleController.setTolerance(0.5);
+    angleController.setTolerance(0.7);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -97,8 +97,10 @@ public class ShootWhileMoving extends Command {
       m_ySpeed = -m_ySpeed;
     }
 
-    var distanceMultiplier = dis/3;
+    var distanceMultiplier = dis/5;
     distanceMultiplier = distanceMultiplier > 1 ? 1 : distanceMultiplier;
+    distanceMultiplier = distanceMultiplier < 0.5 ? 0.5 : distanceMultiplier;
+    
 
     var spinMultiplier = 0.85 / distanceMultiplier;
     spinMultiplier = spinMultiplier > 1 ? 1 : spinMultiplier;

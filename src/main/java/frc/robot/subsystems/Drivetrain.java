@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MeasurementConstants.*;
 
+import java.sql.Driver;
+
 import org.ejml.simple.SimpleMatrix;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -116,7 +118,9 @@ public class Drivetrain extends SubsystemBase {
     setFieldPosition(new Pose2d(new Translation2d(1, kFieldY/2), new Rotation2d(0.0)));
     if (DriverStation.getAlliance().isPresent()) {
       SmartDashboard.putBoolean("init-RED?", DriverStation.getAlliance().get() == Alliance.Red);
-      setFieldPosition(new Pose2d(new Translation2d(kFieldX-1, kFieldY/2), new Rotation2d(Math.PI)));
+      if (DriverStation.getAlliance().get() == Alliance.Red) {
+        setFieldPosition(new Pose2d(new Translation2d(kFieldX-1, kFieldY/2), new Rotation2d(Math.PI)));
+      }
     }
 
     

@@ -153,7 +153,7 @@
     {
       "waypointRelativePos": 1,
       "rotationDegrees": 46.63657704161669,
-      "rotateFast": false
+      "rotateFast": true
     }
   ],
   "constraintZones": [
@@ -224,7 +224,7 @@
     },
     {
       "name": "Align Turret",
-      "waypointRelativePos": 0.049999999999999996,
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "sequential",
         "data": {
@@ -311,9 +311,6 @@
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": false
 }

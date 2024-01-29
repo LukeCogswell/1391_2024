@@ -36,7 +36,7 @@ public class Intake extends SubsystemBase {
     // }
     SmartDashboard.putBoolean("HasNote?", hasNoteInIntake());
     SmartDashboard.putBoolean("CurrentHasNote?", currentHasNoteInIntake());
-    // SmartDashboard.putNumber("Bot Int Current", getBottomIntakeCurrentDraw());
+    SmartDashboard.putNumber("Bot Int Current", getBottomIntakeCurrentDraw());
     // SmartDashboard.putNumber("Top Int Current", getTopIntakeCurrentDraw());
     // This method will be called once per scheduler run
   }

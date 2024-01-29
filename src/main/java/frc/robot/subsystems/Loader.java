@@ -23,6 +23,7 @@ public class Loader extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note In Shooter", hasNoteInShooter());
+    // SmartDashboard.putNumber("ShooterBB", m_beamBreakSensor.getValue());
   }
 
   public void setLoaderMotor(Double power) {
@@ -30,7 +31,7 @@ public class Loader extends SubsystemBase {
   }
 
   public boolean hasNoteInShooter() {
-    return m_beamBreakSensor.getValue() <= 30;
+    return m_beamBreakSensor.getValue() <= 50;
   }
 
 }
