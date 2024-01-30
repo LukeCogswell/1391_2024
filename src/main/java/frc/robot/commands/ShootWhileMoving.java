@@ -113,7 +113,9 @@ public class ShootWhileMoving extends Command {
     // SmartDashboard.putNumber("required angle", m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI);
 
 
-    m_turret.setAngleMotor(angleController.calculate((m_turret.getRequiredShooterAngle(dis, dDis)*180 / Math.PI) - m_turret.getShooterAngle()));
+    m_turret.setAngleMotor(angleController.calculate((m_turret.getRequiredShooterAngle(dis, dDis) * 180 / Math.PI) - m_turret.getShooterAngle()));
+
+    SmartDashboard.putNumber("Required Angle", m_turret.getRequiredShooterAngle(dis, dDis) * 180 / Math.PI);
 
     m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
 

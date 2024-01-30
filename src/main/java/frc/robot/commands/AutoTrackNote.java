@@ -12,7 +12,7 @@ import frc.robot.subsystems.Intake;
 public class AutoTrackNote extends Command {
   private Drivetrain m_drivetrain;
   private Intake m_intake;
-  private PIDController rotController = new PIDController(0.075, 0.01, 0.0);
+  private PIDController rotController = new PIDController(0.07, 0.01, 0.0);
   private Double drive, rot, ty;
   /** Creates a new AutoTrackNote. */
 
@@ -39,11 +39,11 @@ public class AutoTrackNote extends Command {
       rot = rotController.calculate(m_intake.getTX());
       rot = rot > 0.9 ? 0.9 : rot;
       if (ty < 20) {
-        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.6 : 0.6);
+        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.2 : 0.6);
       }
       m_drivetrain.drive(drive, 0., rot, false);
     } else {
-      m_intake.setIntake(0.6);
+      m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.2 : 0.6);
     }
   }
 
@@ -51,16 +51,12 @@ public class AutoTrackNote extends Command {
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
-    if (interrupted) {
-      m_intake.setIntake(0.0);
-    } else {
-      m_intake.setIntake(0.6);
-    }
+    m_intake.setIntake(0.);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.currentHasNoteInIntake() || m_intake.hasNoteInIntake();
+    return m_intake.hasNoteInIntake();
   }
 }

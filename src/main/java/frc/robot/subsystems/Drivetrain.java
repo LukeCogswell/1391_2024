@@ -25,8 +25,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MeasurementConstants.*;
 
-import java.sql.Driver;
-
 import org.ejml.simple.SimpleMatrix;
 
 import com.kauailabs.navx.frc.AHRS;

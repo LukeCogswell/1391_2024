@@ -34,9 +34,13 @@ public class Turret extends SubsystemBase {
   }
 
   public double getRequiredShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {
-    var theta1 = Math.atan(((kSpeakerOpeningMaxHeight + kSpeakerOpeningMinHeight)/2) / (distanceToSpeaker-0.23));
-    var theta = theta1 + kStationaryRobotAngleMultiplier * (distanceToSpeaker) - robotSpeedAdjustementFunction(distanceToSpeaker) * (dDistanceToSpeaker / distanceToSpeaker);
+    var theta1 = Math.atan((((kSpeakerOpeningMaxHeight + kSpeakerOpeningMinHeight)/2) - shooterReleaseHeight) / (distanceToSpeaker-0.23));
+    var theta = theta1 + 0.232/*getStationaryRobotAngleOffsetMultiplier(distanceToSpeaker) * (distanceToSpeaker)*/ - robotSpeedAdjustementFunction(distanceToSpeaker) * (dDistanceToSpeaker / distanceToSpeaker);
     return theta;
+  }
+
+  public double getStationaryRobotAngleOffsetMultiplier(Double distanceToSpeaker) {
+    return 9*Math.pow(Math.E,-1.94 * distanceToSpeaker)+0.048;
   }
 
   // private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
