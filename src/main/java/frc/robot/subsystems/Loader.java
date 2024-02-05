@@ -18,16 +18,20 @@ public class Loader extends SubsystemBase {
   public Loader() {
     m_loaderMotor.setInverted(true);
   }
-
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note In Shooter", hasNoteInShooter());
-    // SmartDashboard.putNumber("ShooterBB", m_beamBreakSensor.getValue());
+    SmartDashboard.putNumber("ShooterBB", m_beamBreakSensor.getValue());
   }
-
+  
   public void setLoaderMotor(Double power) {
     m_loaderMotor.set(power);
+  }
+  
+  public void stop() {
+    m_loaderMotor.set(0.);
   }
 
   public boolean hasNoteInShooter() {

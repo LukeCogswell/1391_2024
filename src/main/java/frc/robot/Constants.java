@@ -42,11 +42,11 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.5;
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
-    public static final double kAngleEncoderOffset = -34.27;
+    public static final double kAngleEncoderOffset = 120-34.27;
     public static final double kMaxSpeedRPM = 5676;
     public static final class PID {
-      public static final double kAngleP = 0.01755;
-      public static final double kAngleI = 0.03;
+      public static final double kAngleP = 0.02;
+      public static final double kAngleI = 0.005;
       public static final double kAngleD = 0.0;
 
     }
@@ -159,17 +159,17 @@ public final class Constants {
   public static final class PathfindingPoints {
     public static final double kGridSize = 0.3;
     public static final class Red {
-      public static final Pose2d Source = new Pose2d(8 * kGridSize, 4 * kGridSize, new Rotation2d(-Math.PI/4 * 3));
-      public static final Pose2d Amp = new Pose2d(7 * kGridSize, 25 * kGridSize, new Rotation2d(Math.PI/2));
-      public static final Pose2d Speaker = new Pose2d(8 * kGridSize, 20 * kGridSize, new Rotation2d(0));
+      public static final Pose2d Source = new Pose2d(8 * kGridSize, 4 * kGridSize, new Rotation2d(Math.PI/4 * 3));
+      public static final Pose2d Amp = new Pose2d(kFieldX - 8 * kGridSize, 22 * kGridSize, new Rotation2d(-Math.PI/2));
+      public static final Pose2d Speaker = new Pose2d(kFieldX - 8 * kGridSize, 20 * kGridSize, new Rotation2d(0));
       public static final Pose2d CenterStage = new Pose2d(35 * kGridSize, 14 * kGridSize, new Rotation2d(Math.PI));
       public static final Pose2d StageLeft = new Pose2d(40 * kGridSize, 11 * kGridSize, new Rotation2d(Math.PI / 4 * 3));
       public static final Pose2d StageRight = new Pose2d(40 * kGridSize, 16.5 * kGridSize, new Rotation2d(-Math.PI / 4 * 3));
       
     }
     public static final class Blue {
-      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), Red.Source.getY(), new Rotation2d(-Math.PI/4));
-      public static final Pose2d Amp = new Pose2d(kFieldX - Red.Amp.getX(), Red.Amp.getY(), new Rotation2d(-Math.PI/2));
+      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), Red.Source.getY(), new Rotation2d(Math.PI/4));
+      public static final Pose2d Amp = new Pose2d(kFieldX - Red.Amp.getX(), Red.Amp.getY(), new Rotation2d(Math.PI/2));
       public static final Pose2d Speaker = new Pose2d(kFieldX - Red.Speaker.getX(), Red.Speaker.getY(), new Rotation2d(Math.PI));
       public static final Pose2d CenterStage = new Pose2d(kFieldX - Red.CenterStage.getX(), Red.CenterStage.getY(), new Rotation2d(0));
       public static final Pose2d StageLeft = new Pose2d(kFieldX - Red.StageLeft.getX(), Red.StageLeft.getY(), new Rotation2d(-Math.PI/4));

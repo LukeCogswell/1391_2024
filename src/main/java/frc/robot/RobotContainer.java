@@ -7,7 +7,10 @@ package frc.robot;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCollect;
 import frc.robot.commands.AutoTrackCollectNote;
+import frc.robot.commands.Autos;
+import frc.robot.commands.DepositInAmp;
 import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.commands.RevShooter;
 import frc.robot.commands.SetTurretAngle;
 import frc.robot.commands.ShootNoteAtSpeedAndAngle;
 import frc.robot.commands.ShootWhileMoving;
@@ -21,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -78,7 +82,7 @@ public class RobotContainer {
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-    autoChooser.addOption("4 Piece", AutoBuilder.buildAuto("4 Piece"));
+    autoChooser.addOption("Start_3_End_13_14_15", Autos.Start_3_End_13_14_15(m_drivetrain, m_intake, m_loader, m_turret, m_shooter));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     // Configure the trigger bindings
@@ -103,8 +107,11 @@ public class RobotContainer {
         )
     );
     
+    m_shooter.setDefaultCommand(new RevShooter(m_drivetrain, m_shooter,  m_loader));
+
     m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 15.));
 
+    m_intake.setDefaultCommand(new RunCommand(() -> m_intake.setIntake(0.), m_intake));
   }
 
   /**
@@ -118,8 +125,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
-    
+    // m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0.));
+    // m_driverController.a().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 35.));
     // m_driverController.y().whileTrue(new AlignWithAprilTag(m_drivetrain, 1.5));
 
     m_driverController.leftTrigger().whileTrue(new AutoCollect(m_intake, m_turret, m_loader)).onFalse(new InstantCommand(() -> {
@@ -128,8 +136,12 @@ public class RobotContainer {
       m_loader.setLoaderMotor(0.);
     }));
 
-    m_driverController.start().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 1000., 15.));
+    // m_driverController.back().whileTrue(m_drivetrain.getCommandToPathfindToPoint(Constants.PathfindingPoints.Red.Amp, 0.).andThen(new AlignWithAprilTag(m_drivetrain, 1.)));
+    m_driverController.back().whileTrue(new DepositInAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter));
+    // m_driverController.back().whileTrue(new DriveForDistanceInDirection(m_drivetrain, 0., 0.5));
 
+    m_driverController.start().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 1000., 15.));
+    // m_driverController.back().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676., 15.));
     // m_driverController.a()
     //   .onTrue(
     //   new InstantCommand(() -> {

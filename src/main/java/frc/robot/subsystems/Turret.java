@@ -30,17 +30,26 @@ public class Turret extends SubsystemBase {
   }
 
   public void setAngleMotor(Double power) {
-    m_angleMotor.set(power);
+    if (getShooterAngle() <= -15 || getShooterAngle() >= 80) {
+      m_angleMotor.set(0.);
+
+    } else {
+      m_angleMotor.set(power);
+    }
   }
 
   public double getRequiredShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {
     var theta1 = Math.atan((((kSpeakerOpeningMaxHeight + kSpeakerOpeningMinHeight)/2) - shooterReleaseHeight) / (distanceToSpeaker-0.23));
-    var theta = theta1 + 0.232/*getStationaryRobotAngleOffsetMultiplier(distanceToSpeaker) * (distanceToSpeaker)*/ - robotSpeedAdjustementFunction(distanceToSpeaker) * (dDistanceToSpeaker / distanceToSpeaker);
+    var theta = theta1 + getStationaryRobotAngleOffsetMultiplier(distanceToSpeaker) * (distanceToSpeaker) - robotSpeedAdjustementFunction(distanceToSpeaker) * (dDistanceToSpeaker / distanceToSpeaker);
     return theta;
   }
 
   public double getStationaryRobotAngleOffsetMultiplier(Double distanceToSpeaker) {
-    return 9*Math.pow(Math.E,-1.94 * distanceToSpeaker)+0.048;
+    if (distanceToSpeaker >= 4.2) {
+      return -3.23e-3 * distanceToSpeaker + 0.0635;
+    } else {
+      return -0.0208 * distanceToSpeaker + 0.138;
+    }
   }
 
   // private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {

@@ -11,6 +11,8 @@ import frc.robot.subsystems.Drivetrain;
 
 import static frc.robot.Constants.SwerveModuleConstants.PID.*;
 
+import java.util.Arrays;
+
 public class AlignWithAprilTag extends Command {
   private Drivetrain m_drivetrain;
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
@@ -33,7 +35,13 @@ public class AlignWithAprilTag extends Command {
     xController.setTolerance(0.1);
     zController.setSetpoint(-dis);
     zController.setTolerance(0.1);
-    turnController.setSetpoint(180.0);
+    if (m_drivetrain.getTID() == 5 || m_drivetrain.getTID() == 6) {
+      turnController.setSetpoint(-90.0);
+    } else if (m_drivetrain.getTID() == 1 || m_drivetrain.getTID() == 2) {
+      turnController.setSetpoint(180-38.6);
+    } else if (m_drivetrain.getTID() == 9 || m_drivetrain.getTID() == 10) {
+      turnController.setSetpoint(38.6);
+    }
     turnController.setTolerance(0.5);
     turnController.enableContinuousInput(-180, 180);
   }
@@ -44,7 +52,7 @@ public class AlignWithAprilTag extends Command {
     var botPose = m_drivetrain.getBotPoseTagSpace();
     var ySpeed = xController.calculate(botPose[0]);
     var xSpeed = -zController.calculate(botPose[2]);
-    var rot = turnController.calculate(botPose[5]);
+    var rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees());
 
     xSpeed = MathUtil.clamp(xSpeed, -maxSpeed, maxSpeed);
     ySpeed = MathUtil.clamp(ySpeed, -maxSpeed, maxSpeed);
@@ -63,6 +71,9 @@ public class AlignWithAprilTag extends Command {
   @Override
   public boolean isFinished() {
     if (m_drivetrain.getTV()) {
+      if (!Arrays.asList(1., 2., 5., 6., 9., 10.).contains(m_drivetrain.getTID())) { 
+        return true;
+      }
       return xController.atSetpoint() && zController.atSetpoint() && turnController.atSetpoint();
     }
     return true;

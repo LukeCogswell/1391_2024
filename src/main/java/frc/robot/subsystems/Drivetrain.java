@@ -101,7 +101,7 @@ public class Drivetrain extends SubsystemBase {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+        new PIDConstants(2.0, 0.0, 0.0), // Rotation PID constants
         kMaxSpeedMetersPerSecond, // Max module speed, in m/s
         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -136,8 +136,9 @@ public class Drivetrain extends SubsystemBase {
     updateOdometry();
     updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
-    SmartDashboard.putData("Field", field);
+    // SmartDashboard.putData("Field", field);
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
+    // SmartDashboard.putNumber("TID", getTID());
     // SmartDashboard.putNumber("Fused Heading", -m_navX.getFusedHeading());
     // if (getTV()) {
     //   SmartDashboard.putNumber("TagSpace Z", -getBotPoseTagSpace()[2]);
@@ -208,6 +209,10 @@ public class Drivetrain extends SubsystemBase {
 
   public boolean getTV() {
     return m_limelight.getEntry("tv").getDouble(0.0) == 1.0;
+  }
+
+  public double getTID() {
+    return m_limelight.getEntry("tid").getDouble(0.);
   }
 
   public double[] getBOTPOSE() {

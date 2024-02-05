@@ -29,11 +29,11 @@ public class AutoCollect extends SequentialCommandGroup {
         // new RunCommand(() -> intake.setIntake(0.4), intake).until(() -> intake.hasNoteInIntake()),
         new InstantCommand(() -> {
           loader.setLoaderMotor(0.2);
-          intake.setIntake(0.4);
+          intake.setIntake(0.7);
         }, loader, intake),
         new WaitUntilCommand(() -> intake.hasNoteInIntake() || intake.currentHasNoteInIntake() || loader.hasNoteInShooter()),
         new InstantCommand(() -> {
-          intake.setIntake(0.2);
+          intake.setIntake(0.4);
         }, intake),
         new WaitUntilCommand(() -> (loader.hasNoteInShooter())),
         // new WaitCommand(0.2),
@@ -43,4 +43,5 @@ public class AutoCollect extends SequentialCommandGroup {
         // new WaitCommand(0.1),
     )));
   }
+
 }

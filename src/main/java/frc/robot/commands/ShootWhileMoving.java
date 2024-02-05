@@ -31,6 +31,7 @@ public class ShootWhileMoving extends Command {
   private Loader m_loader;
   private PIDController angleController = new PIDController(kAngleP, kAngleI, kAngleD);
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
+  private PIDController LLturnController = new PIDController(0.04, 0.001, 0.);
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private DoubleSupplier xSpeed, ySpeed, m_precision;
@@ -60,10 +61,11 @@ public class ShootWhileMoving extends Command {
     X = X < -kAutoDriveSpeedLimiter ? -kAutoDriveSpeedLimiter : X;
     Y = Y > kAutoDriveSpeedLimiter ? kAutoDriveSpeedLimiter : Y;
     Y = Y < -kAutoDriveSpeedLimiter ? -kAutoDriveSpeedLimiter : Y;
-    turnController.setTolerance(5);
+    turnController.setTolerance(3);
     turnController.setSetpoint(0.0);
     turnController.enableContinuousInput(-180, 180);
-
+    LLturnController.setSetpoint(0.);
+    LLturnController.setTolerance(3);
     angleController.setSetpoint(0);
     angleController.setTolerance(0.7);
   }
@@ -89,8 +91,11 @@ public class ShootWhileMoving extends Command {
   
     // SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
     // SmartDashboard.putNumber("dTheta", dTheta);
-    
-    rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingAdjustmentMultiplier * dTheta);
+    if (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4) {
+      rot = LLturnController.calculate(m_drivetrain.getTX() + kShootingAdjustmentMultiplier * dTheta);
+    } else {
+      rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingAdjustmentMultiplier * dTheta);
+    }
 
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       m_xSpeed = -m_xSpeed;
@@ -120,10 +125,11 @@ public class ShootWhileMoving extends Command {
     m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
 
     SmartDashboard.putBoolean("Angle?", angleController.atSetpoint());
+    SmartDashboard.putBoolean("LLTurn?", LLturnController.atSetpoint());
     SmartDashboard.putBoolean("Turn?", turnController.atSetpoint());
     SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.9);
 
-    if (angleController.atSetpoint() && m_shooter.getLeftShooterSpeed() >= distanceMultiplier * 5676.0 * 0.9 && turnController.atSetpoint()) {
+    if (angleController.atSetpoint() && m_shooter.getLeftShooterSpeed() >= distanceMultiplier * 5676.0 * 0.9 && (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4 ? LLturnController.atSetpoint() : turnController.atSetpoint())) {
       m_loader.setLoaderMotor(0.8);
     }
   }
@@ -142,6 +148,6 @@ public class ShootWhileMoving extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !m_loader.hasNoteInShooter();
   }
 }
