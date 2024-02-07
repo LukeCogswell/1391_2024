@@ -9,8 +9,8 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import static frc.robot.Constants.SwerveModuleConstants.*;
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
+import static frc.robot.Constants.Swerve.*;
+import static frc.robot.Constants.Swerve.PID.*;
 import static frc.robot.Constants.MeasurementConstants.*;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.MathUtil;

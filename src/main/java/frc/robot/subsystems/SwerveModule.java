@@ -4,20 +4,27 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;  
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.Lib.Conversions;
+import frc.robot.Constants;
+import frc.robot.Constants.CANConstants;
 
-import static frc.robot.Constants.SwerveModuleConstants.*;
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
+
+import static frc.robot.Constants.Swerve.*;
+import static frc.robot.Constants.Swerve.PID.*;
 import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.CANConstants;
 
@@ -25,15 +32,17 @@ public class SwerveModule extends SubsystemBase {
   /** Creates a new SwerveModule. */
   private SwerveModulePosition m_modulePosition;
   
-  private final CANSparkMax m_driveMotor;
+  private final TalonFX m_driveMotor;
   private final CANSparkMax m_steerMotor;
 
-  private final RelativeEncoder m_driveRelativeEncoder;
   private final RelativeEncoder m_steerRelativeEncoder;
   private final CANcoder m_steerEncoder;
 
+  private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
+
+  private VelocityVoltage driveVelocity = new VelocityVoltage(0.);
+
   private final SparkPIDController m_steerPIDController;
-  private final SparkPIDController m_drivePIDController;
 
   private final double m_steerEncoderOffset;
 
@@ -51,19 +60,17 @@ public class SwerveModule extends SubsystemBase {
 
     m_steerEncoderOffset = steerEncoderOffset;
     
-    m_driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
     m_steerMotor = new CANSparkMax(steerMotorID, MotorType.kBrushless);
     
-    m_driveRelativeEncoder = m_driveMotor.getEncoder();
     m_steerRelativeEncoder = m_steerMotor.getEncoder();
-    m_steerEncoder = new CANcoder(steerEncoderID);
-
-    setMotorSettings(m_driveMotor, kDriveMotorCurrentLimit);
+    m_steerEncoder = new CANcoder(steerEncoderID, Constants.CANConstants.CANivoreID);
+    
+    /* Drive Motor Config */
+    m_driveMotor = new TalonFX(driveMotorID, Constants.CANConstants.CANivoreID);
+    m_driveMotor.getConfigurator().apply(frc.robot.CTREConfigs.swerveDriveFXConfig);
+    m_driveMotor.getConfigurator().setPosition(0.0);
     setMotorSettings(m_steerMotor, kSteerMotorCurrentLimit);
-    m_driveMotor.setOpenLoopRampRate(0);
 
-    m_driveRelativeEncoder.setPositionConversionFactor(kDriveEncoderPositionConversionFactor); // Gives meters
-    m_driveRelativeEncoder.setVelocityConversionFactor(kDriveEncoderPositionConversionFactor / 60.0); // Gives meters per second
 
     m_steerRelativeEncoder.setPositionConversionFactor(kSteerEncoderPositionConversionFactor); // Gives degrees
     m_steerRelativeEncoder.setVelocityConversionFactor(kSteerEncoderPositionConversionFactor / 60.0); // Gives degrees per second
@@ -79,13 +86,6 @@ public class SwerveModule extends SubsystemBase {
       m_steerPIDController.setPositionPIDWrappingMaxInput(360);
       m_steerPIDController.setPositionPIDWrappingMinInput(0);
 
-    m_drivePIDController = m_driveMotor.getPIDController();
-      m_drivePIDController.setP(kModDriveP);
-      m_drivePIDController.setI(kModDriveI);
-      m_drivePIDController.setD(kModDriveD);
-      m_drivePIDController.setPositionPIDWrappingEnabled(false);
-
-    m_driveMotor.burnFlash();
     m_steerMotor.burnFlash();
 
   }
@@ -127,11 +127,11 @@ public class SwerveModule extends SubsystemBase {
   }
  
   public double getDriveDistance(){ // returns the distance the module has traveled
-    return m_driveRelativeEncoder.getPosition();
+    return m_driveMotor.getPosition().getValueAsDouble();
   }
 
   public SwerveModuleState getModuleState(){ // returns the current state of the module
-    return new SwerveModuleState(m_driveMotor.getEncoder().getVelocity(), getSteerAngle());
+    return new SwerveModuleState(m_driveMotor.get(), getSteerAngle());
   }
 
   public void setDesiredStateClosed(SwerveModuleState state) { // sets the desired state of the module (closed loop)
@@ -141,7 +141,9 @@ public class SwerveModule extends SubsystemBase {
     if (state.speedMetersPerSecond == 0) {
       m_driveMotor.set(0);
     } else {
-      m_drivePIDController.setReference(state.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+        driveVelocity.Velocity = Conversions.MPSToRPS(state.speedMetersPerSecond, Constants.Swerve.kWheelCircumference);
+        driveVelocity.FeedForward = driveFeedForward.calculate(state.speedMetersPerSecond);
+        m_driveMotor.setControl(driveVelocity);
     }
   }
 

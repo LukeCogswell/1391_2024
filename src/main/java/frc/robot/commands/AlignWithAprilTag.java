@@ -9,7 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
+import static frc.robot.Constants.Swerve.PID.*;
 
 import java.util.Arrays;
 

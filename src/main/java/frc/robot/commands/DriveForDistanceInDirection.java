@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
+import static frc.robot.Constants.Swerve.PID.*;
 
 public class DriveForDistanceInDirection extends Command {
   Pose2d currentPos;

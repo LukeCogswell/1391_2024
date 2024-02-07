@@ -9,12 +9,16 @@ import static frc.robot.Constants.MeasurementConstants.kInchesToMeters;
 
 import java.util.HashMap;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.Lib.COTSTalonFXSwerveConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -68,7 +72,7 @@ public final class Constants {
     public static final double kBackRightEncoderOffset = 0.0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
-      SwerveModuleConstants.kDriveReduction *
+      Swerve.kDriveReduction *
       MeasurementConstants.kWheelDiameterMeters * Math.PI; // ~ 4.6 m/s
       public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularSpeedRadiansPerSecond = kMaxSpeedMetersPerSecond /
@@ -87,7 +91,7 @@ public final class Constants {
   
     }
 
-  public static final class SwerveModuleConstants {
+  public static final class Swerve {
     public static final double kSpeedMultiplier = 1; // limits robot speed
     public static final double kRotationSpeedMultiplier = 0.7;
     public static final double kDriveDeadband = 0.05;
@@ -105,6 +109,34 @@ public final class Constants {
     public static final double kDriveEncoderPositionConversionFactor = Math.PI * MeasurementConstants.kWheelDiameterMeters * kDriveReduction;
     public static final double kSteerEncoderPositionConversionFactor = 360 * kSteerReduction; 
 
+    public static final double kWheelCircumference = MeasurementConstants.kWheelDiameterMeters * Math.PI;
+
+    public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
+    public static final double driveKV = 1.51;
+    public static final double driveKA = 0.27;
+
+    public static final class CTREConfigs {
+      public static final COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
+        COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
+
+      public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
+
+      public static final int driveCurrentLimit = 35;
+      public static final int driveCurrentThreshold = 60;
+      public static final double driveCurrentThresholdTime = 0.1;
+      public static final boolean driveEnableCurrentLimit = true;
+
+      public static final double openLoopRamp = 0.25;
+      public static final double closedLoopRamp = 0.0;
+
+      public static final double driveGearRatio = 1.; //TODO: FIND THIS GEAR RATIO
+
+      public static final InvertedValue driveMotorInvert = chosenModule.driveMotorInvert;
+
+      public static final double driveKP = 0.16;
+      public static final double driveKI = 0.0015; // Used in module control TODO: Tune
+      public static final double driveKD = 0.0;
+    }
     public static final class PID {
       public static final double kSteerP = 0.01;
       public static final double kSteerI = 0.0; // Used in module control
@@ -133,6 +165,8 @@ public final class Constants {
   }
 
   public static final class CANConstants {
+    public static final String CANivoreID = "CANivore 1";
+
     public static final int kFrontLeftDriveMotorID = 3;
     public static final int kBackLeftDriveMotorID = 1;
     public static final int kFrontRightDriveMotorID = 4;

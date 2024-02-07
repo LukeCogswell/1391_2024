@@ -20,9 +20,9 @@ import frc.robot.subsystems.Turret;
 
 import static frc.robot.Constants.Shooter.PID.*;
 import static frc.robot.Constants.MeasurementConstants.*;
-import static frc.robot.Constants.SwerveModuleConstants.*;
+import static frc.robot.Constants.Swerve.*;
 import static frc.robot.Constants.Shooter.*;
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
+import static frc.robot.Constants.Swerve.PID.*;
 
 public class ShootWhileMoving extends Command {
   private Drivetrain m_drivetrain;

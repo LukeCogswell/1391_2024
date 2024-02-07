@@ -12,7 +12,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
+import static frc.robot.Constants.Swerve.PID.*;
 
 public class EjectNotes extends Command {
   private Drivetrain m_drivetrain;

@@ -12,12 +12,12 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Shooter;
-import static frc.robot.Constants.SwerveModuleConstants.PID.*;
+import static frc.robot.Constants.Swerve.PID.*;
 
 import java.util.function.DoubleSupplier;
 
 import static frc.robot.Constants.MeasurementConstants.*;
-import static frc.robot.Constants.SwerveModuleConstants.*;
+import static frc.robot.Constants.Swerve.*;
 import static frc.robot.Constants.Shooter.*;
 
 
