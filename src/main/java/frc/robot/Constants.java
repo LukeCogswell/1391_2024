@@ -111,13 +111,13 @@ public final class Constants {
 
     public static final double kWheelCircumference = MeasurementConstants.kWheelDiameterMeters * Math.PI;
 
-    public static final double driveKS = 0.32; //TODO: This must be tuned to specific robot
-    public static final double driveKV = 1.51;
-    public static final double driveKA = 0.27;
+    public static final double driveKS = 1.5; //TODO: This must be tuned to specific robot
+    public static final double driveKV = 1.5;
+    public static final double driveKA = .5;
 
     public static final class CTREConfigs {
       public static final COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
-        COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
+        COTSTalonFXSwerveConstants.SDS.MK4i.KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L3);
 
       public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
@@ -129,7 +129,7 @@ public final class Constants {
       public static final double openLoopRamp = 0.25;
       public static final double closedLoopRamp = 0.0;
 
-      public static final double driveGearRatio = 1.; //TODO: FIND THIS GEAR RATIO
+      public static final double driveGearRatio = (6.75 / 1.0);//L2 //TODO: FIND THIS GEAR RATIO
 
       public static final InvertedValue driveMotorInvert = chosenModule.driveMotorInvert;
 

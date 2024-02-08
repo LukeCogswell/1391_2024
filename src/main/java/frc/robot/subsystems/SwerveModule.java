@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Lib.Conversions;
 import frc.robot.Constants;
 import frc.robot.Constants.CANConstants;
-
+import frc.robot.CTREConfigs;
 
 import static frc.robot.Constants.Swerve.*;
 import static frc.robot.Constants.Swerve.PID.*;
@@ -67,7 +67,7 @@ public class SwerveModule extends SubsystemBase {
     
     /* Drive Motor Config */
     m_driveMotor = new TalonFX(driveMotorID, Constants.CANConstants.CANivoreID);
-    m_driveMotor.getConfigurator().apply(frc.robot.CTREConfigs.swerveDriveFXConfig);
+    m_driveMotor.getConfigurator().apply(new CTREConfigs().getSwerveDriveConfig());
     m_driveMotor.getConfigurator().setPosition(0.0);
     setMotorSettings(m_steerMotor, kSteerMotorCurrentLimit);
 
@@ -127,7 +127,8 @@ public class SwerveModule extends SubsystemBase {
   }
  
   public double getDriveDistance(){ // returns the distance the module has traveled
-    return m_driveMotor.getPosition().getValueAsDouble();
+    return Conversions.RPSToMPS(m_driveMotor.getPosition().getValueAsDouble(), kWheelCircumference);
+    // return -m_driveMotor.getPosition().getValueAsDouble();
   }
 
   public SwerveModuleState getModuleState(){ // returns the current state of the module

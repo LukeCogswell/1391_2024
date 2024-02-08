@@ -5,12 +5,13 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import static frc.robot.Constants.Swerve.CTREConfigs.*;
 
 /** Add your docs here. */
 public final class CTREConfigs {
-    public static TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
+    public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
     
     public CTREConfigs() {
       /** Swerve Drive Motor Configuration */
@@ -39,5 +40,9 @@ public final class CTREConfigs {
         swerveDriveFXConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = closedLoopRamp;
         swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = closedLoopRamp;
 
+    }
+    
+    public TalonFXConfiguration getSwerveDriveConfig() {
+      return swerveDriveFXConfig;
     }
 }
