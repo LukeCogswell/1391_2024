@@ -4,21 +4,13 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OIConstants;
-import frc.robot.commands.AutoCollect;
-import frc.robot.commands.AutoTrackCollectNote;
-import frc.robot.commands.Autos;
-import frc.robot.commands.DepositInAmp;
-import frc.robot.commands.DriveWithJoysticks;
-import frc.robot.commands.RevShooter;
-import frc.robot.commands.SetTurretAngle;
-import frc.robot.commands.ShootNoteAtSpeedAndAngle;
-import frc.robot.commands.ShootWhileMoving;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Loader;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Turret;
+//SYSID IMPORT
+// import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import frc.robot.commands.*;
+import frc.robot.subsystems.*;
+
+import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,7 +40,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
-      new CommandXboxController(OIConstants.kDriverControllerPort);
+      new CommandXboxController(kDriverControllerPort);
       
       /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -89,21 +81,12 @@ public class RobotContainer {
     configureBindings();
     
     m_drivetrain.setDefaultCommand(
-      new DriveWithJoysticks(
+      new DriveWithJoysticksFieldRelative(
         m_drivetrain, 
         () -> m_driverController.getLeftX(), 
         () -> m_driverController.getLeftY(), 
         () -> m_driverController.getRightX(), 
-        () -> m_driverController.getRightTriggerAxis(), 
-        new Trigger(() -> false),
-        new Trigger(() -> false),
-        new Trigger(() -> false),
-        new Trigger(() -> false)
-        
-        // m_driverController.povDown(),
-        // m_driverController.b(),
-        // m_driverController.leftBumper(),
-        // m_driverController.rightBumper()
+        () -> m_driverController.getRightTriggerAxis()
         )
     );
     
@@ -124,9 +107,16 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    /** SYSID ROUTINE BUTTONS */
+    // // Bind full set of SysId routine tests to buttons; a complete routine should run each of these
+    // // once.
+    // m_driverController.a().whileTrue(m_drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // m_driverController.b().whileTrue(m_drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // m_driverController.x().whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // m_driverController.y().whileTrue(m_drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
-    m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0.));
+    // m_driverController.a().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0.));
     // m_driverController.a().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 4000., 35.));
     // m_driverController.y().whileTrue(new AlignWithAprilTag(m_drivetrain, 1.5));
 
@@ -159,16 +149,25 @@ public class RobotContainer {
     
     // m_driverController.x().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.7), m_loader)).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.), m_loader));
 
-    m_driverController.b().onTrue(new InstantCommand(() -> {
-      m_loader.setLoaderMotor(-0.5);
-      m_intake.setIntake(-0.5);
-      m_shooter.setShooterSpeed(-300.0);
-    }, m_shooter, m_intake, m_loader)).onFalse(new InstantCommand(() -> {
-      m_loader.setLoaderMotor(0.0);
-      m_intake.setIntake(0.0);
-      m_shooter.setShooterSpeed(0.0);
-    }, m_shooter, m_intake, m_loader));
+              // m_driverController.b().onTrue(new InstantCommand(() -> {
+              //   m_loader.setLoaderMotor(-0.5);
+              //   m_intake.setIntake(-0.5);
+              //   m_shooter.setShooterSpeed(-300.0);
+              // }, m_shooter, m_intake, m_loader)).onFalse(new InstantCommand(() -> {
+              //   m_loader.setLoaderMotor(0.0);
+              //   m_intake.setIntake(0.0);
+              //   m_shooter.setShooterSpeed(0.0);
+              // }, m_shooter, m_intake, m_loader));
 
+              // m_driverController.b().whileTrue(
+              //   new DriveWithJoysticksRobotRelative(
+              //     m_drivetrain, 
+              //     () -> m_driverController.getLeftX(), 
+              //     () -> m_driverController.getLeftY(), 
+              //     () -> m_driverController.getRightX(), 
+              //     () -> m_driverController.getRightTriggerAxis()
+              //     )
+              // );
     // m_driverController.x().whileTrue(new AutoTrackNote(m_drivetrain, m_intake)
     //   .andThen(new ParallelRaceGroup(
     //     new DriveWithJoysticks(
@@ -194,18 +193,18 @@ public class RobotContainer {
     //       new AutoTransfer(m_intake, m_shooter, m_turret, m_loader)
     //     )
     //   ))
-      m_driverController.x().whileTrue(new AutoTrackCollectNote(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter()))
-        .onFalse(new InstantCommand(() -> {
-        m_shooter.setShooterSpeed(0.);
-        m_loader.setLoaderMotor(0.);
-        m_intake.setIntake(0.);
-        }, m_intake, m_shooter, m_turret, m_loader));
-      
-    m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 55.)).onFalse(new InstantCommand(() -> {}, m_shooter));
-    m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, 40.)).onFalse(new InstantCommand(() -> {}, m_shooter));
-    
-    m_driverController.povRight().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));
-    m_driverController.povLeft().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(-0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));
+              //   m_driverController.x().whileTrue(new AutoTrackCollectNote(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter()))
+              //     .onFalse(new InstantCommand(() -> {
+              //     m_shooter.setShooterSpeed(0.);
+              //     m_loader.setLoaderMotor(0.);
+              //     m_intake.setIntake(0.);
+              //     }, m_intake, m_shooter, m_turret, m_loader));
+                
+              // m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 55.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+              // m_driverController.povDown().whileTrue(new SetTurretAngle(m_turret, 40.)).onFalse(new InstantCommand(() -> {}, m_shooter));
+              
+              // m_driverController.povRight().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));
+              // m_driverController.povLeft().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(-0.4))).onFalse(new InstantCommand(() -> m_loader.setLoaderMotor(0.0)));
 
 
   }

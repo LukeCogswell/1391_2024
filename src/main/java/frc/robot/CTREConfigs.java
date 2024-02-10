@@ -5,7 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
 
 import static frc.robot.Constants.Swerve.CTREConfigs.*;
 
@@ -15,6 +14,12 @@ public final class CTREConfigs {
     
     public CTREConfigs() {
       /** Swerve Drive Motor Configuration */
+
+        swerveDriveFXConfig.Voltage.PeakForwardVoltage = peakVoltage;
+        swerveDriveFXConfig.Voltage.PeakReverseVoltage = -peakVoltage;
+
+        swerveDriveFXConfig.Audio.AllowMusicDurDisable = false;
+
         /* Motor Inverts and Neutral Mode */
         swerveDriveFXConfig.MotorOutput.Inverted = driveMotorInvert;
         swerveDriveFXConfig.MotorOutput.NeutralMode = driveNeutralMode;

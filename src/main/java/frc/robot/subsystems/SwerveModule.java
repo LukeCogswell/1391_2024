@@ -121,14 +121,17 @@ public class SwerveModule extends SubsystemBase {
     return m_modulePosition;
   }
 
+  public double getVelocity() {
+    return m_driveMotor.getVelocity().getValueAsDouble() * kDriveReduction * kWheelCircumference;
+  }
+
   public Rotation2d getSteerAngle(){ // returns the angle the module is facing
     double angle = m_steerRelativeEncoder.getPosition() - m_steerEncoderOffset;
     return Rotation2d.fromDegrees(angle); 
   }
  
   public double getDriveDistance(){ // returns the distance the module has traveled
-    return Conversions.RPSToMPS(m_driveMotor.getPosition().getValueAsDouble(), kWheelCircumference);
-    // return -m_driveMotor.getPosition().getValueAsDouble();
+    return m_driveMotor.getPosition().getValueAsDouble() * kDriveReduction * kWheelCircumference;
   }
 
   public SwerveModuleState getModuleState(){ // returns the current state of the module
@@ -157,6 +160,14 @@ public class SwerveModule extends SubsystemBase {
   public void stop(){ // stops the module
     m_driveMotor.set(0);
     m_steerMotor.set(0);
+  }
+
+  public void setVoltage(Double volts) {
+    m_driveMotor.setVoltage(volts);
+  }
+
+  public double getVoltage() {
+   return m_driveMotor.getMotorVoltage().getValueAsDouble();
   }
 
   public double getAbsoluteAngle() { // only used for calibration or debugging

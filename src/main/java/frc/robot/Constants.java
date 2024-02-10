@@ -46,7 +46,7 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.5;
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
-    public static final double kAngleEncoderOffset = 120-34.27;
+    public static final double kAngleEncoderOffset = 14.27;
     public static final double kMaxSpeedRPM = 5676;
     public static final class PID {
       public static final double kAngleP = 0.02;
@@ -73,8 +73,8 @@ public final class Constants {
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
       Swerve.kDriveReduction *
-      MeasurementConstants.kWheelDiameterMeters * Math.PI; // ~ 4.6 m/s
-      public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+      MeasurementConstants.kWheelDiameterMeters * Math.PI; // ~ 5.2 m/s
+      public static final double kMaxAccelerationMetersPerSecondSquared = 3.55; //3
     public static final double kMaxAngularSpeedRadiansPerSecond = kMaxSpeedMetersPerSecond /
       Math.hypot(kModuleXOffsetMeters / 2.0, kModuleYOffsetMeters / 2.0);
   
@@ -93,17 +93,17 @@ public final class Constants {
 
   public static final class Swerve {
     public static final double kSpeedMultiplier = 1; // limits robot speed
-    public static final double kRotationSpeedMultiplier = 0.7;
+    public static final double kRotationSpeedMultiplier = 0.6;
     public static final double kDriveDeadband = 0.05;
-    public static final double kAutoDriveSpeedLimiter = 0.75;
+    public static final double kAutoDriveSpeedLimiter = 1.;
 
-    public static final double kMaxVoltage = 12.0;
+    public static final double kMaxVoltage = 13.0;
     public static final double kAccelerationSeconds = 0.15; // 0.5 seconds to reach full speed
 
     public static final int kDriveMotorCurrentLimit = 40;
     public static final int kSteerMotorCurrentLimit = 20;
 
-    public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0); // Wheel revolutions per motor revolution`
+    public static final double kDriveReduction = 1 / CTREConfigs.driveGearRatio; // Wheel revolutions per motor revolution`
     public static final double kSteerReduction = (14.0 / 50.0) * (10.0 / 60.0); // Module revolutions per motor revolution
 
     public static final double kDriveEncoderPositionConversionFactor = Math.PI * MeasurementConstants.kWheelDiameterMeters * kDriveReduction;
@@ -111,9 +111,9 @@ public final class Constants {
 
     public static final double kWheelCircumference = MeasurementConstants.kWheelDiameterMeters * Math.PI;
 
-    public static final double driveKS = 1.5; //TODO: This must be tuned to specific robot
-    public static final double driveKV = 1.5;
-    public static final double driveKA = .5;
+    public static final double driveKS = 0.054977; //SYSID CALCULATED 0.054977
+    public static final double driveKV = 12.881; //12.881
+    public static final double driveKA = 1.1502; //1.1502
 
     public static final class CTREConfigs {
       public static final COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
@@ -121,15 +121,17 @@ public final class Constants {
 
       public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
+      public static final double peakVoltage = 13.5;
+
       public static final int driveCurrentLimit = 35;
       public static final int driveCurrentThreshold = 60;
       public static final double driveCurrentThresholdTime = 0.1;
       public static final boolean driveEnableCurrentLimit = true;
 
-      public static final double openLoopRamp = 0.25;
-      public static final double closedLoopRamp = 0.0;
+      public static final double openLoopRamp = 0.;
+      public static final double closedLoopRamp = .1;
 
-      public static final double driveGearRatio = (6.75 / 1.0);//L2 //TODO: FIND THIS GEAR RATIO
+      public static final double driveGearRatio = (5.9 / 1.0);//L2 default is 6.75 //5.9 to 1 with new pinions
 
       public static final InvertedValue driveMotorInvert = chosenModule.driveMotorInvert;
 
@@ -150,7 +152,7 @@ public final class Constants {
       public static final double kDriveI = 0.0; // Used in pose control
       public static final double kDriveD = 0.0;
 
-      public static final double kTurnP = 0.075;// 0.075
+      public static final double kTurnP = 0.05;// 0.075
       public static final double kTurnI = 0.01; // Used in pose control
       public static final double kTurnD = 0.0075; //0.0075
 

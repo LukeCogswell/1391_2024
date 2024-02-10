@@ -1,8 +1,22 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
+
+//SYSID
+// import static edu.wpi.first.units.MutableMeasure.mutable;
+// import static edu.wpi.first.units.Units.Meters;
+// import static edu.wpi.first.units.Units.MetersPerSecond;
+// import static edu.wpi.first.units.Units.Volts;
+// import edu.wpi.first.units.Distance;
+// import edu.wpi.first.units.Measure;
+// import edu.wpi.first.units.MutableMeasure;
+// import edu.wpi.first.units.Velocity;
+// import edu.wpi.first.units.Voltage;
+// import edu.wpi.first.wpilibj.RobotController;
+// import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+// import static frc.robot.Constants.Swerve.CTREConfigs.driveGearRatio;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,6 +36,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+
 
 import static frc.robot.Constants.MeasurementConstants.*;
 
@@ -57,11 +73,18 @@ public class Drivetrain extends SubsystemBase {
   public double desiredVelocityAverage = 0;
   public double actualVelocityAverage = 0;
 
+  // private SysIdRoutine m_sysIdRoutine;
 
+  // // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+  // private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+  // // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+  // private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-    
+
     m_frontLeft = new SwerveModule(
       kFrontLeftDriveMotorID,
       kFrontLeftSteerMotorID,
@@ -110,6 +133,7 @@ public class Drivetrain extends SubsystemBase {
           return DriverStation.getAlliance().get() == DriverStation.Alliance.Red;}
           return false;},
           this // Reference to this subsystem to set requirements
+
     );
     
     SmartDashboard.putBoolean("init-PRESENT?", DriverStation.getAlliance().isPresent());
@@ -125,37 +149,82 @@ public class Drivetrain extends SubsystemBase {
     setVisionStdDvs(1.0, 1.0, 9999.0);
 
     SmartDashboard.putData("Field", field);
+
+    /*SYSID ROUTINE CODE - NOT NECESSARY UNLESS ACTIVELY TESTING */
+    // m_sysIdRoutine =
+    //   new SysIdRoutine(
+    //       // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+    //       new SysIdRoutine.Config(),
+    //       new SysIdRoutine.Mechanism(
+    //           // Tell SysId how to plumb the driving voltage to the motors.
+    //           (Measure<Voltage> volts) -> {
+    //             m_frontLeft.setVoltage(volts.in(Volts));
+    //             m_frontRight.setVoltage(volts.in(Volts));
+    //             m_backLeft.setVoltage(volts.in(Volts));
+    //             m_backRight.setVoltage(volts.in(Volts));
+    //           },
+    //           // Tell SysId how to record a frame of data for each motor on the mechanism being
+    //           // characterized.
+    //           log -> {
+    //             // Record a frame for the front left motor. 
+    //             log.motor("drive-front-left")
+    //                 .voltage(
+    //                     m_appliedVoltage.mut_replace(
+    //                         m_frontLeft.getVoltage(), Volts))
+    //                 .linearPosition(m_distance.mut_replace(m_frontLeft.getDriveDistance(), Meters))
+    //                 .linearVelocity(
+    //                     m_velocity.mut_replace(m_frontLeft.getVelocity(), MetersPerSecond));
+    //             // Record a frame for the front right motor. 
+    //             log.motor("drive-front-right")
+    //                 .voltage(
+    //                     m_appliedVoltage.mut_replace(
+    //                         m_frontRight.getVoltage(), Volts))
+    //                 .linearPosition(m_distance.mut_replace(m_frontRight.getDriveDistance(), Meters))
+    //                 .linearVelocity(
+    //                     m_velocity.mut_replace(m_frontRight.getVelocity(), MetersPerSecond));
+    //             // Record a frame for the back left motor. 
+    //             log.motor("drive-back-left")
+    //                 .voltage(
+    //                     m_appliedVoltage.mut_replace(
+    //                         m_backLeft.getVoltage(), Volts))
+    //                 .linearPosition(m_distance.mut_replace(m_backLeft.getDriveDistance(), Meters))
+    //                 .linearVelocity(
+    //                     m_velocity.mut_replace(m_backLeft.getVelocity(), MetersPerSecond));
+    //             // Record a frame for the back right motor. 
+    //             log.motor("drive-back-right")
+    //                 .voltage(
+    //                     m_appliedVoltage.mut_replace(
+    //                         m_backRight.getVoltage(), Volts))
+    //                 .linearPosition(m_distance.mut_replace(m_backRight.getDriveDistance(), Meters))
+    //                 .linearVelocity(
+    //                     m_velocity.mut_replace(m_backRight.getVelocity(), MetersPerSecond));
+    //           },
+    //           // Tell SysId to make generated commands require this subsystem, suffix test state in
+    //           // WPILog with this subsystem's name ("drive")
+    //           this));
   }
   
+  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  //   return m_sysIdRoutine.quasistatic(direction);
+  // }
+
+  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+  //   return m_sysIdRoutine.dynamic(direction);
+  // }
+
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("tagspace x", getBotPoseTagSpace()[0]);
-    // SmartDashboard.putNumber("tagspace y", getBotPoseTagSpace()[1]);
-    // SmartDashboard.putNumber("tagspace z", getBotPoseTagSpace()[2]);
-    // SmartDashboard.putNumber("tagspace yaw", getBotPoseTagSpace()[5]);
     updateOdometry();
     updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
-    // SmartDashboard.putData("Field", field);
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
-    // SmartDashboard.putNumber("TID", getTID());
-    // SmartDashboard.putNumber("Fused Heading", -m_navX.getFusedHeading());
-    // if (getTV()) {
-    //   SmartDashboard.putNumber("TagSpace Z", -getBotPoseTagSpace()[2]);
-    //   SmartDashboard.putNumber("Gyro vs Limelight Diff", getFieldPosition().getRotation().getDegrees() -getBOTPOSE()[5]);
-    // }
-    // SmartDashboard.putBoolean("IS PRESENT?", DriverStation.getAlliance().isPresent());
-    // if (DriverStation.getAlliance().isPresent()) {
-    //   SmartDashboard.putBoolean("IS-RED?", DriverStation.getAlliance().get() == Alliance.Red);
-    // }
-    // This method will be called once per scheduler run
   }
   
   public void updateOdometryWithAprilTags() {
     if (getTV()){
+      var botTagSpace = getBotPoseTagSpace(); 
       if (-getBotPoseTagSpace()[2] < 5.) {
         var botpose = getBOTPOSE();
-        var botTagSpace = getBotPoseTagSpace();
         setVisionStdDvs(1.0 * -botTagSpace[2], 1.0 * -botTagSpace[2], 9999.0);
         Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
         m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 

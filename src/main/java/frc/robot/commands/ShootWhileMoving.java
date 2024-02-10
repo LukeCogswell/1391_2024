@@ -31,7 +31,7 @@ public class ShootWhileMoving extends Command {
   private Loader m_loader;
   private PIDController angleController = new PIDController(kAngleP, kAngleI, kAngleD);
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
-  private PIDController LLturnController = new PIDController(0.04, 0.001, 0.);
+  private PIDController LLturnController = new PIDController(0.005, 0.0001, 0.);
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private DoubleSupplier xSpeed, ySpeed, m_precision;

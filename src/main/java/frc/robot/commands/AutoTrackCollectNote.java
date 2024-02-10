@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
@@ -28,21 +27,12 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
     addCommands(
       new AutoTrackNote(drivetrain, intake),
       new ParallelRaceGroup(
-        new DriveWithJoysticks(
+        new DriveWithJoysticksFieldRelative(
           drivetrain, 
           () -> driverController.getLeftX(), 
           () -> driverController.getLeftY(), 
           () -> driverController.getRightX(), 
-          () -> driverController.getRightTriggerAxis(), 
-          new Trigger(() -> false),
-          new Trigger(() -> false),
-          new Trigger(() -> false),
-          new Trigger(() -> false)
-          
-          // m_driverController.povDown(),
-          // m_driverController.b(),
-          // m_driverController.leftBumper(),
-          // m_driverController.rightBumper()
+          () -> driverController.getRightTriggerAxis() 
           ),
         new SequentialCommandGroup(
           new WaitCommand(0.2),
