@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.Shooter.kTransferAngle;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -22,7 +24,7 @@ public class AutoCollect extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
     new ParallelRaceGroup(
-      new SetTurretAngle(turret, 15.),
+      new SetTurretAngle(turret, kTransferAngle),
       new SequentialCommandGroup(
         // new RunCommand(() -> intake.setIntake(0.7), intake).withTimeout(0.1),
         // new Collect(intake, 0.7),

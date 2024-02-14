@@ -32,7 +32,7 @@ public class SwerveModule extends SubsystemBase {
   /** Creates a new SwerveModule. */
   private SwerveModulePosition m_modulePosition;
   
-  private final TalonFX m_driveMotor;
+  public final TalonFX m_driveMotor;
   private final CANSparkMax m_steerMotor;
 
   private final RelativeEncoder m_steerRelativeEncoder;
@@ -130,8 +130,8 @@ public class SwerveModule extends SubsystemBase {
     return Rotation2d.fromDegrees(angle); 
   }
  
-  public double getDriveDistance(){ // returns the distance the module has traveled
-    return m_driveMotor.getPosition().getValueAsDouble() * kDriveReduction * kWheelCircumference;
+  public double getDriveDistance(){ // returns the distance the module has traveled - add drive reduction for SYSID
+    return m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumference;
   }
 
   public SwerveModuleState getModuleState(){ // returns the current state of the module

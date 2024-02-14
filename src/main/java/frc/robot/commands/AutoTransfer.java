@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.Shooter.kTransferAngle;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -23,9 +25,9 @@ public class AutoTransfer extends ParallelRaceGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetTurretAngle(turret, 15.),
+      new SetTurretAngle(turret, kTransferAngle),
       new SequentialCommandGroup(
-        new WaitUntilCommand(() -> Math.abs(turret.getShooterAngle() - 15) <= 3),
+        new WaitUntilCommand(() -> Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3),
         new InstantCommand(() -> {
           loader.setLoaderMotor(.5);
           intake.setIntake(.3);

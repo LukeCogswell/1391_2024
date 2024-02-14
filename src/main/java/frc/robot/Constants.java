@@ -46,8 +46,11 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.5;
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
-    public static final double kAngleEncoderOffset = 14.27;
+    public static final double kAngleEncoderOffset = 14.27+68.5;
     public static final double kMaxSpeedRPM = 5676;
+
+    public static final double kTransferAngle = 20.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+
     public static final class PID {
       public static final double kAngleP = 0.02;
       public static final double kAngleI = 0.005;
@@ -55,20 +58,45 @@ public final class Constants {
 
     }
   }
+
+  public static final class Intake {
+    public static final double kIntakeEncoderOffset = 0.25;
+    public static final double kEncoderGearRatio = 0.5;
+    public static final double kMinRotation = 0.0;  // DEGREES
+    public static final double kMaxRotation = 70.0; // DEGREES
+
+    public static final class PID {
+      public static final double kIAngleP = 0.1;
+      public static final double kIAngleI = 0.;
+      public static final double kIAngleD = 0.;
+    }
+  }
+
+  public static final class Elevator {
+    public static final double kMotorRotationsToMeters = 0.00125; // 1/8 of a mm per revolution
+    public static final double kMaxReach = 0.;
+    public static final double kMinReach = 0.;
+    public static final class PID {
+      public static final double kElevatorP = 0.1;
+      public static final double kElevatorI = 0.;
+      public static final double kElevatorD = 0.;
+    }
+  }
+
   public static final class MeasurementConstants {
     // This is based on the CAD model (divided by two to represent distance from center of robot) 
     public static final double kInchesToMeters = 39.37;
-    public static final double kModuleXOffsetMeters = 24.75 / kInchesToMeters / 2; // 21.5 inches - distance between left and right wheels
-    public static final double kModuleYOffsetMeters = 24.75 / kInchesToMeters / 2; // 18.5 inches - distance between front and back wheels
+    public static final double kModuleXOffsetMeters = 24.75 / kInchesToMeters / 2; //TODO FIX THIS
+    public static final double kModuleYOffsetMeters = 24.75 / kInchesToMeters / 2; //TODO FIX THIS
     public static final double kDiagModuleOffsetMeters = Math.sqrt(Math.pow(kModuleXOffsetMeters, 2) + Math.pow(kModuleYOffsetMeters, 2));
-    public static final double kWheelDiameterMeters = 0.10033; // 4 inches - diameter of the wheels
+    public static final double kWheelDiameterMeters = 0.10033; // 4 inches - diameter of the wheels == 0.10033
 
     public static final double kFieldX = 649 / kInchesToMeters;
     public static final double kFieldY = 319 / kInchesToMeters;
 
     public static final double kFrontLeftEncoderOffset = 0.0;
     public static final double kBackLeftEncoderOffset = 0.0;
-    public static final double kFrontRightEncoderOffset = 180.0;
+    public static final double kFrontRightEncoderOffset = 0.0;
     public static final double kBackRightEncoderOffset = 0.0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
@@ -152,9 +180,13 @@ public final class Constants {
       public static final double kDriveI = 0.0; // Used in pose control
       public static final double kDriveD = 0.0;
 
-      public static final double kTurnP = 0.05;// 0.075
-      public static final double kTurnI = 0.01; // Used in pose control
-      public static final double kTurnD = 0.0075; //0.0075
+      public static final double kTurnP = 0.02;// 0.075
+      public static final double kTurnI = 0.0002; // Used in pose control
+      public static final double kTurnD = 0.00; //0.0075
+      
+      public static final double kLLTurnP = 0.01;// 0.075
+      public static final double kLLTurnI = 0.0002; // Used in limelight pose control
+      public static final double kLLTurnD = 0.0; //0.0075
 
       public static final double kTiltP = 0.01;
       public static final double kTiltI = 0.0;

@@ -39,57 +39,61 @@ public final class Autos {
   }
 
   public static Command Start_3_End_13_14_15(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter) {
-    PathPlannerPath path0 = PathPlannerPath.fromPathFile(       "IS3-E3");
-    PathPlannerPath path1 = PathPlannerPath.fromPathFile(        "S3-E15");
-    PathPlannerPath path2 = PathPlannerPath.fromPathFile(       "S15-EDownstage");
-    PathPlannerPath path3 = PathPlannerPath.fromPathFile("SDownstage-E14");
-    PathPlannerPath path4 = PathPlannerPath.fromPathFile(       "S14-EDownstage");
-    PathPlannerPath path5 = PathPlannerPath.fromPathFile("SDownstage-E13");
-    PathPlannerPath path6 = PathPlannerPath.fromPathFile(       "S13-EUpstage");
+    PathPlannerPath path0 = PathPlannerPath.fromPathFile(       "PS3-IS3");
+    PathPlannerPath path1 = PathPlannerPath.fromPathFile(       "IS3-E3");
+    PathPlannerPath path2 = PathPlannerPath.fromPathFile(        "S3-E15");
+    PathPlannerPath path3 = PathPlannerPath.fromPathFile(       "S15-EDownstage");
+    PathPlannerPath path4 = PathPlannerPath.fromPathFile("SDownstage-E14");
+    PathPlannerPath path5 = PathPlannerPath.fromPathFile(       "S14-EDownstage");
+    PathPlannerPath path6 = PathPlannerPath.fromPathFile("SDownstage-E13");
+    PathPlannerPath path7 = PathPlannerPath.fromPathFile(       "S13-EUpstage");
 
     return Commands.sequence(
       new InstantCommand(
         () -> {
           if (DriverStation.getAlliance().get() == Alliance.Blue){
-            drivetrain.setFieldPosition(new Pose2d(new Translation2d(1.26, 4.10), new Rotation2d(0.)));
+            drivetrain.setFieldPosition(new Pose2d(new Translation2d(1.44, 4.54), new Rotation2d(0.)));
           } else {
-            drivetrain.setFieldPosition(new Pose2d(new Translation2d(kFieldX - 1.26, 4.10), new Rotation2d(Math.PI)));
+            drivetrain.setFieldPosition(new Pose2d(new Translation2d(kFieldX - 1.44, 4.54), new Rotation2d(Math.PI)));
           }
         }
-      ),
+        ),
+      new ParallelDeadlineGroup(
+        AutoBuilder.followPath(path0),
+        new RevShooter(drivetrain, shooter, loader)),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
       new ParallelCommandGroup(
-        AutoBuilder.followPath(path0).until(() -> loader.hasNoteInShooter()),
+        AutoBuilder.followPath(path1).until(() -> loader.hasNoteInShooter()),
         new RevShooter(drivetrain, shooter, loader).withTimeout(2),
         new AutoCollect(intake, turret, loader).withTimeout(2)
       ),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
       new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path1).until(() -> loader.hasNoteInShooter()),
+        AutoBuilder.followPath(path2).until(() -> loader.hasNoteInShooter()),
         new AutoCollect(intake, turret, loader)
       ),
       new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path2),
+        AutoBuilder.followPath(path3),
         new AutoCollect(intake, turret, loader),
         new RevShooter(drivetrain, shooter, loader)
       ),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
       new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path3).until(() -> loader.hasNoteInShooter()),
+        AutoBuilder.followPath(path4).until(() -> loader.hasNoteInShooter()),
         new AutoCollect(intake, turret, loader)
       ),
       new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path4),
+        AutoBuilder.followPath(path5),
         new AutoCollect(intake, turret, loader),
         new RevShooter(drivetrain, shooter, loader)
       ),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
       new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path5).until(() -> loader.hasNoteInShooter()),
+        AutoBuilder.followPath(path6).until(() -> loader.hasNoteInShooter()),
         new AutoCollect(intake, turret, loader)
       ),
       new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path6),
+        AutoBuilder.followPath(path7),
         new AutoCollect(intake, turret, loader),
         new RevShooter(drivetrain, shooter, loader)
       ),
@@ -97,34 +101,5 @@ public final class Autos {
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)
     );
   }
-
-  public static Command fourPieceClose(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter) {
-    PathPlannerPath path0 = PathPlannerPath.fromPathFile("4PieceClosePath0");
-    PathPlannerPath path1 = PathPlannerPath.fromPathFile("4PieceClosePath1");
-    PathPlannerPath path2 = PathPlannerPath.fromPathFile("4PieceClosePath2");
-
-    return Commands.sequence(
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
-      new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path0),
-        new AutoCollect(intake, turret, loader),
-        new RevShooter(drivetrain, shooter, loader)
-      ),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
-      new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path1),
-        new AutoCollect(intake, turret, loader),
-        new RevShooter(drivetrain, shooter, loader)
-      ),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
-      new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path2),
-        new AutoCollect(intake, turret, loader),
-        new RevShooter(drivetrain, shooter, loader)
-      ),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)
-    );
-  }
-
 
 }

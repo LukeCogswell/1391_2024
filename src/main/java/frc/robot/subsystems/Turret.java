@@ -75,7 +75,7 @@ public class Turret extends SubsystemBase {
   } // first iteration
 
   public double getShooterAngle() {
-    var angle = (m_angleEncoder.getAbsolutePosition()*360 - kAngleEncoderOffset - 180) % 360 + 180;
+    var angle = 180 - (m_angleEncoder.getAbsolutePosition()*360 - kAngleEncoderOffset - 180) % 360;
     return angle > 180 ? angle - 360: angle;
   }
 
