@@ -12,13 +12,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 public class Shooter extends SubsystemBase {
-  private final CANSparkMax m_shooterMotorRight = new CANSparkMax(13, MotorType.kBrushless); 
-  private final CANSparkMax m_shooterMotorLeft = new CANSparkMax(14, MotorType.kBrushless);
+  private final CANSparkMax m_shooterMotorRight = new CANSparkMax(14, MotorType.kBrushless); 
+  private final CANSparkMax m_shooterMotorLeft = new CANSparkMax(13, MotorType.kBrushless);
   
 
   /** Creates a new Shooter. */
   public Shooter() {
-    m_shooterMotorRight.setInverted(true); //false for big shooter
+    m_shooterMotorRight.setInverted(false); //false for big shooter
     m_shooterMotorLeft.setInverted(true);
   }
 

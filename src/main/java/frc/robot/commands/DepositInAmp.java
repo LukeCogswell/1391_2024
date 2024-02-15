@@ -40,7 +40,7 @@ public class DepositInAmp extends SequentialCommandGroup {
         }
       }),
       new ParallelCommandGroup(
-        new AutoTransfer(intake, shooter, turret, loader).until(() -> loader.hasNoteInShooter()),
+        new AutoTransfer(intake, turret, loader).until(() -> loader.hasNoteInShooter()),
         drivetrain.getCommandToPathfindToPoint(ampPoint, 0.).until(() -> drivetrain.getTID() == 5 || drivetrain.getTID() == 6)),
       new SequentialCommandGroup(
         new AlignWithAprilTag(drivetrain, 1.1),

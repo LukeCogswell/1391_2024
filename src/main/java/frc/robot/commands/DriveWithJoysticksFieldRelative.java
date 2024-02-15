@@ -71,7 +71,7 @@ public class DriveWithJoysticksFieldRelative extends Command {
     X = m_x.getAsDouble();
     rot = m_theta.getAsDouble();
     
-    m_precisionFactor = Math.pow(0.2 , m_precision.getAsDouble());
+    m_precisionFactor = Math.pow(0.15 , m_precision.getAsDouble());
     var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
     m_xSpeed =
       -m_xLimiter.calculate(MathUtil.applyDeadband(Y * Y * Math.signum(Y), kDriveDeadband))

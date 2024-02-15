@@ -4,53 +4,47 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Turret;
-import static frc.robot.Constants.Shooter.PID.*;
+import frc.robot.subsystems.Intake;
+import static frc.robot.Constants.Intake.PID.*;
 
-public class SetTurretAngle extends Command {
-  private Turret m_turret;
-  private Double m_angle;
-  private PIDController angleController;
-  /** Creates a new SetShooterAngle. */
-  public SetTurretAngle(Turret turret, Double angle) {
-    m_turret = turret;
-    m_angle = angle;
-
-    addRequirements(turret);
-    
-    angleController = new PIDController(kAngleP, kAngleI, kAngleD);
+public class IntakeToAngle extends Command {
+  private Intake m_intake;
+  private Double angle;
+  private PIDController angleController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
+  /** Creates a new IntakeToAngle. */
+  public IntakeToAngle(Intake intake, Double toAngle) {
+    m_intake = intake;
+    angle = toAngle;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    angleController.setSetpoint(m_angle);
+    angleController.setSetpoint(angle);
     angleController.setTolerance(0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_turret.setAngleMotor(MathUtil.clamp(angleController.calculate(m_turret.getShooterAngle()), -0.4, 0.4));
-    SmartDashboard.putBoolean("Angled?", angleController.atSetpoint());
+    m_intake.setAngleMotor(angleController.calculate(m_intake.getIntakeAngle()));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_turret.setAngleMotor(0.0);
     angleController.close();
+    m_intake.setAngleMotor(0.);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return false;
-    return angleController.atSetpoint();
+    return false;
+    // return angleController.atSetpoint();
   }
 }

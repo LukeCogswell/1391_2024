@@ -15,7 +15,7 @@ public class Elevator extends SubsystemBase {
   private final CANSparkMax m_elevatorMotor = new CANSparkMax(15, MotorType.kBrushless);
   /** Creates a new Elevator. */
   public Elevator() {
-    m_elevatorMotor.setInverted(false);
+    m_elevatorMotor.setInverted(true);
   }
 
   @Override

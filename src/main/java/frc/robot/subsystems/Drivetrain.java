@@ -146,7 +146,7 @@ public class Drivetrain extends SubsystemBase {
     
     setVisionStdDvs(1.0, 1.0, 9999.0);
 
-    SmartDashboard.putData("Field", field);
+    SmartDashboard.putData(field);
 
     /*SYSID ROUTINE CODE - NOT NECESSARY UNLESS ACTIVELY TESTING */
     // m_sysIdRoutine =
@@ -215,6 +215,7 @@ public class Drivetrain extends SubsystemBase {
     updateOdometry();
     updateOdometryWithAprilTags();
     field.setRobotPose(getFieldPosition());
+    SmartDashboard.putData(field);
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
   }
   

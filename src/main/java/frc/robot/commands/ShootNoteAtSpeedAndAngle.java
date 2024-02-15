@@ -36,20 +36,27 @@ public class ShootNoteAtSpeedAndAngle extends Command {
   @Override
   public void initialize() {
     angleController.setSetpoint(angle);
-    angleController.setTolerance(3.);
+    angleController.setTolerance(.5);
   }
   
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_shooter.setShooterSpeed(shotSpeed);
+    // m_shooter.setShooterSpeed(shotSpeed);
+    m_shooter.setLeftShooterSpeed(shotSpeed*0.85);
+    m_shooter.setRightShooterSpeed(shotSpeed);
 
-    m_turret.setAngleMotor(MathUtil.clamp(-angleController.calculate(m_turret.getShooterAngle()), -0.4, 0.4));
+
+    if (!angleController.atSetpoint()) {
+      m_turret.setAngleMotor(MathUtil.clamp(angleController.calculate(m_turret.getShooterAngle()), -0.4, 0.4));
+    } else {
+      m_turret.setAngleMotor(0.);
+    }
 
     SmartDashboard.putBoolean("ShotAngle", angleController.atSetpoint());
     SmartDashboard.putBoolean("ShotSpeed", m_shooter.getLeftShooterSpeed() >= 0.9 * shotSpeed);
 
-    if (m_shooter.getLeftShooterSpeed() >= 0.9 * shotSpeed && angleController.atSetpoint()) {
+    if (m_shooter.getRightShooterSpeed() >= 0.9 * shotSpeed && angleController.atSetpoint()) {
         m_loader.setLoaderMotor(0.7);
     }
   }

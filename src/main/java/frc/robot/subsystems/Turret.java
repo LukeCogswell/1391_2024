@@ -30,12 +30,17 @@ public class Turret extends SubsystemBase {
   }
 
   public void setAngleMotor(Double power) {
-    if (getShooterAngle() <= -15 || getShooterAngle() >= 80) {
-      m_angleMotor.set(0.);
+    m_angleMotor.set(power);
+    // if (getShooterAngle() <= -15 || getShooterAngle() >= 80) {
+    //   m_angleMotor.set(0.);
 
-    } else {
-      m_angleMotor.set(power);
-    }
+    // } else {
+    //   m_angleMotor.set(power);
+    // }
+  }
+
+  public void stop() {
+    m_angleMotor.set(0.);
   }
 
   public double getRequiredShooterAngle(Double distanceToSpeaker, Double dDistanceToSpeaker) {

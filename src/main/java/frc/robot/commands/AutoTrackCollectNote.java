@@ -38,7 +38,7 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
           new WaitCommand(0.2),
           new RunCommand(() -> intake.setIntake(0.3), intake).until(() -> intake.hasNoteInIntake()),
           new InstantCommand(() -> intake.setIntake(0.0), intake),
-          new AutoTransfer(intake, shooter, turret, loader)
+          new AutoTransfer(intake, turret, loader)
         )
       )
     );

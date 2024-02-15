@@ -4,42 +4,42 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.Intake.kMaxRotation;
 import static frc.robot.Constants.Shooter.kTransferAngle;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AutoTransfer extends ParallelRaceGroup {
+public class AutoTransfer extends ParallelDeadlineGroup {
   /** Creates a new Transfer. */
-  public AutoTransfer(Intake intake, Shooter shooter, Turret turret, Loader loader) {
+  public AutoTransfer(Intake intake, Turret turret, Loader loader) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      new SetTurretAngle(turret, kTransferAngle),
+    super(
       new SequentialCommandGroup(
-        new WaitUntilCommand(() -> Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3),
+        new WaitUntilCommand(() -> (intake.isUp()) && Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3),
         new InstantCommand(() -> {
-          loader.setLoaderMotor(.5);
-          intake.setIntake(.3);
-        }, loader, intake),
-        new WaitUntilCommand(() -> (!intake.hasNoteInIntake() || loader.hasNoteInShooter())),
+          loader.setLoaderMotor(.8);
+          intake.setIntake(.4);
+        }, loader),
+        new WaitUntilCommand(() -> (loader.hasNoteInShooter())),
         new InstantCommand(() -> {
           intake.setIntake(0.);
           loader.setLoaderMotor(0.);
-        }, loader, intake),
-        new WaitCommand(0.02),
-        new InstantCommand(() -> loader.setLoaderMotor(0.), loader)
+        }, loader)
       )
+    );
+    addCommands(
+      new SetTurretAngle(turret, kTransferAngle),
+      new IntakeToAngle(intake, kMaxRotation).andThen(new IntakeDefault(intake))
     );
   }
 }

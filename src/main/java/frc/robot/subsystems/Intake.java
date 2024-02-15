@@ -9,6 +9,7 @@ import static frc.robot.Constants.Intake.PID.*;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,14 +19,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  private final CANSparkMax m_intakeMotor = new CANSparkMax(9, MotorType.kBrushless); 
-  private final CANSparkMax m_pivotMotor = new CANSparkMax(10, MotorType.kBrushless); 
+  private final CANSparkMax m_intakeMotor = new CANSparkMax(10, MotorType.kBrushless); 
+  private final CANSparkMax m_pivotMotor = new CANSparkMax(9, MotorType.kBrushless); 
   private final DutyCycleEncoder m_intakeEncoder = new DutyCycleEncoder(1);
   private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight-twelve");
   private AnalogInput m_beamBreakSensor = new AnalogInput(1);
   /** Creates a new Intake. */
   public Intake() {
-    m_intakeMotor.setInverted(true);
+    m_intakeMotor.setInverted(false);
     m_pivotMotor.setInverted(true);
     // distSensor.setAutomaticMode(true);
     // distSensor.setDistanceUnits(Unit.kMillimeters);
@@ -41,7 +42,10 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Angle", getIntakeAngle());
     SmartDashboard.putBoolean("HasNote?", hasNoteInIntake());
     SmartDashboard.putBoolean("CurrentHasNote?", currentHasNoteInIntake());
-    SmartDashboard.putNumber("Bot Int Current", getIntakeCurrentDraw());
+    // SmartDashboard.putNumber("Bot Int Current", getIntakeCurrentDraw());
+    // SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());
+    SmartDashboard.putBoolean("IsUp?", isUp());
+    SmartDashboard.putBoolean("IsDown?", isDown());
     // SmartDashboard.putNumber("Top Int Current", getTopIntakeCurrentDraw());
     // This method will be called once per scheduler run
   }
@@ -82,8 +86,16 @@ public class Intake extends SubsystemBase {
     m_intakeMotor.set(0.);
   }
 
+  public boolean isDown() {
+    return m_pivotMotor.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
+  }
+
+  public boolean isUp() {
+    return m_pivotMotor.getForwardLimitSwitch(Type.kNormallyOpen).isPressed();
+  }
+
   public boolean hasNoteInIntake() {
-    return m_beamBreakSensor.getValue() <= 30;
+    return m_beamBreakSensor.getValue() <= 8;
   }
 
 }

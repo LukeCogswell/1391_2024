@@ -48,12 +48,13 @@ public final class Constants {
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
     public static final double kAngleEncoderOffset = 14.27+68.5;
     public static final double kMaxSpeedRPM = 5676;
+    public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
 
-    public static final double kTransferAngle = 20.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kTransferAngle = 10.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
 
     public static final class PID {
-      public static final double kAngleP = 0.02;
-      public static final double kAngleI = 0.005;
+      public static final double kAngleP = 0.1;
+      public static final double kAngleI = 0.01;
       public static final double kAngleD = 0.0;
 
     }
@@ -66,14 +67,14 @@ public final class Constants {
     public static final double kMaxRotation = 70.0; // DEGREES
 
     public static final class PID {
-      public static final double kIAngleP = 0.1;
+      public static final double kIAngleP = 0.005;
       public static final double kIAngleI = 0.;
       public static final double kIAngleD = 0.;
     }
   }
 
   public static final class Elevator {
-    public static final double kMotorRotationsToMeters = 0.00125; // 1/8 of a mm per revolution
+    public static final double kMotorRotationsToMeters = 0.008; // 8 mm per revolution
     public static final double kMaxReach = 0.;
     public static final double kMinReach = 0.;
     public static final class PID {
@@ -86,8 +87,8 @@ public final class Constants {
   public static final class MeasurementConstants {
     // This is based on the CAD model (divided by two to represent distance from center of robot) 
     public static final double kInchesToMeters = 39.37;
-    public static final double kModuleXOffsetMeters = 24.75 / kInchesToMeters / 2; //TODO FIX THIS
-    public static final double kModuleYOffsetMeters = 24.75 / kInchesToMeters / 2; //TODO FIX THIS
+    public static final double kModuleXOffsetMeters = 20.75 / kInchesToMeters / 2; //TODO FIX THIS
+    public static final double kModuleYOffsetMeters = 20.75 / kInchesToMeters / 2; //TODO FIX THIS
     public static final double kDiagModuleOffsetMeters = Math.sqrt(Math.pow(kModuleXOffsetMeters, 2) + Math.pow(kModuleYOffsetMeters, 2));
     public static final double kWheelDiameterMeters = 0.10033; // 4 inches - diameter of the wheels == 0.10033
 
@@ -203,18 +204,18 @@ public final class Constants {
 
     public static final int kFrontLeftDriveMotorID = 3;
     public static final int kBackLeftDriveMotorID = 1;
-    public static final int kFrontRightDriveMotorID = 4;
-    public static final int kBackRightDriveMotorID = 2;
+    public static final int kFrontRightDriveMotorID = 2;
+    public static final int kBackRightDriveMotorID = 4;
 
     public static final int kFrontLeftSteerMotorID = 7;
     public static final int kBackLeftSteerMotorID = 5;
-    public static final int kFrontRightSteerMotorID = 8;
-    public static final int kBackRightSteerMotorID = 6;
+    public static final int kFrontRightSteerMotorID = 6;
+    public static final int kBackRightSteerMotorID = 8;
 
     public static final int kFrontLeftEncoderID = 11;
     public static final int kBackLeftEncoderID = 9;
-    public static final int kFrontRightEncoderID = 12;
-    public static final int kBackRightEncoderID = 10;
+    public static final int kFrontRightEncoderID = 10;
+    public static final int kBackRightEncoderID = 12;
 
 
     public static final double kEncoderResolution = 4096;

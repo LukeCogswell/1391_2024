@@ -16,14 +16,14 @@ public class Loader extends SubsystemBase {
   private final CANSparkMax m_loaderMotor = new CANSparkMax(12, MotorType.kBrushless);
   private final AnalogInput m_beamBreakSensor = new AnalogInput(0);
   public Loader() {
-    m_loaderMotor.setInverted(true);
+    m_loaderMotor.setInverted(false);
   }
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note In Shooter", hasNoteInShooter());
-    SmartDashboard.putNumber("ShooterBB", m_beamBreakSensor.getValue());
+    // SmartDashboard.putNumber("ShooterBB", m_beamBreakSensor.getValue());
   }
   
   public void setLoaderMotor(Double power) {
