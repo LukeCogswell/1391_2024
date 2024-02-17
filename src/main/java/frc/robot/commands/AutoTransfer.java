@@ -25,7 +25,7 @@ public class AutoTransfer extends ParallelDeadlineGroup {
     // addCommands(new FooCommand(), new BarCommand());
     super(
       new SequentialCommandGroup(
-        new WaitUntilCommand(() -> (intake.isUp()) && Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3),
+        new WaitUntilCommand(() -> (intake.isUp()) /*  && Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3*/),
         new InstantCommand(() -> {
           loader.setLoaderMotor(.8);
           intake.setIntake(.4);

@@ -43,7 +43,7 @@ public class Intake extends SubsystemBase {
     SmartDashboard.putBoolean("HasNote?", hasNoteInIntake());
     SmartDashboard.putBoolean("CurrentHasNote?", currentHasNoteInIntake());
     // SmartDashboard.putNumber("Bot Int Current", getIntakeCurrentDraw());
-    // SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());
+    SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());
     SmartDashboard.putBoolean("IsUp?", isUp());
     SmartDashboard.putBoolean("IsDown?", isDown());
     // SmartDashboard.putNumber("Top Int Current", getTopIntakeCurrentDraw());
@@ -95,7 +95,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNoteInIntake() {
-    return m_beamBreakSensor.getValue() <= 8;
+    return m_beamBreakSensor.getValue() <= 30;
   }
 
 }

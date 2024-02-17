@@ -131,7 +131,7 @@ public class SwerveModule extends SubsystemBase {
   }
  
   public double getDriveDistance(){ // returns the distance the module has traveled - add drive reduction for SYSID
-    return m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumference * kDriveReduction;
+    return m_driveMotor.getRotorPosition().getValueAsDouble() * kWheelCircumference * kDriveReduction;
   }
 
   public SwerveModuleState getModuleState(){ // returns the current state of the module

@@ -54,7 +54,7 @@ public class ShootWhileMoving extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_precisionFactor = Math.pow(0.4, m_precision.getAsDouble());
+    m_precisionFactor = Math.pow(0.2, m_precision.getAsDouble());
     X = xSpeed.getAsDouble();
     Y = ySpeed.getAsDouble();
     X = X > kAutoDriveSpeedLimiter ? kAutoDriveSpeedLimiter : X;
@@ -104,12 +104,12 @@ public class ShootWhileMoving extends Command {
 
     var distanceMultiplier = dis/5;
     distanceMultiplier = distanceMultiplier > 1 ? 1 : distanceMultiplier;
-    distanceMultiplier = distanceMultiplier < 0.5 ? 0.5 : distanceMultiplier;
+    distanceMultiplier = distanceMultiplier < 0.75 ? 0.75 : distanceMultiplier;
     
-
-    var spinMultiplier = 0.85 / distanceMultiplier;
-    spinMultiplier = spinMultiplier > 1 ? 1 : spinMultiplier;
-    spinMultiplier = 1.;
+    var spinMultiplier = 0.75;
+    // var spinMultiplier = 0.85 / distanceMultiplier;
+    // spinMultiplier = spinMultiplier > 1 ? 1 : spinMultiplier;
+    // spinMultiplier = 1.;
 
     m_shooter.setRightShooterSpeed(distanceMultiplier * 5676.0);
     m_shooter.setLeftShooterSpeed(distanceMultiplier * 5676.0 * spinMultiplier);
@@ -118,7 +118,7 @@ public class ShootWhileMoving extends Command {
     // SmartDashboard.putNumber("required angle", m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI);
 
 
-    m_turret.setAngleMotor(angleController.calculate((m_turret.getRequiredShooterAngle(dis, dDis) * 180 / Math.PI) - m_turret.getShooterAngle()));
+    m_turret.setAngleMotor(-(angleController.calculate((m_turret.getRequiredShooterAngle(dis, dDis) * 180 / Math.PI) - m_turret.getShooterAngle())));
 
     SmartDashboard.putNumber("Required Angle", m_turret.getRequiredShooterAngle(dis, dDis) * 180 / Math.PI);
 
@@ -127,10 +127,10 @@ public class ShootWhileMoving extends Command {
     SmartDashboard.putBoolean("Angle?", angleController.atSetpoint());
     SmartDashboard.putBoolean("LLTurn?", LLturnController.atSetpoint());
     SmartDashboard.putBoolean("Turn?", turnController.atSetpoint());
-    SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.9);
+    SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.85);
 
-    if (/*angleController.atSetpoint() &&*/ m_shooter.getLeftShooterSpeed() >= distanceMultiplier * 5676.0 * 0.9 && (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4 ? LLturnController.atSetpoint() : turnController.atSetpoint())) {
-      m_loader.setLoaderMotor(0.8);
+    if (angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.85 && (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4 ? LLturnController.atSetpoint() : turnController.atSetpoint())) {
+      m_loader.setLoaderMotor(1.);
     }
   }
 

@@ -44,7 +44,8 @@ public class IntakeToAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    // return false;
+    return m_intake.hasNoteInIntake();
     // return angleController.atSetpoint();
   }
 }

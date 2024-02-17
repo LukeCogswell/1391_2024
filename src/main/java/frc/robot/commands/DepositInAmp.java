@@ -5,6 +5,9 @@
 package frc.robot.commands;
 
 
+import static frc.robot.Constants.Elevator.kMaxHeight;
+import static frc.robot.Constants.Shooter.kAmpAngle;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -13,7 +16,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.Constants.PathfindingPoints.Red;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
@@ -25,7 +30,7 @@ import frc.robot.subsystems.Turret;
 public class DepositInAmp extends SequentialCommandGroup {
   private Pose2d ampPoint = Constants.PathfindingPoints.Red.Amp;
   /** Creates a new DepositInAmp. */
-  public DepositInAmp(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter) {
+  public DepositInAmp(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -40,23 +45,11 @@ public class DepositInAmp extends SequentialCommandGroup {
         }
       }),
       new ParallelCommandGroup(
-        new AutoTransfer(intake, turret, loader).until(() -> loader.hasNoteInShooter()),
-        drivetrain.getCommandToPathfindToPoint(ampPoint, 0.).until(() -> drivetrain.getTID() == 5 || drivetrain.getTID() == 6)),
-      new SequentialCommandGroup(
-        new AlignWithAprilTag(drivetrain, 1.1),
-        new DriveForDistanceInDirection(drivetrain, 0., 0.5),
-        new InstantCommand(() -> shooter.setShooterSpeed(1000.), shooter),
-        new WaitCommand(0.4),
-        new InstantCommand(() -> {
-          loader.setLoaderMotor(0.8);
-          shooter.setShooterSpeed(1000.);
-          }),
-        new WaitCommand(0.4),
-        new InstantCommand(() -> {
-          loader.stop();
-          shooter.stopShooter();
-        }, shooter, loader)
-      )
+        new DriveToPoint(drivetrain, Red.Amp),
+        new WaitCommand(0.3).andThen(new ElevatorToHeight(elevator, kMaxHeight)),
+        new SetTurretAngle(turret, kAmpAngle),
+        new WaitCommand(0.5).andThen(new InstantCommand(() -> shooter.setShooterSpeed(4000.)))),
+      new ShootNoteAtSpeedAndAngle(shooter, turret, loader, 4000., kAmpAngle)
     );
   }
 }

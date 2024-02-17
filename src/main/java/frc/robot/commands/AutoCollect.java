@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.Intake.kMaxRotation;
+import static frc.robot.Constants.Intake.kMinRotation;
 import static frc.robot.Constants.Shooter.kTransferAngle;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,13 +32,15 @@ public class AutoCollect extends SequentialCommandGroup {
         // new Collect(intake, 0.7),
         // new RunCommand(() -> intake.setIntake(0.4), intake).until(() -> intake.hasNoteInIntake()),
         new InstantCommand(() -> {
-          loader.setLoaderMotor(0.2);
-          intake.setIntake(0.7);
-        }, loader, intake),
-        new WaitUntilCommand(() -> intake.hasNoteInIntake() || intake.currentHasNoteInIntake() || loader.hasNoteInShooter()),
-        new InstantCommand(() -> {
           intake.setIntake(0.4);
         }, intake),
+        new IntakeToAngle(intake, kMinRotation).until(() -> intake.hasNoteInIntake()),
+        new InstantCommand(() -> intake.stop(), intake),
+        new IntakeToAngle(intake, kMaxRotation).until(() -> intake.isUp()),
+        new InstantCommand(() -> {
+          intake.setIntake(0.2);
+          loader.setLoaderMotor(0.8);
+        }, intake, loader),
         new WaitUntilCommand(() -> (loader.hasNoteInShooter())),
         // new WaitCommand(0.2),
         new InstantCommand(() -> {

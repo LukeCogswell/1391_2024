@@ -50,11 +50,12 @@ public final class Constants {
     public static final double kMaxSpeedRPM = 5676;
     public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
 
-    public static final double kTransferAngle = 10.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kAmpAngle = -25.;
+    public static final double kTransferAngle = 15.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
 
     public static final class PID {
-      public static final double kAngleP = 0.1;
-      public static final double kAngleI = 0.01;
+      public static final double kAngleP = 0.02;
+      public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
     }
@@ -75,8 +76,13 @@ public final class Constants {
 
   public static final class Elevator {
     public static final double kMotorRotationsToMeters = 0.008; // 8 mm per revolution
-    public static final double kMaxReach = 0.;
-    public static final double kMinReach = 0.;
+    public static final double kMaxHeight = 0.37;
+    public static final double kMinHeight = 0.03;
+
+    public static final double kStallPower = 0.02;
+
+    public static final double kTransferHeight = 0.03;
+
     public static final class PID {
       public static final double kElevatorP = 0.1;
       public static final double kElevatorI = 0.;
@@ -229,7 +235,7 @@ public final class Constants {
     public static final double kGridSize = 0.3;
     public static final class Red {
       public static final Pose2d Source = new Pose2d(8 * kGridSize, 4 * kGridSize, new Rotation2d(Math.PI/4 * 3));
-      public static final Pose2d Amp = new Pose2d(kFieldX - 8 * kGridSize, 22 * kGridSize, new Rotation2d(-Math.PI/2));
+      public static final Pose2d Amp = new Pose2d(14.675, 7.8, new Rotation2d(-Math.PI/2));
       public static final Pose2d Speaker = new Pose2d(kFieldX - 8 * kGridSize, 20 * kGridSize, new Rotation2d(0));
       public static final Pose2d CenterStage = new Pose2d(35 * kGridSize, 14 * kGridSize, new Rotation2d(Math.PI));
       public static final Pose2d StageLeft = new Pose2d(40 * kGridSize, 11 * kGridSize, new Rotation2d(Math.PI / 4 * 3));

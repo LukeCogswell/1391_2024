@@ -50,11 +50,9 @@ public class Turret extends SubsystemBase {
   }
 
   public double getStationaryRobotAngleOffsetMultiplier(Double distanceToSpeaker) {
-    if (distanceToSpeaker >= 4.2) {
-      return -3.23e-3 * distanceToSpeaker + 0.0635;
-    } else {
-      return -0.0208 * distanceToSpeaker + 0.138;
-    }
+    return 0.0134 + 7.4E-04 * distanceToSpeaker + -7.8E-05 * Math.pow(distanceToSpeaker, 2); // POLYNOMIAL
+    // return 2.81E-04*distanceToSpeaker + 0.0137; //LINEAR
+    // return 0.0101;//CONSTANT
   }
 
   // private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
@@ -69,15 +67,27 @@ public class Turret extends SubsystemBase {
 
   private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
     var x = distanceToSpeaker; 
-    return -0.0109
-     + 0.0739*x + 
-     -0.0245*Math.pow(x,2) 
-     + 4.49E-03*Math.pow(x,3) 
-     + -4.93E-04*Math.pow(x,4) 
-     + 2.95E-05*Math.pow(x,5) 
-     + -7.36E-07*Math.pow(x,6)
+    return 0.0108
+     + 0.0355*x 
+     + -4.33E-03*Math.pow(x,2) 
+     + -1.69E-03*Math.pow(x,3) 
+     + 5.12E-04*Math.pow(x,4) 
+     + -5.08E-05*Math.pow(x,5) 
+     + 1.73E-06*Math.pow(x,6)
      ;
-  } // first iteration
+  } // third iteration
+
+  // private double robotSpeedAdjustementFunction(Double distanceToSpeaker) {
+  //   var x = distanceToSpeaker; 
+  //   return -0.0109
+  //    + 0.0739*x + 
+  //    -0.0245*Math.pow(x,2) 
+  //    + 4.49E-03*Math.pow(x,3) 
+  //    + -4.93E-04*Math.pow(x,4) 
+  //    + 2.95E-05*Math.pow(x,5) 
+  //    + -7.36E-07*Math.pow(x,6)
+  //    ;
+  // } // first iteration
 
   public double getShooterAngle() {
     var angle = 180 - (m_angleEncoder.getAbsolutePosition()*360 - kAngleEncoderOffset - 180) % 360;

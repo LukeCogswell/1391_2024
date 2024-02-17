@@ -20,6 +20,10 @@ public class Shooter extends SubsystemBase {
   public Shooter() {
     m_shooterMotorRight.setInverted(false); //false for big shooter
     m_shooterMotorLeft.setInverted(true);
+    m_shooterMotorLeft.getEncoder().setVelocityConversionFactor(1.);
+    m_shooterMotorRight.getEncoder().setVelocityConversionFactor(1.);
+    m_shooterMotorLeft.burnFlash();
+    m_shooterMotorRight.burnFlash();
   }
 
   @Override

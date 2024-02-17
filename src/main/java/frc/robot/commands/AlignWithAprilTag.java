@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.Elevator.PID;
 import frc.robot.subsystems.Drivetrain;
 
 import static frc.robot.Constants.Swerve.PID.*;
@@ -16,10 +18,11 @@ import java.util.Arrays;
 public class AlignWithAprilTag extends Command {
   private Drivetrain m_drivetrain;
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
-  private PIDController xController = new PIDController(1., 0., 0.);
-  private PIDController zController = new PIDController(1., 0., 0.);
+  private PIDController xController = new PIDController(0.015, 0.002, 0.); //using TX
+  // private PIDController xController = new PIDController(0.2, 0., 0.);
+  private PIDController zController = new PIDController(0.2, 0., 0.);
   private Double dis;
-  private Double maxSpeed = 1.;
+  private Double maxSpeed = .75;
   /** Creates a new AlignWithAprilTag. */
   public AlignWithAprilTag(Drivetrain drivetrain, Double distance) {
     m_drivetrain = drivetrain;
@@ -32,7 +35,7 @@ public class AlignWithAprilTag extends Command {
   @Override
   public void initialize() {
     xController.setSetpoint(0.);
-    xController.setTolerance(0.1);
+    xController.setTolerance(1.);
     zController.setSetpoint(-dis);
     zController.setTolerance(0.1);
     if (m_drivetrain.getTID() == 5 || m_drivetrain.getTID() == 6) {
@@ -49,13 +52,23 @@ public class AlignWithAprilTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var botPose = m_drivetrain.getBotPoseTagSpace();
-    var ySpeed = xController.calculate(botPose[0]);
-    var xSpeed = -zController.calculate(botPose[2]);
-    var rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees());
 
-    xSpeed = MathUtil.clamp(xSpeed, -maxSpeed, maxSpeed);
+    SmartDashboard.putBoolean("AATurn?", turnController.atSetpoint());
+    SmartDashboard.putBoolean("AAZ?", zController.atSetpoint());
+    SmartDashboard.putBoolean("AAX?", xController.atSetpoint());
+
+    var ySpeed = -xController.calculate(m_drivetrain.getTX());
+    var rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees());
+    
     ySpeed = MathUtil.clamp(ySpeed, -maxSpeed, maxSpeed);
+    
+    var xSpeed = 0.;
+    
+    if (xController.atSetpoint()) {
+      var botPose = m_drivetrain.getBotPoseTagSpace();
+      xSpeed = -zController.calculate(botPose[2]);
+      xSpeed = MathUtil.clamp(xSpeed, -maxSpeed, maxSpeed);
+    } 
 
     m_drivetrain.drive(xSpeed, ySpeed, rot, false);
 
