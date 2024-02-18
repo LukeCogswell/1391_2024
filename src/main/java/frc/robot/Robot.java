@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -16,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  private Color allianceColor = Color.kBlue;
   private RobotContainer m_robotContainer;
 
   /**
@@ -27,6 +30,11 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    if (DriverStation.getAlliance().isPresent()) {
+      if(DriverStation.getAlliance().get() == Alliance.Red) {
+        allianceColor = Color.kRed;
+      }
+    }
     m_robotContainer = new RobotContainer();
   }
 
@@ -62,6 +70,35 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    if (DriverStation.isDisabled()) {
+      m_robotContainer.m_LEDs.setBottomThird(allianceColor);
+      if (m_robotContainer.m_loader.hasNoteInShooter()) {
+        m_robotContainer.m_LEDs.setMiddleThird(Color.kOrange);
+      } else {
+        m_robotContainer.m_LEDs.setMiddleThird(Color.kBlack);
+      }
+      //MIDDLE THIRD SET TO COLORS BASED ON ROTATION OF ROBOT
+      if (m_robotContainer.m_drivetrain.getTV()) {
+        double botRot =m_robotContainer. m_drivetrain.getBOTPOSE()[5];
+        boolean turnLeft = Math.signum(botRot) == 1;
+        botRot = Math.abs(botRot);
+        if (allianceColor == Color.kRed) {
+          botRot -= 180;
+        }
+        if (botRot <= 0.01) {
+          m_robotContainer.m_LEDs.setTopThird(Color.kWhite);
+        } else {
+          if (turnLeft) {
+            m_robotContainer.m_LEDs.setTopThird(Color.kRed);
+          } else {
+            m_robotContainer.m_LEDs.setTopThird(Color.kGreen);
+          }
+        }
+      } else {
+        m_robotContainer.m_LEDs.setTopThird(Color.kBlack);
+      }
+      m_robotContainer.m_LEDs.start();
+    }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */

@@ -43,6 +43,11 @@ public final class Constants {
 
   }
 
+  public static final class LEDs {
+    public static final double kConfidentShotRange = 4.;
+    public static final double kMaxShotRange = 9.;
+  }
+
   public static final class Shooter {
     public static final double kShootingAdjustmentMultiplier = 1.5;
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
