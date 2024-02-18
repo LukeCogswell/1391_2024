@@ -10,14 +10,17 @@ import static frc.robot.Constants.Intake.PID.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
 
 public class Collect extends Command {
   private Intake m_intake;
+  private IntakePivot m_intakePivot;
   private Double runSpeed;
   private PIDController angleController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
   /** Creates a new Collect. */
-  public Collect(Intake intake, Double speed) {
+  public Collect(IntakePivot intakePivot, Intake intake, Double speed) {
     m_intake = intake;
+    m_intakePivot = intakePivot;
     runSpeed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
@@ -38,20 +41,20 @@ public class Collect extends Command {
       m_intake.setIntake(0.);
       angleController.setSetpoint(kMaxRotation);
     }
-    m_intake.setAngleMotor(angleController.calculate(m_intake.getIntakeAngle()));
+    m_intakePivot.setAngleMotor(angleController.calculate(m_intakePivot.getIntakeAngle()));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_intake.setIntake(0.);
-    m_intake.setAngleMotor(0.);
+    m_intakePivot.setAngleMotor(0.);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_intake.hasNoteInIntake() && m_intake.isUp();
+    return m_intake.hasNoteInIntake() && m_intakePivot.isUp();
     // return false;
   }
 }

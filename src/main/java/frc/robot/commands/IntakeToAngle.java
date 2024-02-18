@@ -6,19 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
+
 import static frc.robot.Constants.Intake.PID.*;
 
 public class IntakeToAngle extends Command {
-  private Intake m_intake;
+  private IntakePivot m_intakePivot;
   private Double angle;
   private PIDController angleController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
   /** Creates a new IntakeToAngle. */
-  public IntakeToAngle(Intake intake, Double toAngle) {
-    m_intake = intake;
+  public IntakeToAngle(IntakePivot intakePivot, Double toAngle) {
+    m_intakePivot = intakePivot;
     angle = toAngle;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(intakePivot);
   }
 
   // Called when the command is initially scheduled.
@@ -31,21 +32,20 @@ public class IntakeToAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intake.setAngleMotor(angleController.calculate(m_intake.getIntakeAngle()));
+    m_intakePivot.setAngleMotor(angleController.calculate(m_intakePivot.getIntakeAngle()));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     angleController.close();
-    m_intake.setAngleMotor(0.);
+    m_intakePivot.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     // return false;
-    return m_intake.hasNoteInIntake();
-    // return angleController.atSetpoint();
+    return angleController.atSetpoint();
   }
 }

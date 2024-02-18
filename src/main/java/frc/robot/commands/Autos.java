@@ -19,11 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Loader;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.*;
 
 // import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj2.command.Commands;
@@ -38,7 +34,7 @@ public final class Autos {
     throw new UnsupportedOperationException("This is a utility class!");
   }
 
-  public static Command Start_3_End_13_14_15(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter) {
+  public static Command Start_3_End_13_14_15(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter) {
     PathPlannerPath path0 = PathPlannerPath.fromPathFile(       "PS3-IS3");
     PathPlannerPath path1 = PathPlannerPath.fromPathFile(       "IS3-E3");
     PathPlannerPath path2 = PathPlannerPath.fromPathFile(        "S3-E15");
@@ -65,39 +61,39 @@ public final class Autos {
       new ParallelCommandGroup(
         AutoBuilder.followPath(path1).until(() -> loader.hasNoteInShooter()),
         new RevShooter(drivetrain, shooter, loader).withTimeout(2),
-        new AutoCollect(intake, turret, loader).withTimeout(2)
+        new AutoCollect(intakePivot, intake, turret, loader).withTimeout(2)
       ),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path2).until(() -> loader.hasNoteInShooter()),
-        new AutoCollect(intake, turret, loader)
+        new AutoCollect(intakePivot, intake, turret, loader)
       ),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path3),
-        new AutoCollect(intake, turret, loader),
+        new AutoCollect(intakePivot, intake, turret, loader),
         new RevShooter(drivetrain, shooter, loader)
       ),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path4).until(() -> loader.hasNoteInShooter()),
-        new AutoCollect(intake, turret, loader)
+        new AutoCollect(intakePivot, intake, turret, loader)
       ),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path5),
-        new AutoCollect(intake, turret, loader),
+        new AutoCollect(intakePivot, intake, turret, loader),
         new RevShooter(drivetrain, shooter, loader)
       ),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path6).until(() -> loader.hasNoteInShooter()),
-        new AutoCollect(intake, turret, loader)
+        new AutoCollect(intakePivot, intake, turret, loader)
       ),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path7),
-        new AutoCollect(intake, turret, loader),
+        new AutoCollect(intakePivot, intake, turret, loader),
         new RevShooter(drivetrain, shooter, loader)
       ),
-      new AutoCollect(intake, turret, loader).until(() -> loader.hasNoteInShooter()),
+      new AutoCollect(intakePivot, intake, turret, loader).until(() -> loader.hasNoteInShooter()),
       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)
     );
   }

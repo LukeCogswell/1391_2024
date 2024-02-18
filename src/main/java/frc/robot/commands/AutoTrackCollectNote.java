@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
@@ -21,7 +22,7 @@ import frc.robot.subsystems.Turret;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoTrackCollectNote extends SequentialCommandGroup {
   /** Creates a new AutoTrackCollectNote. */
-  public AutoTrackCollectNote(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter, CommandXboxController driverController) {
+  public AutoTrackCollectNote(Drivetrain drivetrain, Intake intake, IntakePivot intakePivot, Loader loader, Turret turret, Shooter shooter, CommandXboxController driverController) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -38,7 +39,7 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
           new WaitCommand(0.2),
           new RunCommand(() -> intake.setIntake(0.3), intake).until(() -> intake.hasNoteInIntake()),
           new InstantCommand(() -> intake.setIntake(0.0), intake),
-          new AutoTransfer(intake, turret, loader)
+          new AutoTransfer(intakePivot, intake, turret, loader)
         )
       )
     );

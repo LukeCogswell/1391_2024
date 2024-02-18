@@ -4,50 +4,33 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Intake.*;
-import static frc.robot.Constants.Intake.PID.*;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkLimitSwitch.Type;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   private final CANSparkMax m_intakeMotor = new CANSparkMax(10, MotorType.kBrushless); 
-  private final CANSparkMax m_pivotMotor = new CANSparkMax(9, MotorType.kBrushless); 
-  private final DutyCycleEncoder m_intakeEncoder = new DutyCycleEncoder(1);
   private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight-twelve");
   private AnalogInput m_beamBreakSensor = new AnalogInput(1);
+
   /** Creates a new Intake. */
   public Intake() {
     m_intakeMotor.setInverted(false);
-    m_pivotMotor.setInverted(true);
-    // distSensor.setAutomaticMode(true);
-    // distSensor.setDistanceUnits(Unit.kMillimeters);
   }
 
   @Override
   public void periodic() {
-
-    // if(distSensor.isRangeValid()) {
-    //   SmartDashboard.putNumber("Range Onboard", distSensor.getRange());
-    //   SmartDashboard.putNumber("Timestamp Onboard", distSensor.getTimestamp());
-    // }
-    SmartDashboard.putNumber("Intake Angle", getIntakeAngle());
+    // This method will be called once per scheduler run
     SmartDashboard.putBoolean("HasNote?", hasNoteInIntake());
     SmartDashboard.putBoolean("CurrentHasNote?", currentHasNoteInIntake());
     // SmartDashboard.putNumber("Bot Int Current", getIntakeCurrentDraw());
     SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());
-    SmartDashboard.putBoolean("IsUp?", isUp());
-    SmartDashboard.putBoolean("IsDown?", isDown());
     // SmartDashboard.putNumber("Top Int Current", getTopIntakeCurrentDraw());
-    // This method will be called once per scheduler run
   }
 
   public boolean getTV() {
@@ -66,14 +49,6 @@ public class Intake extends SubsystemBase {
     m_intakeMotor.set(power);
   }
 
-  public void setAngleMotor(Double power) {
-    m_pivotMotor.set(power);
-  }
-
-  public double getIntakeAngle() {
-    return (m_intakeEncoder.get() - kIntakeEncoderOffset) * kEncoderGearRatio * 360;
-  }
-
   public boolean currentHasNoteInIntake() {
     return getIntakeCurrentDraw() >= 11.;
   }
@@ -84,14 +59,6 @@ public class Intake extends SubsystemBase {
 
   public void stop() {
     m_intakeMotor.set(0.);
-  }
-
-  public boolean isDown() {
-    return m_pivotMotor.getReverseLimitSwitch(Type.kNormallyOpen).isPressed();
-  }
-
-  public boolean isUp() {
-    return m_pivotMotor.getForwardLimitSwitch(Type.kNormallyOpen).isPressed();
   }
 
   public boolean hasNoteInIntake() {

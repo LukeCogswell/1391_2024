@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Turret;
 
@@ -21,7 +22,7 @@ import frc.robot.subsystems.Turret;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoCollect extends SequentialCommandGroup {
   /** Creates a new AutoCollect. */
-  public AutoCollect(Intake intake, Turret turret, Loader loader) {
+  public AutoCollect(IntakePivot intakePivot, Intake intake, Turret turret, Loader loader) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -34,9 +35,9 @@ public class AutoCollect extends SequentialCommandGroup {
         new InstantCommand(() -> {
           intake.setIntake(0.4);
         }, intake),
-        new IntakeToAngle(intake, kMinRotation).until(() -> intake.hasNoteInIntake()),
+        new IntakeToAngle(intakePivot, kMinRotation).until(() -> intake.hasNoteInIntake()),
         new InstantCommand(() -> intake.stop(), intake),
-        new IntakeToAngle(intake, kMaxRotation).until(() -> intake.isUp()),
+        new IntakeToAngle(intakePivot, kMaxRotation).until(() -> intakePivot.isUp()),
         new InstantCommand(() -> {
           intake.setIntake(0.2);
           loader.setLoaderMotor(0.8);

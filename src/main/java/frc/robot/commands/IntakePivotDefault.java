@@ -6,19 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
 
 import static frc.robot.Constants.Intake.*;
 import static frc.robot.Constants.Intake.PID.*;
 
-public class IntakeDefault extends Command {
-  private Intake m_intake;
+public class IntakePivotDefault extends Command {
+  private IntakePivot m_intakePivot;
   private PIDController angleController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
   /** Creates a new IntakeDefault. */
-  public IntakeDefault(Intake intake) {
-    m_intake = intake;
+  public IntakePivotDefault(IntakePivot intakePivot) {
+    m_intakePivot = intakePivot;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(intakePivot);
   }
 
   // Called when the command is initially scheduled.
@@ -30,16 +30,16 @@ public class IntakeDefault extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intake.isDown()) {
+    if (m_intakePivot.isDown()) {
       angleController.setSetpoint(kMinRotation);
     } else {
       angleController.setSetpoint(kMaxRotation);
     }
 
-    if (!m_intake.isUp()) {
-      m_intake.setAngleMotor(angleController.calculate(m_intake.getIntakeAngle()));
+    if (!m_intakePivot.isUp()) {
+      m_intakePivot.setAngleMotor(angleController.calculate(m_intakePivot.getIntakeAngle()));
     } else {
-      m_intake.setAngleMotor(0.);
+      m_intakePivot.setAngleMotor(0.);
     }
   }
 
@@ -47,7 +47,7 @@ public class IntakeDefault extends Command {
   @Override
   public void end(boolean interrupted) {
     angleController.close();
-    m_intake.setAngleMotor(0.);
+    m_intakePivot.setAngleMotor(0.);
   }
 
   // Returns true when the command should end.
