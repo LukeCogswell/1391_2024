@@ -4,7 +4,9 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakePivot;
 
@@ -24,7 +26,7 @@ public class IntakePivotDefault extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    angleController.setTolerance(1);
+    angleController.setTolerance(2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,8 +38,14 @@ public class IntakePivotDefault extends Command {
       angleController.setSetpoint(kMaxRotation);
     }
 
+    SmartDashboard.putNumber("SETPOINT", angleController.getSetpoint());
+
     if (!m_intakePivot.isUp()) {
-      m_intakePivot.setAngleMotor(angleController.calculate(m_intakePivot.getIntakeAngle()));
+      var pwr = angleController.calculate(m_intakePivot.getIntakeAngle());
+      SmartDashboard.putNumber("PrePower", pwr);
+      pwr = MathUtil.clamp(pwr, kMaxDownPower, kMaxUpPower);
+      SmartDashboard.putNumber("MidPower", pwr);
+      m_intakePivot.setAngleMotor(pwr);
     } else {
       m_intakePivot.setAngleMotor(0.);
     }

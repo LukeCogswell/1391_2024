@@ -78,7 +78,7 @@ public class TrackWhileMoving extends Command {
     // SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
     // SmartDashboard.putNumber("dTheta", dTheta);
     
-    rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingAdjustmentMultiplier * dTheta);
+    rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingRotationAdjustmentMultiplier * dTheta);
     
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       m_xSpeed = -m_xSpeed;

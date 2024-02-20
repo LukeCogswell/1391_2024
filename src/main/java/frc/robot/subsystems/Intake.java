@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  private final CANSparkMax m_intakeMotor = new CANSparkMax(10, MotorType.kBrushless); 
+  private final CANSparkMax m_intakeMotor = new CANSparkMax(9, MotorType.kBrushless); 
   private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight-twelve");
   private AnalogInput m_beamBreakSensor = new AnalogInput(1);
 

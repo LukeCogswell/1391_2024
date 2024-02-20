@@ -4,13 +4,17 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.Intake.kMinRotation;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.Loader;
@@ -22,10 +26,13 @@ import frc.robot.subsystems.Turret;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoTrackCollectNote extends SequentialCommandGroup {
   /** Creates a new AutoTrackCollectNote. */
-  public AutoTrackCollectNote(Drivetrain drivetrain, Intake intake, IntakePivot intakePivot, Loader loader, Turret turret, Shooter shooter, CommandXboxController driverController) {
+  public AutoTrackCollectNote(Elevator elevator, Drivetrain drivetrain, Intake intake, IntakePivot intakePivot, Loader loader, Turret turret, Shooter shooter, CommandXboxController driverController) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new ParallelCommandGroup(
+        new IntakeToAngle(intakePivot, kMinRotation).until(() -> intakePivot.isDown()),
+        new RunCommand(() -> intake.setIntake(-0.7), intake).withTimeout(0.4)),
       new AutoTrackNote(drivetrain, intake),
       new ParallelRaceGroup(
         new DriveWithJoysticksFieldRelative(
@@ -37,9 +44,9 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
           ),
         new SequentialCommandGroup(
           new WaitCommand(0.2),
-          new RunCommand(() -> intake.setIntake(0.3), intake).until(() -> intake.hasNoteInIntake()),
+          new RunCommand(() -> intake.setIntake(0.6), intake).until(() -> intake.hasNoteInIntake()),
           new InstantCommand(() -> intake.setIntake(0.0), intake),
-          new AutoTransfer(intakePivot, intake, turret, loader)
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader)
         )
       )
     );

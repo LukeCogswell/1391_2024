@@ -68,6 +68,11 @@ public class ShootWhileMoving extends Command {
     LLturnController.setTolerance(3);
     angleController.setSetpoint(0);
     angleController.setTolerance(0.7);
+    if (X+Y >= 0.6) {
+      turnController.setTolerance(5);
+      LLturnController.setTolerance(5);
+      angleController.setTolerance(1.2);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -88,13 +93,14 @@ public class ShootWhileMoving extends Command {
     
     var dTheta = -m_drivetrain.getChangeInAngleToSpeaker(m_xSpeed, m_ySpeed);
     dTheta = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue ? -dTheta : dTheta;
+    dTheta = MathUtil.clamp(dTheta, -15, 15);
   
     // SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
     // SmartDashboard.putNumber("dTheta", dTheta);
     if (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4) {
-      rot = LLturnController.calculate(m_drivetrain.getTX() + kShootingAdjustmentMultiplier * dTheta);
+      rot = LLturnController.calculate(m_drivetrain.getTX() + kShootingRotationAdjustmentMultiplier * dTheta);
     } else {
-      rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingAdjustmentMultiplier * dTheta);
+      rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingRotationAdjustmentMultiplier * dTheta);
     }
 
     if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -103,6 +109,9 @@ public class ShootWhileMoving extends Command {
     }
 
     var distanceMultiplier = dis/5;
+    if (X+Y >= 0.6) {
+      distanceMultiplier += 0.2;
+    }
     distanceMultiplier = distanceMultiplier > 1 ? 1 : distanceMultiplier;
     distanceMultiplier = distanceMultiplier < 0.75 ? 0.75 : distanceMultiplier;
     

@@ -13,7 +13,11 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Loader;
+
+import static frc.robot.Constants.CANConstants.CANivoreID;
 import static frc.robot.Constants.LEDs.*;
+
+import com.ctre.phoenix6.CANBus;
 
 public class LEDDefault extends Command {
   private LEDs m_leds;
@@ -51,26 +55,28 @@ public class LEDDefault extends Command {
       } else {
         m_leds.setMiddleThird(Color.kBlack);
       }
-      //MIDDLE THIRD SET TO COLORS BASED ON ROTATION OF ROBOT
-      if (m_drivetrain.getTV()) {
-        double botRot = m_drivetrain.getBOTPOSE()[5];
-        boolean turnLeft = Math.signum(botRot) == 1;
-        botRot = Math.abs(botRot);
-        if (allianceColor == Color.kRed) {
-          botRot -= 180;
-        }
-        if (botRot <= 0.5) {
-          m_leds.setTopThird(Color.kWhite);
-        } else {
-          if (turnLeft) {
-            m_leds.setTopThird(Color.kRed);
-          } else {
-            m_leds.setTopThird(Color.kGreen);
-          }
-        }
-      } else {
-        m_leds.setTopThird(Color.kBlack);
-      }
+      // TOP THIRD SIGNALS CAN BUS VISIBILITY OF DEVICES
+      // if (CANBus.getStatus(CANivoreID).BusOffCount)
+      // //TOP THIRD SET TO COLORS BASED ON ROTATION OF ROBOT
+      // if (m_drivetrain.getTV()) {
+      //   double botRot = m_drivetrain.getBOTPOSE()[5];
+      //   boolean turnLeft = Math.signum(botRot) == 1;
+      //   botRot = Math.abs(botRot);
+      //   if (allianceColor == Color.kRed) {
+      //     botRot -= 180;
+      //   }
+      //   if (botRot <= 0.5) {
+      //     m_leds.setTopThird(Color.kWhite);
+      //   } else {
+      //     if (turnLeft) {
+      //       m_leds.setTopThird(Color.kRed);
+      //     } else {
+      //       m_leds.setTopThird(Color.kGreen);
+      //     }
+      //   }
+      // } else {
+      //   m_leds.setTopThird(Color.kBlack);
+      // }
     } else {
       if (m_loader.hasNoteInShooter()) {
         //IF WE HAVE A NOTE IN THE SHOOTER, SET MORE LEDS THE CLOSER WE ARE IN A CERTAIN RANGE, IF WE SEE AN APRILTAG USE WHITE INSTEAD OF GREEN

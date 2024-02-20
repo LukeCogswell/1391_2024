@@ -14,10 +14,10 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 import static frc.robot.Constants.Elevator.*;
-import static frc.robot.Constants.Intake.kMinRotation;
+import static frc.robot.Constants.Intake.*;
 import static frc.robot.Constants.LEDs.kConfidentShotRange;
+import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Constants.OIConstants.*;
-import static frc.robot.Constants.Shooter.kTransferAngle;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -49,7 +50,7 @@ public class RobotContainer {
   public final Loader m_loader = new Loader();
   public final Elevator m_elevator = new Elevator();
   public final Turret m_turret = new Turret();
-  public final Climber m_climber = new Climber();
+  // public final Climber m_climber = new Climber();
   public final LEDs m_LEDs = new LEDs();
   private final SendableChooser<Command> autoChooser;
 
@@ -85,7 +86,12 @@ public class RobotContainer {
 
     // m_turret.setDefaultCommand(new SetTurretAngle(m_turret, kTransferAngle));
 
-    m_intakePivot.setDefaultCommand(new IntakePivotDefault(m_intakePivot));
+
+    m_intake.setDefaultCommand(new RunCommand(() -> m_intake.stop(), m_intake));
+
+    // m_intakePivot.setDefaultCommand(new IntakePivotDefault(m_intakePivot));
+
+    // m_intakePivot.setDefaultCommand(new IntakeToAngle(m_intakePivot, kMaxRotation));
 
     m_loader.setDefaultCommand(new RunCommand(() -> m_loader.setLoaderMotor(0.), m_loader));
 
@@ -107,89 +113,100 @@ public class RobotContainer {
     
     /********   DRIVER  CONTROLS   ********/
 
-    // m_driverController.button(10).whileTrue(
-    //   new DriveWithJoysticksRobotRelative(
-    //     m_drivetrain, 
-    //     () -> m_driverController.getLeftX(), 
-    //     () -> m_driverController.getLeftY(), 
-    //     () -> m_driverController.getRightX(), 
-    //     () -> m_driverController.getRightTriggerAxis()
-    //     )
-    // );
+    m_driverController.button(10).whileTrue(
+      new DriveWithJoysticksRobotRelative(
+        m_drivetrain, 
+        () -> m_driverController.getLeftX(), 
+        () -> m_driverController.getLeftY(), 
+        () -> m_driverController.getRightX(), 
+        () -> m_driverController.getRightTriggerAxis()
+        )
+    );
 
-    // m_driverController.leftTrigger().whileTrue(
-    //   new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, 
-    //     () -> m_driverController.getLeftX(), 
-    //     () -> m_driverController.getLeftY(), 
-    //     () -> m_driverController.getRightTriggerAxis()
-    //     )
-    //   );
+    m_driverController.leftTrigger().whileTrue(
+      new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, 
+        //ZEROS ACT AS SHOOT WHILE STILL INSTEAD OF WHILE MOVING
+        () -> 0.,
+        () -> 0.,
+        () -> 0.
+        // () -> m_driverController.getLeftX(), 
+        // () -> m_driverController.getLeftY(), 
+        // () -> m_driverController.getRightTriggerAxis()
+        )
+      );
 
 
-    // m_driverController.rightBumper().whileTrue(new AutoTransfer(m_intake, m_turret, m_loader));
+    // m_driverController.rightBumper().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
 
-    // m_driverController.leftBumper().whileTrue(new AutoCollect(m_intake, m_turret, m_loader)).onFalse(new InstantCommand(() -> {
-    //   m_intake.setIntake(0.);
-    //   m_shooter.setShooterSpeed(0.);
-    //   m_loader.setLoaderMotor(0.);
+    // m_driverController.leftBumper().whileTrue(new AutoCollect(m_intakePivot, m_intake, m_turret, m_loader)).onFalse(new InstantCommand(() -> {
+      // m_intake.setIntake(0.);
+      // m_shooter.setShooterSpeed(0.);
+      // m_loader.setLoaderMotor(0.);
     // }));
   
   
     // m_driverController.a().whileTrue(new DepositInAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_elevator).unless(() -> !m_loader.hasNoteInShooter()))
     // .onFalse(new ElevatorToHeight(m_elevator, kMinHeight));
   
-    // m_driverController.b().whileTrue(new CollectFromSource().unless(() -> m_loader.hasNoteInShooter())) // TODO: COLLECT FROM SOURCE
+    // m_driverController.b().whileTrue(new CollectFromSource(m_drivetrain, m_turret, m_shooter, m_loader, m_elevator).unless(() -> m_loader.hasNoteInShooter())) 
+    // // TODO: TUNE THIS
     //   .onFalse(new InstantCommand(() -> {}, m_loader, m_shooter, m_turret));
 
-    // m_driverController.x().whileTrue(new AutoTrackCollectNote(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter()))
+    // m_driverController.x().whileTrue(new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter()))
     //   .onFalse(new InstantCommand(() -> {
     //   m_shooter.setShooterSpeed(0.);
     //   m_loader.setLoaderMotor(0.);
     //   m_intake.setIntake(0.);
     //   }, m_intake, m_shooter, m_turret, m_loader));
     
-    // m_driverController.y().whileTrue(new RunCommand(() -> { //TODO: Turn this into a single command
-    //   m_shooter.setLeftShooterSpeed(-2000.);
-    //   m_shooter.setRightShooterSpeed(-1000.);
-    //   m_loader.setLoaderMotor(-0.2);
-    // }, m_loader, m_shooter).until(() -> m_loader.hasNoteInShooter()).andThen(new WaitUntilCommand(() -> !m_loader.hasNoteInShooter()).andThen(new InstantCommand(() -> {
-    //   m_shooter.stopShooter();
-    //   m_loader.stop();
-    // })))).onFalse(new InstantCommand(() -> {
-    //   m_shooter.stopShooter();
-    //   m_loader.stop();
-    // }, m_loader, m_shooter
-    // ));
+    m_driverController.y().whileTrue(new RunCommand(() -> { //TODO: Turn this into a single command
+      m_shooter.setLeftShooterSpeed(-2000.);
+      m_shooter.setRightShooterSpeed(-1000.);
+      m_loader.setLoaderMotor(-0.2);
+    }, m_loader, m_shooter).until(() -> m_loader.hasNoteInShooter()).andThen(new WaitUntilCommand(() -> !m_loader.hasNoteInShooter()).andThen(new InstantCommand(() -> {
+      m_shooter.stopShooter();
+      m_loader.stop();
+    })))).onFalse(new InstantCommand(() -> {
+      m_shooter.stopShooter();
+      m_loader.stop();
+    }, m_loader, m_shooter
+    ));
 
 
     // m_driverController.povUp().whileTrue(
     //   m_drivetrain.getCommandToPathfindToPoint(DriverStation.getAlliance().get()==Alliance.Blue ? Blue.Source: Red.Source, 0.)
-    //   .until(() -> false) //TODO: INSERT CONDITION FOR SOURCE PATHFINDING
+    //   .until(() -> m_drivetrain.getTV())
+    // .andThen(new ConditionalCommand(
+    //   new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController), 
+    //   new CollectFromSource(m_drivetrain, m_turret, m_shooter, m_loader, m_elevator),
+    //   () -> m_intake.getTV())) //TODO: TEST CONDITION FOR SOURCE PATHFINDING
     //   );
     
     // m_driverController.povDown().whileTrue(
+    //   // TODO: TEST THIS
     //   m_drivetrain.getCommandToPathfindToPoint(DriverStation.getAlliance().get()==Alliance.Blue ? Blue.Speaker: Red.Speaker, 0.)
     //   .until(() -> m_drivetrain.getDistanceToSpeaker() <= kConfidentShotRange).unless(() -> !m_loader.hasNoteInShooter())
+    //   .andThen(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 1.).unless(() -> !m_loader.hasNoteInShooter()))
     //   );
 
-    // m_driverController.povLeft().whileTrue(new RunCommand(() -> {
-    //   m_intake.setIntake(-0.4);
-    //   m_loader.setLoaderMotor(-0.8);
-    // }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
-    //   m_intake.setIntake(0.);
-    //   m_loader.stop();}, m_intake, m_loader));
+    m_driverController.povLeft().whileTrue(new RunCommand(() -> {
+      m_intake.setIntake(-0.4);
+      m_loader.setLoaderMotor(-0.8);
+    }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
+      m_intake.setIntake(0.);
+      m_loader.stop();}, m_intake, m_loader));
 
-    // m_driverController.povRight().whileTrue(new RunCommand(() -> {
-    //   m_intake.setIntake(0.4);
-    //   m_loader.setLoaderMotor(0.8);
-    // }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
-    // m_intake.setIntake(0.);
-    // m_loader.stop();}, m_intake, m_loader));
+    m_driverController.povRight().whileTrue(new RunCommand(() -> {
+      m_intake.setIntake(0.4);
+      m_loader.setLoaderMotor(0.8);
+    }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
+    m_intake.setIntake(0.);
+    m_loader.stop();}, m_intake, m_loader));
       
 
-    // m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
+    m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
 
-    // m_driverController.back().whileTrue(new ElevatorToHeight(m_elevator, kMinHeight));
+    m_driverController.back().whileTrue(new ElevatorToHeight(m_elevator, kMinHeight));
         
     /*********  END DRIVER CONTROLS  *********/
     /*-------------------------------------------------- */
@@ -208,20 +225,36 @@ public class RobotContainer {
       m_turret.setAngleMotor(-0.3);
     }, m_turret)).onFalse(new InstantCommand(() -> m_turret.stop()));
 
-    
-    m_driverController.start().whileTrue(new RunCommand(() -> m_elevator.setElevator(0.2), m_elevator));
 
-    m_driverController.back().whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.2), m_elevator));
-    
-    m_driverController.b().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.7), m_loader)).onFalse(new InstantCommand(() -> m_loader.stop(), m_loader));
+    // m_driverController.povDown().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(-0.2), m_intakePivot));
+    // m_driverController.povUp().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(0.2), m_intakePivot));
 
-    // m_driverController.rightBumper().whileTrue(new ShootNoteAtSpeed(m_shooter, m_loader, 5676.0, m_driverController.b(), new Trigger(() -> false), new Trigger(() -> false)));
-    m_driverController.leftTrigger().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
-    // m_driverController.rightBumper().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676., 25.));
-    // m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.setShooterSpeed(3000.), m_shooter)).onFalse(new InstantCommand(() -> m_shooter.setShooterSpeed(0.), m_shooter));
-    m_driverController.y().whileTrue(new SetTurretAngle(m_turret, 80.));
-    m_driverController.a().whileTrue(new InstantCommand(() -> m_climber.runClimber(0.3))).onFalse(new InstantCommand(() -> m_climber.runClimber(0.)));
+    // m_driverController.povDown().whileTrue(new IntakeToAngle(m_intakePivot, kMinRotation));
+
+    // m_driverController.povUp().whileTrue(new IntakeToAngle(m_intakePivot, kMaxRotation));
+
+    // m_driverController.x().whileTrue(new AutoCollect(m_intakePivot, m_intake, m_turret, m_loader));
     
+    // m_driverController.start().whileTrue(new RunCommand(() -> m_elevator.setElevator(0.2), m_elevator));
+
+    // m_driverController.back().whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.2), m_elevator));
+    
+    // m_driverController.b().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.7), m_loader)).onFalse(new InstantCommand(() -> m_loader.stop(), m_loader));
+
+
+    // m_driverController.a().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
+
+    // // m_driverController.rightBumper().whileTrue(new ShootNoteAtSpeed(m_shooter, m_loader, 5676.0, m_driverController.b(), new Trigger(() -> false), new Trigger(() -> false)));
+    // m_driverController.leftTrigger().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+    // // m_driverController.rightBumper().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676., 25.));
+    // // m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.setShooterSpeed(3000.), m_shooter)).onFalse(new InstantCommand(() -> m_shooter.setShooterSpeed(0.), m_shooter));
+    // m_driverController.y().whileTrue(new SetTurretAngle(m_turret, 80.));
+    // // m_driverController.a().whileTrue(new InstantCommand(() -> m_climber.runClimber(0.3))).onFalse(new InstantCommand(() -> m_climber.runClimber(0.)));
+    
+
+    // m_driverController.povRight().whileTrue(new RunCommand(() -> m_intake.setIntake(0.3), m_intake));
+    // m_driverController.povLeft().whileTrue(new RunCommand(() -> m_intake.setIntake(-0.3), m_intake));
+
     /********* END TESTING CONTROLS *********/
     /*-------------------------------------------------- */
     /******** SYSID ROUTINE BUTTONS *********/

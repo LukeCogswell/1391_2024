@@ -35,11 +35,11 @@ public class AutoTrackNote extends Command {
     if (m_intake.getTV()) {
       ty = (m_intake.getTY() + 30.);
       drive = ty/20.;
-      drive = drive > 2. ? 2. : drive;
+      drive = drive > .3 ? .3 : drive;
       rot = rotController.calculate(m_intake.getTX());
-      rot = rot > 0.9 ? 0.9 : rot;
+      rot = rot > 0.1 ? 0.1 : rot;
       if (ty < 20) {
-        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.2 : 0.6);
+        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.6 : 0.6);
       }
       m_drivetrain.drive(drive, 0., rot, false);
     } else {

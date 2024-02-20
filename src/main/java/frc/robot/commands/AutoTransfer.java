@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.Loader;
@@ -21,21 +22,22 @@ import frc.robot.subsystems.Turret;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoTransfer extends ParallelDeadlineGroup {
   /** Creates a new Transfer. */
-  public AutoTransfer(IntakePivot intakePivot, Intake intake, Turret turret, Loader loader) {
+  public AutoTransfer(IntakePivot intakePivot, Intake intake, Elevator elevator, Turret turret, Loader loader) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     super(
       new SequentialCommandGroup(
-        new WaitUntilCommand(() -> (intakePivot.isUp()) /*  && Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3*/),
+        new ElevatorToHeight(elevator, 0.13),
+        new WaitUntilCommand(() -> (intakePivot.getIntakeAngle() >= 65) /*  && Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3*/),
         new InstantCommand(() -> {
           loader.setLoaderMotor(.8);
-          intake.setIntake(.4);
-        }, loader),
+          intake.setIntake(.3);
+        }, intake, loader),
         new WaitUntilCommand(() -> (loader.hasNoteInShooter())),
         new InstantCommand(() -> {
           intake.setIntake(0.);
           loader.setLoaderMotor(0.);
-        }, loader)
+        }, intake, loader)
       )
     );
     addCommands(

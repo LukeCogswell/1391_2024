@@ -9,22 +9,24 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch.Type;
 
 import static frc.robot.Constants.Intake.*;
+import static frc.robot.Constants.Shooter.kAngleEncoderOffset;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivot extends SubsystemBase {
-  private final CANSparkMax m_pivotMotor = new CANSparkMax(9, MotorType.kBrushless);
-  private final DutyCycleEncoder m_intakeEncoder = new DutyCycleEncoder(1); 
+  private final CANSparkMax m_pivotMotor = new CANSparkMax(10, MotorType.kBrushless);
+  private final DutyCycleEncoder m_intakeEncoder = new DutyCycleEncoder(2); 
   /** Creates a new IntakePivot. */
   public IntakePivot() {
-    m_pivotMotor.setInverted(true);
+    m_pivotMotor.setInverted(false);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("INTAKE CURRENT", m_pivotMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake Angle", getIntakeAngle());
     SmartDashboard.putBoolean("IsUp?", isUp());
     SmartDashboard.putBoolean("IsDown?", isDown());
@@ -39,7 +41,7 @@ public class IntakePivot extends SubsystemBase {
   }
 
   public double getIntakeAngle() {
-    return (m_intakeEncoder.get() - kIntakeEncoderOffset) * kEncoderGearRatio * 360;
+    return (((m_intakeEncoder.get()) * kEncoderGearRatio * 360) - kIntakeEncoderOffset);
   }
 
   public boolean isDown() {

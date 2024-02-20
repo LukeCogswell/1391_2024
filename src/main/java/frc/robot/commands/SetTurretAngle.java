@@ -50,7 +50,7 @@ public class SetTurretAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return false;
-    return angleController.atSetpoint();
+    return false;
+    // return angleController.atSetpoint();
   }
 }

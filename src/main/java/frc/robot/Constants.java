@@ -49,17 +49,17 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final double kShootingAdjustmentMultiplier = 1.5;
+    public static final double kShootingRotationAdjustmentMultiplier = 1.75; //
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
     public static final double kAngleEncoderOffset = 14.27+68.5;
     public static final double kMaxSpeedRPM = 5676;
     public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
 
     public static final double kAmpAngle = -25.;
-    public static final double kTransferAngle = 15.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kTransferAngle = 20.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
 
     public static final class PID {
-      public static final double kAngleP = 0.02;
+      public static final double kAngleP = 0.018;
       public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
@@ -67,14 +67,17 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final double kIntakeEncoderOffset = 0.25;
-    public static final double kEncoderGearRatio = 0.5;
-    public static final double kMinRotation = 0.0;  // DEGREES
-    public static final double kMaxRotation = 70.0; // DEGREES
+    public static final double kIntakeEncoderOffset = 0.;
+    public static final double kEncoderGearRatio = 1;
+    public static final double kMinRotation = 358.0;  // DEGREES
+    public static final double kMaxRotation = 285.0; // DEGREES
+
+    public static final double kMaxDownPower = -0.4;
+    public static final double kMaxUpPower = 0.5;
 
     public static final class PID {
-      public static final double kIAngleP = 0.005;
-      public static final double kIAngleI = 0.;
+      public static final double kIAngleP = 0.01;
+      public static final double kIAngleI = 0.0;
       public static final double kIAngleD = 0.;
     }
   }

@@ -4,9 +4,14 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.CANConstants.CANivoreID;
+
+import com.ctre.phoenix6.CANBus;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -27,6 +32,8 @@ public class LEDs extends SubsystemBase {
 
   @Override
   public void periodic() {
+      SmartDashboard.putNumber("BUS OFF COUNT: ", CANBus.getStatus(CANivoreID).BusOffCount);
+      SmartDashboard.putNumber("TRANSMIT BUFFER FULL COUNT: ", CANBus.getStatus(CANivoreID).TxFullCount);
     // setPercent(Timer.getFPGATimestamp() % 1 / 1);
     // setBottomHalf(new Color(255, 0, 0));
     // This method will be called once per scheduler run

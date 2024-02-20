@@ -4,16 +4,19 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakePivot;
 
 import static frc.robot.Constants.Intake.PID.*;
+import static frc.robot.Constants.Intake.*;
 
 public class IntakeToAngle extends Command {
   private IntakePivot m_intakePivot;
   private Double angle;
-  private PIDController angleController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
+  private PIDController rotController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
   /** Creates a new IntakeToAngle. */
   public IntakeToAngle(IntakePivot intakePivot, Double toAngle) {
     m_intakePivot = intakePivot;
@@ -25,27 +28,30 @@ public class IntakeToAngle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    angleController.setSetpoint(angle);
-    angleController.setTolerance(0.5);
+    rotController.setSetpoint(angle);
+    rotController.setTolerance(0.5);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakePivot.setAngleMotor(angleController.calculate(m_intakePivot.getIntakeAngle()));
+    var pwr = rotController.calculate(m_intakePivot.getIntakeAngle());
+    pwr = MathUtil.clamp(pwr, kMaxDownPower, kMaxUpPower);
+    SmartDashboard.putNumber("?Power", pwr);
+    m_intakePivot.setAngleMotor(pwr);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    angleController.close();
+    rotController.close();
     m_intakePivot.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // return false;
-    return angleController.atSetpoint();
+    return false;
+    // return angleController.atSetpoint();
   }
 }
