@@ -50,7 +50,7 @@ public class RobotContainer {
   public final Loader m_loader = new Loader();
   public final Elevator m_elevator = new Elevator();
   public final Turret m_turret = new Turret();
-  // public final Climber m_climber = new Climber();
+  public final Climber m_climber = new Climber();
   public final LEDs m_LEDs = new LEDs();
   private final SendableChooser<Command> autoChooser;
 
@@ -204,15 +204,15 @@ public class RobotContainer {
     m_loader.stop();}, m_intake, m_loader));
       
 
-    m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
+    // m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
 
-    m_driverController.back().whileTrue(new ElevatorToHeight(m_elevator, kMinHeight));
-        
+    // m_driverController.back().whileTrue(new ElevatorToHeight(m_elevator, kMinHeight));
+    
     /*********  END DRIVER CONTROLS  *********/
     /*-------------------------------------------------- */
     /*********   OPERATOR CONTROLS   *********/
     
-
+    
     
     /********* END OPERATOR CONTROLS *********/
     /*-------------------------------------------------- */
@@ -220,12 +220,15 @@ public class RobotContainer {
     m_driverController.povUp().whileTrue(new RunCommand(() -> {
       m_turret.setAngleMotor(0.3);
     }, m_turret)).onFalse(new InstantCommand(() -> m_turret.stop()));
-
+    
     m_driverController.povDown().whileTrue(new RunCommand(() -> {
       m_turret.setAngleMotor(-0.3);
     }, m_turret)).onFalse(new InstantCommand(() -> m_turret.stop()));
+    
+    
+    m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
 
-
+    m_driverController.back().whileTrue(new ElevatorToHeight(m_elevator, kMinHeight));
     // m_driverController.povDown().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(-0.2), m_intakePivot));
     // m_driverController.povUp().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(0.2), m_intakePivot));
 
@@ -235,9 +238,9 @@ public class RobotContainer {
 
     // m_driverController.x().whileTrue(new AutoCollect(m_intakePivot, m_intake, m_turret, m_loader));
     
-    // m_driverController.start().whileTrue(new RunCommand(() -> m_elevator.setElevator(0.2), m_elevator));
+    m_driverController.povUp().whileTrue(new RunCommand(() -> m_elevator.setElevator(0.2), m_elevator));
 
-    // m_driverController.back().whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.2), m_elevator));
+    m_driverController.povDown().whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.2), m_elevator));
     
     // m_driverController.b().onTrue(new InstantCommand(() -> m_loader.setLoaderMotor(0.7), m_loader)).onFalse(new InstantCommand(() -> m_loader.stop(), m_loader));
 
@@ -249,7 +252,7 @@ public class RobotContainer {
     // // m_driverController.rightBumper().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676., 25.));
     // // m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.setShooterSpeed(3000.), m_shooter)).onFalse(new InstantCommand(() -> m_shooter.setShooterSpeed(0.), m_shooter));
     // m_driverController.y().whileTrue(new SetTurretAngle(m_turret, 80.));
-    // // m_driverController.a().whileTrue(new InstantCommand(() -> m_climber.runClimber(0.3))).onFalse(new InstantCommand(() -> m_climber.runClimber(0.)));
+    m_driverController.a().whileTrue(new InstantCommand(() -> m_climber.runClimber(0.3))).onFalse(new InstantCommand(() -> m_climber.runClimber(0.)));
     
 
     // m_driverController.povRight().whileTrue(new RunCommand(() -> m_intake.setIntake(0.3), m_intake));

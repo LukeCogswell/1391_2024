@@ -67,12 +67,12 @@ public class DriveWithJoysticksFieldRelative extends Command {
   @Override
   public void execute() {
 
-    Y = m_y.getAsDouble();
-    X = m_x.getAsDouble();
-    rot = m_theta.getAsDouble();
-    
     m_precisionFactor = Math.pow(0.15 , m_precision.getAsDouble());
-    var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
+    Y = m_y.getAsDouble() * m_precisionFactor;
+    X = m_x.getAsDouble() * m_precisionFactor;
+    rot = m_theta.getAsDouble() * m_precisionFactor;
+    
+    var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
     m_xSpeed =
       -m_xLimiter.calculate(MathUtil.applyDeadband(Y * Y * Math.signum(Y), kDriveDeadband))
       * speedAdjustmentFactor;
@@ -83,7 +83,7 @@ public class DriveWithJoysticksFieldRelative extends Command {
     
     m_thetaSpeed =
       -m_thetaLimiter.calculate(MathUtil.applyDeadband(rot * rot * Math.signum(rot), kDriveDeadband))
-      * kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier * kRotationSpeedMultiplier * m_precisionFactor;
+      * kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier * kRotationSpeedMultiplier;
     
     if (isRed) {
       m_drivetrain.drive(-m_xSpeed, -m_ySpeed, m_thetaSpeed, true);
