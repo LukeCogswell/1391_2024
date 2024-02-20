@@ -19,6 +19,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveWithJoysticksFieldRelative extends Command {
 
@@ -67,10 +68,11 @@ public class DriveWithJoysticksFieldRelative extends Command {
   @Override
   public void execute() {
 
-    m_precisionFactor = Math.pow(0.15 , m_precision.getAsDouble());
-    Y = m_y.getAsDouble() * m_precisionFactor;
-    X = m_x.getAsDouble() * m_precisionFactor;
-    rot = m_theta.getAsDouble() * m_precisionFactor;
+    var m_precisionFactor = Math.pow(0.4, m_precision.getAsDouble());
+    SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
+    if (m_precisionFactor <= 0.3) {
+      m_precisionFactor = 0.3;
+    }
     
     var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
     m_xSpeed =

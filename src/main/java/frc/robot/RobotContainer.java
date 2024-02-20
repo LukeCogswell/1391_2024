@@ -189,19 +189,19 @@ public class RobotContainer {
     //   .andThen(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 1.).unless(() -> !m_loader.hasNoteInShooter()))
     //   );
 
-    m_driverController.povLeft().whileTrue(new RunCommand(() -> {
-      m_intake.setIntake(-0.4);
-      m_loader.setLoaderMotor(-0.8);
-    }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
-      m_intake.setIntake(0.);
-      m_loader.stop();}, m_intake, m_loader));
+    // m_driverController.povLeft().whileTrue(new RunCommand(() -> {
+    //   m_intake.setIntake(-0.4);
+    //   m_loader.setLoaderMotor(-0.8);
+    // }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
+    //   m_intake.setIntake(0.);
+    //   m_loader.stop();}, m_intake, m_loader));
 
-    m_driverController.povRight().whileTrue(new RunCommand(() -> {
-      m_intake.setIntake(0.4);
-      m_loader.setLoaderMotor(0.8);
-    }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
-    m_intake.setIntake(0.);
-    m_loader.stop();}, m_intake, m_loader));
+    // m_driverController.povRight().whileTrue(new RunCommand(() -> {
+    //   m_intake.setIntake(0.4);
+    //   m_loader.setLoaderMotor(0.8);
+    // }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
+    // m_intake.setIntake(0.);
+    // m_loader.stop();}, m_intake, m_loader));
       
 
     // m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
@@ -217,11 +217,11 @@ public class RobotContainer {
     /********* END OPERATOR CONTROLS *********/
     /*-------------------------------------------------- */
     /*********   TESTING  CONTROLS   *********/
-    m_driverController.povUp().whileTrue(new RunCommand(() -> {
+    m_driverController.povLeft().whileTrue(new RunCommand(() -> {
       m_turret.setAngleMotor(0.3);
     }, m_turret)).onFalse(new InstantCommand(() -> m_turret.stop()));
     
-    m_driverController.povDown().whileTrue(new RunCommand(() -> {
+    m_driverController.povRight().whileTrue(new RunCommand(() -> {
       m_turret.setAngleMotor(-0.3);
     }, m_turret)).onFalse(new InstantCommand(() -> m_turret.stop()));
     

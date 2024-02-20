@@ -13,6 +13,7 @@ import static frc.robot.Constants.MeasurementConstants.*;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveWithJoysticksRobotRelative extends Command {
 
@@ -22,7 +23,7 @@ public class DriveWithJoysticksRobotRelative extends Command {
 
   boolean m_PIDcontrol, isRed;
 
-  double m_xSpeed, m_ySpeed, m_thetaSpeed, m_precisionFactor, Y, X, rot;
+  double m_xSpeed, m_ySpeed, m_thetaSpeed;
 
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
@@ -50,11 +51,17 @@ public class DriveWithJoysticksRobotRelative extends Command {
   @Override
   public void execute() {
 
-    m_precisionFactor = Math.pow(0.4 , m_precision.getAsDouble());
-    Y = m_y.getAsDouble() * m_precisionFactor;
-    X = m_x.getAsDouble() * m_precisionFactor;
-    rot = m_theta.getAsDouble() * m_precisionFactor;
+    var m_precisionFactor = Math.pow(0.4, m_precision.getAsDouble());
+    SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
+    if (m_precisionFactor <= 0.3) {
+      m_precisionFactor = 0.3;
+    }
+    var Y = m_y.getAsDouble() * m_precisionFactor;
+    var X = m_x.getAsDouble() * m_precisionFactor;
+    var rot = m_theta.getAsDouble() * m_precisionFactor;
     
+    
+
     var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
     m_xSpeed =
       -m_xLimiter.calculate(MathUtil.applyDeadband(Y * Y * Math.signum(Y), kDriveDeadband))
