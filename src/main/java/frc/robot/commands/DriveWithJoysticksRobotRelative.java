@@ -51,14 +51,11 @@ public class DriveWithJoysticksRobotRelative extends Command {
   @Override
   public void execute() {
 
-    var m_precisionFactor = Math.pow(0.4, m_precision.getAsDouble());
+    double m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
     SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
-    if (m_precisionFactor <= 0.3) {
-      m_precisionFactor = 0.3;
-    }
-    var Y = m_y.getAsDouble() * m_precisionFactor;
-    var X = m_x.getAsDouble() * m_precisionFactor;
-    var rot = m_theta.getAsDouble() * m_precisionFactor;
+    double Y = m_y.getAsDouble() * m_precisionFactor;
+    double X = m_x.getAsDouble() * m_precisionFactor;
+    double rot = m_theta.getAsDouble() * m_precisionFactor;
     
     
 

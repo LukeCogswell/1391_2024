@@ -33,7 +33,7 @@ public class DriveWithJoysticksFieldRelative extends Command {
 
   private PIDController turnController = new PIDController(.01, kTurnI, 0.002);
   
-  double m_toAngle, m_xSpeed, m_ySpeed, m_thetaSpeed, m_precisionFactor, Y, X, rot;
+  double m_toAngle, m_xSpeed, m_ySpeed, m_thetaSpeed;
 
   boolean m_holdAngle = false;
 
@@ -68,11 +68,11 @@ public class DriveWithJoysticksFieldRelative extends Command {
   @Override
   public void execute() {
 
-    var m_precisionFactor = Math.pow(0.4, m_precision.getAsDouble());
+    double m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
     SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
-    if (m_precisionFactor <= 0.3) {
-      m_precisionFactor = 0.3;
-    }
+    double Y = m_y.getAsDouble() * m_precisionFactor;
+    double X = m_x.getAsDouble() * m_precisionFactor;
+    double rot = m_theta.getAsDouble() * m_precisionFactor;
     
     var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
     m_xSpeed =

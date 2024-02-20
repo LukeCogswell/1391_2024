@@ -58,11 +58,8 @@ public class DriveWithJoysticksFaceForwards extends Command {
   @Override
   public void execute() {
 
-   var m_precisionFactor = Math.pow(0.4, m_precision.getAsDouble());
+   var m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
     SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
-    if (m_precisionFactor <= 0.3) {
-      m_precisionFactor = 0.3;
-    }
     
     var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
     m_xSpeed =

@@ -135,6 +135,7 @@ public final class Constants {
     }
 
   public static final class Swerve {
+    public static final double kDrivingPrecisionMultiplier = 0.3;
     public static final double kSpeedMultiplier = 1; // limits robot speed
     public static final double kRotationSpeedMultiplier = 0.6;
     public static final double kDriveDeadband = 0.05;
