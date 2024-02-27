@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -30,10 +31,9 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ParallelCommandGroup(
-        new IntakeToAngle(intakePivot, kMinRotation).until(() -> intakePivot.isDown()),
-        new RunCommand(() -> intake.setIntake(-0.7), intake).withTimeout(0.4)),
-      new AutoTrackNote(drivetrain, intake),
+      new ParallelRaceGroup(
+        new IntakeToAngle(intakePivot, kMinRotation),
+        new AutoTrackNote(drivetrain, intake, intakePivot)),
       new ParallelRaceGroup(
         new DriveWithJoysticksFieldRelative(
           drivetrain, 
@@ -43,9 +43,7 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
           () -> driverController.getRightTriggerAxis() 
           ),
         new SequentialCommandGroup(
-          new WaitCommand(0.2),
-          new RunCommand(() -> intake.setIntake(0.6), intake).until(() -> intake.hasNoteInIntake()),
-          new InstantCommand(() -> intake.setIntake(0.0), intake),
+          new InstantCommand(() -> intake.stop(), intake),
           new AutoTransfer(intakePivot, intake, elevator, turret, loader)
         )
       )

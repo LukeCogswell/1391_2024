@@ -31,9 +31,9 @@ public class DriveToPoint extends Command {
   @Override
   public void initialize() {
     xController.setSetpoint(pose.getX());
-    xController.setTolerance(0.1);
+    xController.setTolerance(0.2);
     yController.setSetpoint(pose.getY());
-    yController.setTolerance(0.1);
+    yController.setTolerance(0.2);
     rotController.setSetpoint(pose.getRotation().getDegrees());
     rotController.setTolerance(3);
     rotController.enableContinuousInput(-180, 180);

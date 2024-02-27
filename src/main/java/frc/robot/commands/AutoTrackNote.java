@@ -4,22 +4,30 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.Swerve.kAccelerationSeconds;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
 
 public class AutoTrackNote extends Command {
   private Drivetrain m_drivetrain;
   private Intake m_intake;
-  private PIDController rotController = new PIDController(0.07, 0.01, 0.0);
+  private IntakePivot m_intakePivot;
+  private PIDController rotController = new PIDController(0.1, 0.01, 0.0);
+  private SlewRateLimiter driveLimiter = new SlewRateLimiter(1/kAccelerationSeconds);
   private Double drive, rot, ty;
   /** Creates a new AutoTrackNote. */
 
-  public AutoTrackNote(Drivetrain drivetrain, Intake intake) {
+  public AutoTrackNote(Drivetrain drivetrain, Intake intake, IntakePivot intakePivot) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
     m_intake = intake;
+    m_intakePivot = intakePivot;
     addRequirements(drivetrain, intake);
   }
 
@@ -27,23 +35,28 @@ public class AutoTrackNote extends Command {
   @Override
   public void initialize() {
     rotController.setSetpoint(0.);
+    rotController.setTolerance(10);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     if (m_intake.getTV()) {
-      ty = (m_intake.getTY() + 30.);
-      drive = ty/20.;
+      ty = (m_intake.getTY() + 25.);
+      drive = ty/30.;
       drive = drive > .3 ? .3 : drive;
       rot = rotController.calculate(m_intake.getTX());
-      rot = rot > 0.1 ? 0.1 : rot;
+      rot = MathUtil.clamp(rot, -.3, .3);
       if (ty < 20) {
-        m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.6 : 0.6);
+        m_intake.setIntake(0.6);
       }
+      if (m_intakePivot.getIntakeAngle() <= 255) {
+        drive = 0.;
+      }
+      drive = driveLimiter.calculate(drive);
       m_drivetrain.drive(drive, 0., rot, false);
     } else {
-      m_intake.setIntake(m_intake.currentHasNoteInIntake() ? 0.2 : 0.6);
+      m_intake.setIntake(m_intake.hasNoteInIntake() ? 0. : 0.2);
     }
   }
 
@@ -51,7 +64,7 @@ public class AutoTrackNote extends Command {
   @Override
   public void end(boolean interrupted) {
     m_drivetrain.stop();
-    m_intake.setIntake(0.);
+    m_intake.stop();
   }
 
   // Returns true when the command should end.

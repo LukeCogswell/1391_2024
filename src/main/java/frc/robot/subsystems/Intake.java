@@ -13,23 +13,28 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.Constants.CANConstants.*;
+
 public class Intake extends SubsystemBase {
-  private final CANSparkMax m_intakeMotor = new CANSparkMax(9, MotorType.kBrushless); 
+  private final CANSparkMax m_intakeMotor = new CANSparkMax(kIntakeBeltMotorID, MotorType.kBrushless); 
   private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight-twelve");
   private AnalogInput m_beamBreakSensor = new AnalogInput(1);
 
   /** Creates a new Intake. */
   public Intake() {
     m_intakeMotor.setInverted(false);
+    m_intakeMotor.setOpenLoopRampRate(0.);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // SmartDashboard.putNumber("TY", getTY());
     SmartDashboard.putBoolean("HasNote?", hasNoteInIntake());
+    SmartDashboard.putNumber("bELTS cURRNET", m_intakeMotor.getOutputCurrent());
     SmartDashboard.putBoolean("CurrentHasNote?", currentHasNoteInIntake());
     // SmartDashboard.putNumber("Bot Int Current", getIntakeCurrentDraw());
-    SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());
+    // SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());
     // SmartDashboard.putNumber("Top Int Current", getTopIntakeCurrentDraw());
   }
 

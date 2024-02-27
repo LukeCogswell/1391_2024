@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.CANConstants.*;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -12,11 +13,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-  private final CANSparkMax m_climberMotor = new CANSparkMax(16, MotorType.kBrushless);
+  private final CANSparkMax m_climberMotor = new CANSparkMax(kClimberMotorID, MotorType.kBrushless);
 
   /** Creates a new Climber. */
   public Climber() {
-    m_climberMotor.setInverted(false);
+    m_climberMotor.setInverted(true);
   }
   public void runClimber(Double speed) {
     m_climberMotor.set(MathUtil.clamp(speed, 0, 1));

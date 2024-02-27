@@ -4,11 +4,13 @@
 
 package frc.robot.commands;
 
+import static frc.robot.Constants.Elevator.kMinHeight;
 import static frc.robot.Constants.Intake.kMaxRotation;
 import static frc.robot.Constants.Shooter.kTransferAngle;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Elevator;
@@ -27,17 +29,17 @@ public class AutoTransfer extends ParallelDeadlineGroup {
     // addCommands(new FooCommand(), new BarCommand());
     super(
       new SequentialCommandGroup(
-        new ElevatorToHeight(elevator, 0.13),
-        new WaitUntilCommand(() -> (intakePivot.getIntakeAngle() >= 65) /*  && Math.abs(turret.getShooterAngle() - kTransferAngle) <= 3*/),
-        new InstantCommand(() -> {
-          loader.setLoaderMotor(.8);
-          intake.setIntake(.3);
-        }, intake, loader),
-        new WaitUntilCommand(() -> (loader.hasNoteInShooter())),
+        new ElevatorToHeight(elevator, 1.), //0.13
+        new WaitUntilCommand(() -> ((intakePivot.getIntakeAngle() <= 189) && (elevator.getElevatorHeightL() >= 0.7))),
+        new RunCommand(() -> {
+          loader.setLoaderMotor(.6);
+          intake.setIntake(.4);
+        }, intake, loader).until(() -> (loader.hasNoteInShooter())),
         new InstantCommand(() -> {
           intake.setIntake(0.);
           loader.setLoaderMotor(0.);
-        }, intake, loader)
+        }, intake, loader),
+        new ElevatorToHeight(elevator, kMinHeight)
       )
     );
     addCommands(

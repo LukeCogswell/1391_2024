@@ -51,7 +51,7 @@ public class LEDDefault extends Command {
     if (DriverStation.isDisabled()) {
       m_leds.setBottomThird(allianceColor);
       if (m_loader.hasNoteInShooter()) {
-        m_leds.setMiddleThird(Color.kOrange);
+        m_leds.setMiddleThird(Color.kOrangeRed);
       } else {
         m_leds.setMiddleThird(Color.kBlack);
       }
@@ -87,9 +87,9 @@ public class LEDDefault extends Command {
       } else {
         //IF BLOCK FOR BOTTOM HALF OF LEDS - INTAKE STATUS
         if (m_intake.hasNoteInIntake()) {
-          m_leds.setBottomHalf(Color.kOrange);
+          m_leds.setBottomHalf(Color.kGreen);
         } else if (m_intake.getTV()) {
-          m_leds.setBottomHalf(Color.kYellow);
+          m_leds.setBottomHalf(Color.kOrangeRed);
         } else {
           m_leds.setBottomHalf(Color.kBlack);
         }

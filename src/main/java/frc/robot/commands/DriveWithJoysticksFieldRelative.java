@@ -38,8 +38,8 @@ public class DriveWithJoysticksFieldRelative extends Command {
   boolean m_holdAngle = false;
 
 
-  private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
-  private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
+  private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(2 / kAccelerationSeconds);
+  private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(2 / kAccelerationSeconds);
   private final SlewRateLimiter m_thetaLimiter = new SlewRateLimiter(50);
   /** Creates a new Drive. */
   public DriveWithJoysticksFieldRelative(

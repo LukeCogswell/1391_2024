@@ -73,32 +73,18 @@ public class Robot extends TimedRobot {
     if (DriverStation.isDisabled()) {
       m_robotContainer.m_LEDs.setBottomThird(allianceColor);
       if (m_robotContainer.m_loader.hasNoteInShooter()) {
-        m_robotContainer.m_LEDs.setMiddleThird(Color.kOrange);
+        m_robotContainer.m_LEDs.setMiddleThird(Color.kOrangeRed);
       } else {
         m_robotContainer.m_LEDs.setMiddleThird(Color.kBlack);
       }
-      //MIDDLE THIRD SET TO COLORS BASED ON ROTATION OF ROBOT
+      //Top THIRD SET TO COLORS BASED ON ROTATION OF ROBOT
       if (m_robotContainer.m_drivetrain.getTV()) {
-        double botRot =m_robotContainer. m_drivetrain.getBOTPOSE()[5];
-        boolean turnLeft = Math.signum(botRot) == 1;
-        botRot = Math.abs(botRot);
-        if (allianceColor == Color.kRed) {
-          botRot -= 180;
-        }
-        if (botRot <= 0.01) {
-          m_robotContainer.m_LEDs.setTopThird(Color.kWhite);
-        } else {
-          if (turnLeft) {
-            m_robotContainer.m_LEDs.setTopThird(Color.kRed);
-          } else {
-            m_robotContainer.m_LEDs.setTopThird(Color.kGreen);
-          }
+        m_robotContainer.m_LEDs.setTopThird(Color.kWhite);
         }
       } else {
         m_robotContainer.m_LEDs.setTopThird(Color.kBlack);
       }
-      m_robotContainer.m_LEDs.start();
-    }
+    m_robotContainer.m_LEDs.start();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
