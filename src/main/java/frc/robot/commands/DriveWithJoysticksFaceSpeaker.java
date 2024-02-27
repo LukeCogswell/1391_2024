@@ -19,11 +19,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DriveWithJoysticksFaceForwards extends Command {
+public class DriveWithJoysticksFaceSpeaker extends Command {
 
   Drivetrain m_drivetrain;
 
-  DoubleSupplier m_x, m_y, m_theta, m_precision;
+  DoubleSupplier m_x, m_y, m_precision;
 
   boolean m_PIDcontrol, isRed;
 
@@ -31,17 +31,17 @@ public class DriveWithJoysticksFaceForwards extends Command {
 
   double m_xSpeed, m_ySpeed, m_thetaSpeed, m_precisionFactor, Y, X, rot;
 
-  private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
-  private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
+  private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(kDriveSlewRateLimit);
+  private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(kDriveSlewRateLimit);
+  private final SlewRateLimiter m_thetaLimiter = new SlewRateLimiter(kthetaSlewRateLimit);
   /** Creates a new Drive. */
-  public DriveWithJoysticksFaceForwards(
-      Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta, DoubleSupplier precision) {
+  public DriveWithJoysticksFaceSpeaker(
+      Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier precision) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
 
     m_x = x;
     m_y = y;
-    m_theta = theta;
     m_precision = precision;
 
     addRequirements(drivetrain);  
@@ -58,21 +58,23 @@ public class DriveWithJoysticksFaceForwards extends Command {
   @Override
   public void execute() {
 
+    X = m_x.getAsDouble();
+    X = MathUtil.applyDeadband(X, kDriveDeadband);
+    Y = m_y.getAsDouble();
+    Y = MathUtil.applyDeadband(Y, kDriveDeadband);
+
+
    var m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
     SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
     
     var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
-    m_xSpeed =
-      -m_xLimiter.calculate(MathUtil.applyDeadband(Y * Y * Math.signum(Y), kDriveDeadband))
-      * speedAdjustmentFactor;
+    m_xSpeed = -m_xLimiter.calculate(Y * Y * Math.signum(Y) * speedAdjustmentFactor);
     
-    m_ySpeed =
-      -m_yLimiter.calculate(MathUtil.applyDeadband(X * X * Math.signum(X), kDriveDeadband))
-      * speedAdjustmentFactor;
-    
-    m_thetaSpeed = -turnController.calculate(m_drivetrain.getOdometryYaw());
-    m_thetaSpeed = MathUtil.clamp(m_thetaSpeed, -kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier, kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier);
+    m_ySpeed = -m_yLimiter.calculate(X * X * Math.signum(X) * speedAdjustmentFactor);
 
+    m_thetaSpeed = -turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker());
+    m_thetaSpeed = MathUtil.clamp(m_thetaSpeed, -kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier, kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier);
+    m_thetaSpeed = m_thetaLimiter.calculate(m_thetaSpeed);
 
     m_drivetrain.drive(m_xSpeed, m_ySpeed, m_thetaSpeed, false);
 

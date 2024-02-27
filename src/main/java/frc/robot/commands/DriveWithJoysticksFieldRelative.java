@@ -19,7 +19,6 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveWithJoysticksFieldRelative extends Command {
 
@@ -38,9 +37,9 @@ public class DriveWithJoysticksFieldRelative extends Command {
   boolean m_holdAngle = false;
 
 
-  private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(0.5 / kAccelerationSeconds);
-  private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(0.5 / kAccelerationSeconds);
-  private final SlewRateLimiter m_thetaLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(kDriveSlewRateLimit);
+  private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(kDriveSlewRateLimit);
+  private final SlewRateLimiter m_thetaLimiter = new SlewRateLimiter(kthetaSlewRateLimit);
   /** Creates a new Drive. */
   public DriveWithJoysticksFieldRelative(
       Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta, DoubleSupplier precision) {
@@ -69,23 +68,16 @@ public class DriveWithJoysticksFieldRelative extends Command {
   public void execute() {
 
     double m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
-    SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
-    double Y = m_y.getAsDouble() * m_precisionFactor;
-    double X = m_x.getAsDouble() * m_precisionFactor;
-    double rot = m_theta.getAsDouble() * m_precisionFactor;
+    double Y = MathUtil.applyDeadband(m_y.getAsDouble(), kDriveDeadband) * m_precisionFactor;
+    double X = MathUtil.applyDeadband( m_x.getAsDouble(), kDriveDeadband) * m_precisionFactor;
+    double rot = MathUtil.applyDeadband(m_theta.getAsDouble(), kDriveDeadband) * m_precisionFactor;
     
     var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
-    m_xSpeed =
-      -m_xLimiter.calculate(MathUtil.applyDeadband(Y * Y * Math.signum(Y), kDriveDeadband))
-      * speedAdjustmentFactor;
+    m_xSpeed = -m_xLimiter.calculate(Y * Y * Math.signum(Y) * speedAdjustmentFactor);
     
-    m_ySpeed =
-      -m_yLimiter.calculate(MathUtil.applyDeadband(X * X * Math.signum(X), kDriveDeadband))
-      * speedAdjustmentFactor;
+    m_ySpeed = -m_yLimiter.calculate(X * X * Math.signum(X) * speedAdjustmentFactor);
     
-    m_thetaSpeed =
-      -m_thetaLimiter.calculate(MathUtil.applyDeadband(rot * rot * Math.signum(rot), kDriveDeadband))
-      * kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier * kRotationSpeedMultiplier;
+    m_thetaSpeed = -m_thetaLimiter.calculate(rot * rot * Math.signum(rot) * kMaxAngularSpeedRadiansPerSecond * kSpeedMultiplier * kRotationSpeedMultiplier);
     
     if (isRed) {
       m_drivetrain.drive(-m_xSpeed, -m_ySpeed, m_thetaSpeed, true);

@@ -57,6 +57,7 @@ public final class Constants {
 
     public static final double kAmpAngle = -30.;
     public static final double kTransferAngle = 15.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kSourceAngle = 50.; //DEGREES - ANGLE TO INTAKE FROM SOURCE
 
     public static final class PID {
       public static final double kAngleP = 0.018;
@@ -155,6 +156,9 @@ public final class Constants {
     public static final double kRotationSpeedMultiplier = 0.6;
     public static final double kDriveDeadband = 0.05;
     public static final double kAutoDriveSpeedLimiter = 1.;
+
+    public static final double kDriveSlewRateLimit = 1/.2;
+    public static final double kthetaSlewRateLimit = 2.;
 
     public static final double kMaxVoltage = 13.0;
     public static final double kAccelerationSeconds = 0.2; // 0.5 seconds to reach full speed

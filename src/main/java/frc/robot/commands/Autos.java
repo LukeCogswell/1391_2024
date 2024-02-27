@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -34,7 +35,88 @@ public final class Autos {
     throw new UnsupportedOperationException("This is a utility class!");
   }
 
-  public static Command Start_3_End_13_14_15(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter) {
+  public static Command Start_3_End_2_1_12(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator) {
+    PathPlannerPath path0 = PathPlannerPath.fromPathFile("PS3-IS3");
+    PathPlannerPath path1 = PathPlannerPath.fromPathFile("S3-E2");
+    PathPlannerPath path2 = PathPlannerPath.fromPathFile("S2-E1");
+    PathPlannerPath path3 = PathPlannerPath.fromPathFile("S1-E11");
+    PathPlannerPath path4 = PathPlannerPath.fromPathFile("S11-EUpstage");
+
+    return Commands.sequence(
+      new InstantCommand(
+        () -> {
+          if (DriverStation.getAlliance().get() == Alliance.Blue){
+            drivetrain.setFieldPosition(new Pose2d(new Translation2d(1.44, 4.54), new Rotation2d(0.)));
+          } else {
+            drivetrain.setFieldPosition(new Pose2d(new Translation2d(kFieldX - 1.44, 4.54), new Rotation2d(Math.PI)));
+          }
+        }
+        ),
+      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+      new ParallelDeadlineGroup(
+        AutoBuilder.followPath(path0),
+        new RevShooter(drivetrain, shooter, loader),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake()))),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter()),
+      //END SHOOT OR TRANSFER THEN SHOOT ------
+      new ParallelCommandGroup(
+        AutoBuilder.followPath(path1).until(() -> loader.hasNoteInShooter()),
+        new RevShooter(drivetrain, shooter, loader).withTimeout(2),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake()))
+      ),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter()),
+      //END SHOOT OR TRANSFER THEN SHOOT ------
+      new ParallelDeadlineGroup(
+        AutoBuilder.followPath(path2),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
+        new RevShooter(drivetrain, shooter, loader)
+      ),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter()),
+      //END SHOOT OR TRANSFER THEN SHOOT ------
+      new ParallelDeadlineGroup(
+        AutoBuilder.followPath(path3),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
+        new RevShooter(drivetrain, shooter, loader)
+        ),
+      new ParallelDeadlineGroup(
+        AutoBuilder.followPath(path4),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
+        new RevShooter(drivetrain, shooter, loader)),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter())
+      //END SHOOT OR TRANSFER THEN SHOOT ------
+    );
+
+  }
+
+  public static Command Start_3_End_13_14_15(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator) {
     PathPlannerPath path0 = PathPlannerPath.fromPathFile(       "PS3-IS3");
     PathPlannerPath path1 = PathPlannerPath.fromPathFile(       "IS3-E3");
     PathPlannerPath path2 = PathPlannerPath.fromPathFile(        "S3-E15");
@@ -57,44 +139,84 @@ public final class Autos {
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path0),
         new RevShooter(drivetrain, shooter, loader)),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
-      new ParallelCommandGroup(
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter()),
+      //END SHOOT OR TRANSFER THEN SHOOT ------
+      new ParallelDeadlineGroup(
         AutoBuilder.followPath(path1).until(() -> loader.hasNoteInShooter()),
-        new RevShooter(drivetrain, shooter, loader).withTimeout(2),
-        new AutoCollect(intakePivot, intake, turret, loader).withTimeout(2)
+        new RevShooter(drivetrain, shooter, loader),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake()))
       ),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter()),
+      //END SHOOT OR TRANSFER THEN SHOOT ------
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path2).until(() -> loader.hasNoteInShooter()),
-        new AutoCollect(intakePivot, intake, turret, loader)
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake()))
       ),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path3),
-        new AutoCollect(intakePivot, intake, turret, loader),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
         new RevShooter(drivetrain, shooter, loader)
       ),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter()),
+      //END SHOOT OR TRANSFER THEN SHOOT ------
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path4).until(() -> loader.hasNoteInShooter()),
         new AutoCollect(intakePivot, intake, turret, loader)
       ),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path5),
-        new AutoCollect(intakePivot, intake, turret, loader),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
         new RevShooter(drivetrain, shooter, loader)
       ),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter()),
+      //END SHOOT OR TRANSFER THEN SHOOT ------
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path6).until(() -> loader.hasNoteInShooter()),
-        new AutoCollect(intakePivot, intake, turret, loader)
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake()))
       ),
       new ParallelDeadlineGroup(
         AutoBuilder.followPath(path7),
-        new AutoCollect(intakePivot, intake, turret, loader),
+        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
         new RevShooter(drivetrain, shooter, loader)
       ),
-      new AutoCollect(intakePivot, intake, turret, loader).until(() -> loader.hasNoteInShooter()),
-      new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)
+      new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
+      //SHOOT OR TRANSFER THEN SHOOT ---------
+      new ConditionalCommand(
+        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.),
+        new ParallelDeadlineGroup(
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+          new RevShooter(drivetrain, shooter, loader)).andThen(
+            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !intake.hasNoteInIntake()), 
+        () -> loader.hasNoteInShooter())
+      //END SHOOT OR TRANSFER THEN SHOOT ------
     );
   }
 
