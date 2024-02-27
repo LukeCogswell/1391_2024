@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
-  AddressableLED leds = new AddressableLED(0);
+  AddressableLED leds = new AddressableLED(9);
   AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(54);
   /** Creates a new LEDs. */
   public LEDs() {
@@ -32,8 +32,8 @@ public class LEDs extends SubsystemBase {
 
   @Override
   public void periodic() {
-      SmartDashboard.putNumber("BUS OFF COUNT: ", CANBus.getStatus(CANivoreID).BusOffCount);
-      SmartDashboard.putNumber("TRANSMIT BUFFER FULL COUNT: ", CANBus.getStatus(CANivoreID).TxFullCount);
+      // SmartDashboard.putNumber("BUS OFF COUNT: ", CANBus.getStatus(CANivoreID).BusOffCount);
+      // SmartDashboard.putNumber("TRANSMIT BUFFER FULL COUNT: ", CANBus.getStatus(CANivoreID).TxFullCount);
     // setPercent(Timer.getFPGATimestamp() % 1 / 1);
     // setBottomHalf(new Color(255, 0, 0));
     // This method will be called once per scheduler run

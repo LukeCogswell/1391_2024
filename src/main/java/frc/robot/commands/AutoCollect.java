@@ -38,14 +38,13 @@ public class AutoCollect extends SequentialCommandGroup {
           new IntakeToAngle(intakePivot, kMaxRotation).until(() -> intakePivot.isUp())
         ),
         new SequentialCommandGroup(
-          new RunCommand(() -> intake.setIntake(-0.7)).withTimeout(0.2),
           new RunCommand(() -> {
-            intake.setIntake(0.5);
+            intake.setIntake(1.);
           }, intake).until(() -> intake.hasNoteInIntake()),
           new InstantCommand(() -> {
             intake.setIntake(0.2);
           }, intake),
-          new WaitCommand(0.55),
+          new WaitCommand(0.2),
           new InstantCommand(() -> 
             intake.stop(), intake)
         )),

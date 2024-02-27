@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
 public class ElevatorToHeight extends Command {
-  private PIDController heightController = new PIDController(4., 0.0, 0);
+  private PIDController heightController = new PIDController(.5, 0.0, 0);
   private Double heightSetpoint;
   private Elevator m_elevator;
 
@@ -29,14 +29,14 @@ public class ElevatorToHeight extends Command {
   @Override
   public void initialize() {
     heightController.setSetpoint(heightSetpoint);
-    heightController.setTolerance(0.02);
+    heightController.setTolerance(0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var pwr = heightController.calculate(m_elevator.getElevatorHeight());
-    pwr = MathUtil.clamp(pwr, -0.6, 1.);
+    var pwr = heightController.calculate(m_elevator.getElevatorHeightL());
+    pwr = MathUtil.clamp(pwr, -0.4, 1.);
 
     m_elevator.setElevator(pwr);
   }

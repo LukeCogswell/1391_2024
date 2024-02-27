@@ -35,7 +35,7 @@ public class IntakeToAngle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var pwr = rotController.calculate(m_intakePivot.getIntakeAngle());
+    var pwr = -rotController.calculate(m_intakePivot.getIntakeAngle());
     pwr = MathUtil.clamp(pwr, kMaxDownPower, kMaxUpPower);
     SmartDashboard.putNumber("?Power", pwr);
     m_intakePivot.setAngleMotor(pwr);

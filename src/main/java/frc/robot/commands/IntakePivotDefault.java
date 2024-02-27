@@ -32,7 +32,7 @@ public class IntakePivotDefault extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intakePivot.isDown()) {
+    if (m_intakePivot.getIntakeAngle() >= 260.) {
       angleController.setSetpoint(kMinRotation);
     } else {
       angleController.setSetpoint(kMaxRotation);
@@ -41,7 +41,7 @@ public class IntakePivotDefault extends Command {
     SmartDashboard.putNumber("SETPOINT", angleController.getSetpoint());
 
     if (!m_intakePivot.isUp()) {
-      var pwr = angleController.calculate(m_intakePivot.getIntakeAngle());
+      var pwr = -angleController.calculate(m_intakePivot.getIntakeAngle());
       SmartDashboard.putNumber("PrePower", pwr);
       pwr = MathUtil.clamp(pwr, kMaxDownPower, kMaxUpPower);
       SmartDashboard.putNumber("MidPower", pwr);

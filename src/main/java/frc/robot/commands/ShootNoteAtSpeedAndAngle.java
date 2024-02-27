@@ -54,9 +54,9 @@ public class ShootNoteAtSpeedAndAngle extends Command {
     }
 
     SmartDashboard.putBoolean("ShotAngle", angleController.atSetpoint());
-    SmartDashboard.putBoolean("ShotSpeed", m_shooter.getLeftShooterSpeed() >= 0.9 * shotSpeed);
+    SmartDashboard.putBoolean("ShotSpeed", m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed);
 
-    if (m_shooter.getRightShooterSpeed() >= 0.9 * shotSpeed && angleController.atSetpoint()) {
+    if (m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed && angleController.atSetpoint()) {
         m_loader.setLoaderMotor(0.7);
     }
   }

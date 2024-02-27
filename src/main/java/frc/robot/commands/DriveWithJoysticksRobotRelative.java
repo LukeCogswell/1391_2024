@@ -19,7 +19,7 @@ public class DriveWithJoysticksRobotRelative extends Command {
 
   Drivetrain m_drivetrain;
 
-  DoubleSupplier m_x, m_y, m_theta, m_precision;
+  DoubleSupplier m_x, m_y, m_theta;
 
   boolean m_PIDcontrol, isRed;
 
@@ -30,14 +30,13 @@ public class DriveWithJoysticksRobotRelative extends Command {
   private final SlewRateLimiter m_thetaLimiter = new SlewRateLimiter(50);
   /** Creates a new Drive. */
   public DriveWithJoysticksRobotRelative(
-      Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta, DoubleSupplier precision) {
+      Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrain = drivetrain;
 
     m_x = x;
     m_y = y;
     m_theta = theta;
-    m_precision = precision;
 
     addRequirements(drivetrain);  
   }
@@ -51,7 +50,7 @@ public class DriveWithJoysticksRobotRelative extends Command {
   @Override
   public void execute() {
 
-    double m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
+    double m_precisionFactor = 0.4;
     SmartDashboard.putNumber("PRecision Factor", m_precisionFactor);
     double Y = m_y.getAsDouble() * m_precisionFactor;
     double X = m_x.getAsDouble() * m_precisionFactor;

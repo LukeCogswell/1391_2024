@@ -6,14 +6,16 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import static frc.robot.Constants.CANConstants.*;
 import static frc.robot.Constants.Shooter.*;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 public class Shooter extends SubsystemBase {
-  private final CANSparkMax m_shooterMotorRight = new CANSparkMax(14, MotorType.kBrushless); 
-  private final CANSparkMax m_shooterMotorLeft = new CANSparkMax(13, MotorType.kBrushless);
+  private final CANSparkMax m_shooterMotorRight = new CANSparkMax(kRightShooterMotorID, MotorType.kBrushless); 
+  private final CANSparkMax m_shooterMotorLeft = new CANSparkMax(kLeftShooterMotorID, MotorType.kBrushless);
   
 
   /** Creates a new Shooter. */

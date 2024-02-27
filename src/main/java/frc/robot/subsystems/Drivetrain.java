@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MeasurementConstants.*;
+import static frc.robot.Constants.CANConstants.*;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -47,8 +48,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
-import static frc.robot.Constants.CANConstants.*;
 
 public class Drivetrain extends SubsystemBase {
   
@@ -82,7 +81,7 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-
+    
     m_frontLeft = new SwerveModule(
       kFrontLeftDriveMotorID,
       kFrontLeftSteerMotorID,

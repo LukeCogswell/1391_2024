@@ -6,8 +6,10 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkLimitSwitch.Type;
 
+import static frc.robot.Constants.CANConstants.kIntakePivotMotorID;
 import static frc.robot.Constants.Intake.*;
 import static frc.robot.Constants.Shooter.kAngleEncoderOffset;
 
@@ -16,11 +18,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivot extends SubsystemBase {
-  private final CANSparkMax m_pivotMotor = new CANSparkMax(10, MotorType.kBrushless);
-  private final DutyCycleEncoder m_intakeEncoder = new DutyCycleEncoder(2); 
+  private final CANSparkMax m_pivotMotor = new CANSparkMax(kIntakePivotMotorID, MotorType.kBrushless);
+  private final DutyCycleEncoder m_intakeEncoder = new DutyCycleEncoder(1); 
   /** Creates a new IntakePivot. */
   public IntakePivot() {
-    m_pivotMotor.setInverted(false);
+    m_pivotMotor.setInverted(true);
+    m_pivotMotor.setIdleMode(IdleMode.kBrake);
   }
 
   @Override

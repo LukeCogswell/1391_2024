@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.Constants.CANConstants.*;
+
 public class Loader extends SubsystemBase {
   /** Creates a new Loader. */
-  private final CANSparkMax m_loaderMotor = new CANSparkMax(12, MotorType.kBrushless);
-  private final AnalogInput m_beamBreakSensor = new AnalogInput(0);
+  private final CANSparkMax m_loaderMotor = new CANSparkMax(kLoaderMotorID, MotorType.kBrushless);
+  private final AnalogInput m_beamBreakSensor = new AnalogInput(3);
   public Loader() {
-    m_loaderMotor.setInverted(false);
+    m_loaderMotor.setInverted(true);
   }
   
   @Override

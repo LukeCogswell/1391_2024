@@ -51,12 +51,12 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingRotationAdjustmentMultiplier = 1.75; //
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
-    public static final double kAngleEncoderOffset = 14.27+68.5;
+    public static final double kAngleEncoderOffset = 14.27+68.5 - 178;
     public static final double kMaxSpeedRPM = 5676;
     public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
 
-    public static final double kAmpAngle = -25.;
-    public static final double kTransferAngle = 20.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kAmpAngle = -30.;
+    public static final double kTransferAngle = 15.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
 
     public static final class PID {
       public static final double kAngleP = 0.018;
@@ -64,21 +64,36 @@ public final class Constants {
       public static final double kAngleD = 0.0;
 
     }
+
+    public static final class RangeTable {
+      public static final Double[] entry0 = {.5, 80.06};
+      public static final Double[] entry1 = {1., 63.58};
+      public static final Double[] entry2 = {2., 41.65};
+      public static final Double[] entry3 = {3., 33.35};
+      public static final Double[] entry4 = {4., 26.15};
+      public static final Double[] entry5 = {5., 20.47};
+      public static final Double[] entry6 = {6., 18.15};
+      public static final Double[] entry7 = {7., 16.64};
+      public static final Double[] entry8 = {8., 15.64};
+      public static final Double[] entry9 = {9., 15.02};
+      public static final Double[] entry10 = {10., 14.62};
+      public static final Double[] entry11 = {11., 14.42};
+    }
   }
 
   public static final class Intake {
     public static final double kIntakeEncoderOffset = 0.;
     public static final double kEncoderGearRatio = 1;
-    public static final double kMinRotation = 358.0;  // DEGREES
-    public static final double kMaxRotation = 285.0; // DEGREES
+    public static final double kMinRotation = 264.0;  // DEGREES
+    public static final double kMaxRotation = 181.0; // DEGREES
 
-    public static final double kMaxDownPower = -0.4;
-    public static final double kMaxUpPower = 0.5;
+    public static final double kMaxDownPower = -0.3;
+    public static final double kMaxUpPower = 0.6;
 
     public static final class PID {
-      public static final double kIAngleP = 0.01;
+      public static final double kIAngleP = 0.02;
       public static final double kIAngleI = 0.0;
-      public static final double kIAngleD = 0.;
+      public static final double kIAngleD = 0.0001;
     }
   }
 
@@ -109,10 +124,10 @@ public final class Constants {
     public static final double kFieldX = 649 / kInchesToMeters;
     public static final double kFieldY = 319 / kInchesToMeters;
 
-    public static final double kFrontLeftEncoderOffset = 0.0;
-    public static final double kBackLeftEncoderOffset = 0.0;
-    public static final double kFrontRightEncoderOffset = 0.0;
-    public static final double kBackRightEncoderOffset = 0.0; 
+    public static final double kFrontLeftEncoderOffset = .0;
+    public static final double kBackLeftEncoderOffset = 0.;
+    public static final double kFrontRightEncoderOffset = .0;
+    public static final double kBackRightEncoderOffset = .0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
       Swerve.kDriveReduction *
@@ -142,7 +157,7 @@ public final class Constants {
     public static final double kAutoDriveSpeedLimiter = 1.;
 
     public static final double kMaxVoltage = 13.0;
-    public static final double kAccelerationSeconds = 0.15; // 0.5 seconds to reach full speed
+    public static final double kAccelerationSeconds = 0.2; // 0.5 seconds to reach full speed
 
     public static final int kDriveMotorCurrentLimit = 40;
     public static final int kSteerMotorCurrentLimit = 20;
@@ -155,9 +170,9 @@ public final class Constants {
 
     public static final double kWheelCircumference = MeasurementConstants.kWheelDiameterMeters * Math.PI;
 
-    public static final double driveKS = 0.054977; //SYSID CALCULATED 0.054977
-    public static final double driveKV = 12.881; //12.881
-    public static final double driveKA = 1.1502; //1.1502
+    public static final double driveKS = 0.104977; //SYSID CALCULATED 0.054977
+    public static final double driveKV = 12.21; //12.881
+    public static final double driveKA = 0.4502; //1.1502
 
     public static final class CTREConfigs {
       public static final COTSTalonFXSwerveConstants chosenModule =  //TODO: This must be tuned to specific robot
@@ -172,7 +187,7 @@ public final class Constants {
       public static final double driveCurrentThresholdTime = 0.1;
       public static final boolean driveEnableCurrentLimit = true;
 
-      public static final double openLoopRamp = 0.;
+      public static final double openLoopRamp = .1;
       public static final double closedLoopRamp = .1;
 
       public static final double driveGearRatio = (5.9 / 1.0);//L2 default is 6.75 //5.9 to 1 with new pinions
@@ -215,22 +230,35 @@ public final class Constants {
   }
 
   public static final class CANConstants {
+    /**** RIO BUS ****/
+    public static final int kFrontLeftSteerMotorID = 3; //3
+    public static final int kBackLeftSteerMotorID = 1; //1 
+    public static final int kFrontRightSteerMotorID = 2; //2 
+    public static final int kBackRightSteerMotorID = 4; //4
+    
+    public static final int kIntakeBeltMotorID = 5;
+    public static final int kIntakePivotMotorID = 6;
+    public static final int kLeftElevatorMotorID = 7;
+    public static final int kRightElevatorMotorID = 8;
+    public static final int kTurretMotorID = 9;
+    public static final int kLoaderMotorID = 10;
+    public static final int kLeftShooterMotorID = 11;
+    public static final int kRightShooterMotorID = 12;
+    public static final int kClimberMotorID = 13;
+    
+    /**** CANIVORE BUS ****/
+
     public static final String CANivoreID = "CANivore 1";
 
-    public static final int kFrontLeftDriveMotorID = 3;
     public static final int kBackLeftDriveMotorID = 1;
     public static final int kFrontRightDriveMotorID = 2;
+    public static final int kFrontLeftDriveMotorID = 3;
     public static final int kBackRightDriveMotorID = 4;
 
-    public static final int kFrontLeftSteerMotorID = 7;
-    public static final int kBackLeftSteerMotorID = 5;
-    public static final int kFrontRightSteerMotorID = 6;
-    public static final int kBackRightSteerMotorID = 8;
-
-    public static final int kFrontLeftEncoderID = 11;
-    public static final int kBackLeftEncoderID = 9;
-    public static final int kFrontRightEncoderID = 10;
-    public static final int kBackRightEncoderID = 12;
+    public static final int kBackLeftEncoderID = 5;
+    public static final int kFrontRightEncoderID = 6;
+    public static final int kFrontLeftEncoderID = 7;
+    public static final int kBackRightEncoderID = 8;
 
 
     public static final double kEncoderResolution = 4096;
@@ -243,8 +271,8 @@ public final class Constants {
   public static final class PathfindingPoints {
     public static final double kGridSize = 0.3;
     public static final class Red {
-      public static final Pose2d Source = new Pose2d(8 * kGridSize, 4 * kGridSize, new Rotation2d(Math.PI/4 * 3));
-      public static final Pose2d Amp = new Pose2d(14.675, 7.8, new Rotation2d(-Math.PI/2));
+      public static final Pose2d Source = new Pose2d(0.3, 1.5, new Rotation2d(Math.PI/4));
+      public static final Pose2d Amp = new Pose2d(14.675, 7.6, new Rotation2d(-Math.PI/2));
       public static final Pose2d Speaker = new Pose2d(kFieldX - 8 * kGridSize, 20 * kGridSize, new Rotation2d(0));
       public static final Pose2d CenterStage = new Pose2d(35 * kGridSize, 14 * kGridSize, new Rotation2d(Math.PI));
       public static final Pose2d StageLeft = new Pose2d(40 * kGridSize, 11 * kGridSize, new Rotation2d(Math.PI / 4 * 3));
@@ -252,7 +280,7 @@ public final class Constants {
       
     }
     public static final class Blue {
-      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), Red.Source.getY(), new Rotation2d(Math.PI/4));
+      public static final Pose2d Source = new Pose2d(kFieldX - Red.Source.getX(), Red.Source.getY(), new Rotation2d(3 * Math.PI/4));
       public static final Pose2d Amp = new Pose2d(kFieldX - Red.Amp.getX(), Red.Amp.getY(), new Rotation2d(Math.PI/2));
       public static final Pose2d Speaker = new Pose2d(kFieldX - Red.Speaker.getX(), Red.Speaker.getY(), new Rotation2d(Math.PI));
       public static final Pose2d CenterStage = new Pose2d(kFieldX - Red.CenterStage.getX(), Red.CenterStage.getY(), new Rotation2d(0));
