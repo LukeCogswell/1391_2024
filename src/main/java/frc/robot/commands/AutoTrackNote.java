@@ -7,11 +7,16 @@ package frc.robot.commands;
 import static frc.robot.Constants.Swerve.kAccelerationSeconds;
 
 import edu.wpi.first.math.MathUtil;
+import static frc.robot.Constants.Swerve.kAccelerationSeconds;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakePivot;
 import frc.robot.subsystems.IntakePivot;
 
 public class AutoTrackNote extends Command {
@@ -28,6 +33,7 @@ public class AutoTrackNote extends Command {
     m_drivetrain = drivetrain;
     m_intake = intake;
     m_intakePivot = intakePivot;
+    m_intakePivot = intakePivot;
     addRequirements(drivetrain, intake);
   }
 
@@ -35,6 +41,7 @@ public class AutoTrackNote extends Command {
   @Override
   public void initialize() {
     rotController.setSetpoint(0.);
+    rotController.setTolerance(10);
     rotController.setTolerance(10);
   }
 

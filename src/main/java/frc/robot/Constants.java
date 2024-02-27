@@ -247,7 +247,6 @@ public final class Constants {
     public static final int kClimberMotorID = 13;
     
     /**** CANIVORE BUS ****/
-
     public static final String CANivoreID = "CANivore 1";
 
     public static final int kBackLeftDriveMotorID = 1;

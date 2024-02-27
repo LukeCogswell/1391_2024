@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.Elevator.kMinHeight;
+import static frc.robot.Constants.Elevator.kMinHeight;
 import static frc.robot.Constants.Intake.kMaxRotation;
 import static frc.robot.Constants.Shooter.kTransferAngle;
 
