@@ -18,8 +18,8 @@ public class AutoTrackNote extends Command {
   private Drivetrain m_drivetrain;
   private Intake m_intake;
   private IntakePivot m_intakePivot;
-  private PIDController rotController = new PIDController(0.1, 0.01, 0.0);
-  private SlewRateLimiter driveLimiter = new SlewRateLimiter(1/kAccelerationSeconds);
+  private PIDController rotController = new PIDController(0.05, 0.01, 0.0);
+  private SlewRateLimiter driveLimiter = new SlewRateLimiter(4/kAccelerationSeconds);
   private Double drive, rot, ty;
   /** Creates a new AutoTrackNote. */
 

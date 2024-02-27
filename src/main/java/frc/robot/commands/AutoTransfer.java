@@ -29,8 +29,8 @@ public class AutoTransfer extends ParallelDeadlineGroup {
     // addCommands(new FooCommand(), new BarCommand());
     super(
       new SequentialCommandGroup(
-        new ElevatorToHeight(elevator, 1.), //0.13
-        new WaitUntilCommand(() -> ((intakePivot.getIntakeAngle() <= 189) && (elevator.getElevatorHeightL() >= 0.7))),
+        // new ElevatorToHeight(elevator, 1.), //0.13
+        new WaitUntilCommand(() -> ((intakePivot.getIntakeAngle() <= 189)/* && (elevator.getElevatorHeightL() >= 0.7))*/)),
         new RunCommand(() -> {
           loader.setLoaderMotor(.6);
           intake.setIntake(.4);
@@ -38,8 +38,8 @@ public class AutoTransfer extends ParallelDeadlineGroup {
         new InstantCommand(() -> {
           intake.setIntake(0.);
           loader.setLoaderMotor(0.);
-        }, intake, loader),
-        new ElevatorToHeight(elevator, kMinHeight)
+        }, intake, loader)//,
+        // new ElevatorToHeight(elevator, kMinHeight)
       )
     );
     addCommands(
