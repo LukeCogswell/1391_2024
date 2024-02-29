@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.Lib.Conversions;
 import frc.robot.Constants;
@@ -24,6 +25,7 @@ import frc.robot.Constants.CANConstants;
 import frc.robot.CTREConfigs;
 
 import static frc.robot.Constants.Swerve.*;
+import static frc.robot.Constants.Swerve.CTREConfigs.driveGearRatio;
 import static frc.robot.Constants.Swerve.PID.*;
 import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.CANConstants;
@@ -92,6 +94,7 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber(m_driveMotor.getDeviceID() +"Motor Position", m_driveMotor.getPosition().getValueAsDouble());
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber(("Module "+(m_driveMotor.getDeviceId())), getAbsoluteAngle());
   }
@@ -130,8 +133,8 @@ public class SwerveModule extends SubsystemBase {
     return Rotation2d.fromDegrees(angle); 
   }
  
-  public double getDriveDistance(){ // returns the distance the module has traveled - add drive reduction for SYSID
-    return m_driveMotor.getRotorPosition().getValueAsDouble() * kWheelCircumference * kDriveReduction;
+  public double getDriveDistance(){ // returns the distance the module has traveled
+    return m_driveMotor.getPosition().getValueAsDouble() * kWheelCircumference;
   }
 
   public SwerveModuleState getModuleState(){ // returns the current state of the module

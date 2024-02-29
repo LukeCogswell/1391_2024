@@ -101,7 +101,7 @@ public class ShootWhileMoving extends Command {
     //   rot = LLturnController.calculate(m_drivetrain.getTX() + kShootingRotationAdjustmentMultiplier * dTheta);
     // } else {
     // }
-    rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - m_drivetrain.getAngleToSpeaker() + kShootingRotationAdjustmentMultiplier * dTheta);
+    rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() + kShootingRotationAdjustmentMultiplier * dTheta));
 
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       m_xSpeed = -m_xSpeed;

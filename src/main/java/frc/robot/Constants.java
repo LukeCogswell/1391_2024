@@ -100,7 +100,7 @@ public final class Constants {
 
   public static final class Elevator {
     public static final double kMotorRotationsToMeters = 0.008; // 8 mm per revolution
-    public static final double kMaxHeight = 0.37;
+    public static final double kMaxHeight = 5.5;
     public static final double kMinHeight = 0.03;
 
     public static final double kStallPower = 0.02;
@@ -120,7 +120,7 @@ public final class Constants {
     public static final double kModuleXOffsetMeters = 20.75 / kInchesToMeters / 2; //TODO FIX THIS
     public static final double kModuleYOffsetMeters = 20.75 / kInchesToMeters / 2; //TODO FIX THIS
     public static final double kDiagModuleOffsetMeters = Math.sqrt(Math.pow(kModuleXOffsetMeters, 2) + Math.pow(kModuleYOffsetMeters, 2));
-    public static final double kWheelDiameterMeters = 0.10033; // 4 inches - diameter of the wheels == 0.10033
+    public static final double kWheelDiameterMeters = 0.1016; // 4 inches - diameter of the wheels == 0.1016
 
     public static final double kFieldX = 649 / kInchesToMeters;
     public static final double kFieldY = 319 / kInchesToMeters;
@@ -157,8 +157,8 @@ public final class Constants {
     public static final double kDriveDeadband = 0.05;
     public static final double kAutoDriveSpeedLimiter = 1.;
 
-    public static final double kDriveSlewRateLimit = 1/.2;
-    public static final double kthetaSlewRateLimit = 2.;
+    public static final double kDriveSlewRateLimit = 5.;
+    public static final double kthetaSlewRateLimit = 7.;
 
     public static final double kMaxVoltage = 13.0;
     public static final double kAccelerationSeconds = 0.2; // 0.5 seconds to reach full speed

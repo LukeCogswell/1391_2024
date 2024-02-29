@@ -44,7 +44,7 @@ public class AutoCollect extends SequentialCommandGroup {
           new InstantCommand(() -> {
             intake.setIntake(0.2);
           }, intake),
-          new WaitCommand(0.1),
+          new WaitCommand(0.05),
           new InstantCommand(() -> 
             intake.stop(), intake)
         )),

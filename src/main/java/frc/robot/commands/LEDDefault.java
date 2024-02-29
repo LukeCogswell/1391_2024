@@ -97,7 +97,7 @@ public class LEDDefault extends Command {
         if (m_drivetrain.getTV()) {
           m_leds.setTopHalf(Color.kWhite);
         } else {
-          m_leds.setTopHalf(Color.kRed);
+          m_leds.setTopHalf(Color.kBlack);
         }
       }
     }

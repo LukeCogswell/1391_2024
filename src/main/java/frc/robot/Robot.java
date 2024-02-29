@@ -77,7 +77,7 @@ public class Robot extends TimedRobot {
       } else {
         m_robotContainer.m_LEDs.setMiddleThird(Color.kBlack);
       }
-      //Top THIRD SET TO COLORS BASED ON ROTATION OF ROBOT
+      //Top THIRD SET TO COLORS BASED ON APRILTAGS - WHITE IF VISIBLE BLACK IF NOT 
       if (m_robotContainer.m_drivetrain.getTV()) {
         m_robotContainer.m_LEDs.setTopThird(Color.kWhite);
         }
