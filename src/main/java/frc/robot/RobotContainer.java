@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -70,6 +71,7 @@ public class RobotContainer {
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+    autoChooser.addOption("Start_1_End_Upstage", Autos.Start_1_End_Upstage(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator));
     autoChooser.addOption("Start_3_End_2_1_12", Autos.Start_3_End_2_1_12(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator));
     autoChooser.addOption("Start_3_End_13_14_15", Autos.Start_3_End_13_14_15(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator));
 
@@ -101,13 +103,7 @@ public class RobotContainer {
 
     // m_intakePivot.setDefaultCommand(new IntakeToAngle(m_intakePivot, kMaxRotation));
 
-    m_turret.setDefaultCommand(new ConditionalCommand(
-      new AimAtSpeaker(m_turret, m_drivetrain),
-      new SetTurretAngle(m_turret, kTransferAngle),
-      () -> m_loader.hasNoteInShooter()
-    ));
-
-    // m_turret.setDefaultCommand(new RunCommand(() -> m_turret.stop(), m_turret));
+    m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 10.));
 
     m_loader.setDefaultCommand(new RunCommand(() -> m_loader.setLoaderMotor(0.), m_loader));
 
@@ -130,20 +126,6 @@ public class RobotContainer {
   private void configureBindings() {
     
     /********   DRIVER  CONTROLS   ********/
-
-    //SHOOT
-    m_driverController.leftTrigger().whileTrue(
-        new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, 
-        //ZEROS ACT AS SHOOT WHILE STILL INSTEAD OF WHILE MOVING
-        () -> 0.,
-        () -> 0.,
-        () -> 0.
-        // () -> m_driverController.getLeftX(), 
-        // () -> m_driverController.getLeftY(), 
-        // () -> m_driverController.getRightTriggerAxis()
-        )
-        );
-        
         
     m_driverController.rightBumper().whileTrue(
       new DriveWithJoysticksRobotRelative(
@@ -154,13 +136,15 @@ public class RobotContainer {
         )
     );
     
-    m_driverController.leftBumper().whileTrue(
-      new ParallelCommandGroup(
-        new TrackWhileMoving(m_drivetrain, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()),
-        new RevShooter(m_drivetrain, m_shooter, m_loader),
-        new AimAtSpeaker(m_turret, m_drivetrain)
-        )
-    );
+    m_driverController.leftBumper().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
+
+    // m_driverController.leftBumper().whileTrue(
+    //   new ParallelCommandGroup(
+    //     new TrackWhileMoving(m_drivetrain, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()),
+    //     new RevShooter(m_drivetrain, m_shooter, m_loader),
+    //     new AimAtSpeaker(m_turret, m_drivetrain)
+    //     )
+    // );
     // m_driverController.leftBumper().whileTrue(
     // new ConditionalCommand(
     //   new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader),  
@@ -183,7 +167,12 @@ public class RobotContainer {
 
     m_driverController.b().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(0.9), m_loader));
 
-    m_driverController.x().whileTrue(new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter()))
+    m_driverController.x().whileTrue(new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter())
+    .andThen(new ParallelCommandGroup(
+      new TrackWhileMoving(m_drivetrain, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()),
+      new RevShooter(m_drivetrain, m_shooter, m_loader),
+      new AimAtSpeaker(m_turret, m_drivetrain)
+      ).unless(() -> m_loader.hasNoteInShooter())))
       .onFalse(new InstantCommand(() -> {
       m_shooter.setShooterSpeed(0.);
       m_loader.setLoaderMotor(0.);
@@ -237,8 +226,8 @@ public class RobotContainer {
       m_intake.setIntake(0.4);
       m_loader.setLoaderMotor(0.8);
     }, m_intake, m_loader).until(() -> m_loader.hasNoteInShooter())).onFalse(new InstantCommand(() ->{
-    m_intake.setIntake(0.);
-    m_loader.stop();}, m_intake, m_loader));
+      m_intake.setIntake(0.);
+      m_loader.stop();}, m_intake, m_loader));
       
 
     m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
@@ -248,6 +237,23 @@ public class RobotContainer {
     /*********  END DRIVER CONTROLS  *********/
     /*-------------------------------------------------- */
     /*********   OPERATOR CONTROLS   *********/
+
+    m_operatorController.leftTrigger().whileTrue(
+        new ShootWhenClose(m_drivetrain, m_shooter, m_turret, m_loader, 
+        //ZEROS ACT AS SHOOT WHILE STILL INSTEAD OF WHILE MOVING
+        // () -> 0.,
+        // () -> 0.,
+        // () -> 0.
+        () -> m_driverController.getLeftX(), 
+        () -> m_driverController.getLeftY(), 
+        () -> m_driverController.getRightTriggerAxis()
+        )
+      );
+
+    m_operatorController.leftBumper().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0.));
+
+    m_operatorController.rightBumper().whileTrue(AutoBuilder.followPath(PathPlannerPath.fromPathFile("PS3-IS3")));
+
     m_operatorController.axisGreaterThan(1, 0.4).whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.3), m_elevator));
     m_operatorController.axisLessThan(1, -0.4).whileTrue(new RunCommand(() -> m_elevator.setElevator(0.3), m_elevator));
 

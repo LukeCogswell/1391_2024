@@ -18,6 +18,7 @@ package frc.robot.subsystems;
 // import static frc.robot.Constants.Swerve.CTREConfigs.driveGearRatio;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,6 +39,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MeasurementConstants.*;
+
+import java.sql.Driver;
+
 import static frc.robot.Constants.CANConstants.*;
 
 import org.ejml.simple.SimpleMatrix;
@@ -120,8 +124,8 @@ public class Drivetrain extends SubsystemBase {
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-        new PIDConstants(0.1, 0.0, .0), // Translation PID constants
-        new PIDConstants(0.05, 0.0, 0.0), // Rotation PID constants
+        new PIDConstants(4., 0.0, 0.), // Translation PID constants
+        new PIDConstants(4, 0.0, 0.0), // Rotation PID constants
         kMaxSpeedMetersPerSecond, // Max module speed, in m/s
         0.3429, // Drive base radius in meters. Distance from robot center to furthest module.
         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -143,7 +147,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     
-    setVisionStdDvs(1.0, 1.0, 9999.0);
+    setVisionStdDvs(1.5, 1.5, 9999.0);
 
     SmartDashboard.putData(field);
 
@@ -212,9 +216,11 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
-    updateOdometryWithAprilTags();
-    field.setRobotPose(getFieldPosition());
-    SmartDashboard.putData(field);
+    if (Timer.getFPGATimestamp() % .2 <=0.03) {
+      updateOdometryWithAprilTags();
+    }
+    // field.setRobotPose(getFieldPosition());
+    // SmartDashboard.putData(field);
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
     SmartDashboard.putNumber("DisToSpeaker", getDistanceToSpeaker());
   }
@@ -224,7 +230,7 @@ public class Drivetrain extends SubsystemBase {
       var botTagSpace = getBotPoseTagSpace(); 
       if (-getBotPoseTagSpace()[2] < 5.) {
         var botpose = getBOTPOSE();
-        setVisionStdDvs(1.0 * -botTagSpace[2], 1.0 * -botTagSpace[2], 9999.0);
+        setVisionStdDvs(1.5 * -botTagSpace[2], 1.5 * -botTagSpace[2], 9999.0);
         Pose2d pos = new Pose2d(new Translation2d(botpose[0], botpose[1]), new Rotation2d(botpose[5]));
         m_odometry.addVisionMeasurement(pos, Timer.getFPGATimestamp() - (botpose[6]/1000.0)); 
       }
@@ -232,11 +238,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setVisionStdDvs(Double x, Double y, Double theta) {
-    SimpleMatrix StdDvs = new SimpleMatrix(3,1);
-    StdDvs.set(0, 0, x);
-    StdDvs.set(1, 0, y);
-    StdDvs.set(2, 0, theta);
-    m_odometry.setVisionMeasurementStdDevs(new Matrix<>(StdDvs));
+    double[][] dblArray = {{x}, {y}, {theta}};
+    SimpleMatrix matrix = new SimpleMatrix(dblArray);
+    m_odometry.setVisionMeasurementStdDevs(new Matrix(matrix));
   }
 
   public void setFieldPosition(Pose2d fieldPosition) {

@@ -32,7 +32,9 @@ public final class CTREConfigs {
         swerveDriveFXConfig.CurrentLimits.SupplyCurrentLimit = driveCurrentLimit;
         swerveDriveFXConfig.CurrentLimits.SupplyCurrentThreshold = driveCurrentThreshold;
         swerveDriveFXConfig.CurrentLimits.SupplyTimeThreshold = driveCurrentThresholdTime;
-
+        swerveDriveFXConfig.CurrentLimits.StatorCurrentLimitEnable = driveEnableStatorCurrentLimit;
+        swerveDriveFXConfig.CurrentLimits.StatorCurrentLimit = driveStatorCurrentLimit;
+        
         /* PID Config */
         swerveDriveFXConfig.Slot0.kP = driveKP;
         swerveDriveFXConfig.Slot0.kI = driveKI;

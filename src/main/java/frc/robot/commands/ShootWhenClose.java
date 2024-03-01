@@ -25,7 +25,7 @@ import static frc.robot.Constants.Swerve.*;
 import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Constants.Swerve.PID.*;
 
-public class ShootWhileMoving extends Command {
+public class ShootWhenClose extends Command {
   private Drivetrain m_drivetrain;
   private Shooter m_shooter;
   private Turret m_turret;
@@ -38,8 +38,7 @@ public class ShootWhileMoving extends Command {
   private DoubleSupplier xSpeed, ySpeed, m_precision;
   private Double X, Y, rot, m_precisionFactor, m_xSpeed, m_ySpeed;
   /** Creates a new ShootWhileMoving. */
-  public 
-  ShootWhileMoving(Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision) {
+  public ShootWhenClose(Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision) {
     m_drivetrain = drivetrain;
     m_shooter = shooter;
     m_loader = loader;
@@ -138,8 +137,13 @@ public class ShootWhileMoving extends Command {
     SmartDashboard.putBoolean("Turn?", turnController.atSetpoint());
     SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8);
     
-    m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
-    if (angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && turnController.atSetpoint()) {
+    if (dis <= kConfidentShotRange) {
+      m_drivetrain.drive(0., 0., rot, true);
+    } else {
+      m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
+    }
+
+    if ((dis <= kConfidentShotRange) && angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && turnController.atSetpoint()) {
       m_loader.setLoaderMotor(1.);
     } else {
       m_loader.stop();

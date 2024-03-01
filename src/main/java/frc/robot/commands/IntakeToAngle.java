@@ -15,7 +15,7 @@ import static frc.robot.Constants.Intake.*;
 
 public class IntakeToAngle extends Command {
   private IntakePivot m_intakePivot;
-  private Double angle;
+  private Double angle, multiplier;
   private PIDController rotController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
   /** Creates a new IntakeToAngle. */
   public IntakeToAngle(IntakePivot intakePivot, Double toAngle) {
@@ -30,6 +30,11 @@ public class IntakeToAngle extends Command {
   public void initialize() {
     rotController.setSetpoint(angle);
     rotController.setTolerance(0.5);
+    if (angle <= 200.) {
+      multiplier = 2.;
+    } else {
+      multiplier = 1.;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,7 +43,7 @@ public class IntakeToAngle extends Command {
     var pwr = -rotController.calculate(m_intakePivot.getIntakeAngle());
     pwr = MathUtil.clamp(pwr, kMaxDownPower, kMaxUpPower);
     SmartDashboard.putNumber("?Power", pwr);
-    m_intakePivot.setAngleMotor(pwr);
+    m_intakePivot.setAngleMotor(pwr * multiplier);
   }
 
   // Called once the command ends or is interrupted.

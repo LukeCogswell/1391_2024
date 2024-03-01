@@ -94,7 +94,8 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber(m_driveMotor.getDeviceID() +"Motor Position", m_driveMotor.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber(m_driveMotor.getDeviceID() +"Motor Position", m_driveMotor.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber(m_driveMotor.getDeviceID() +"Drive Dis", getDriveDistance());
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber(("Module "+(m_driveMotor.getDeviceId())), getAbsoluteAngle());
   }

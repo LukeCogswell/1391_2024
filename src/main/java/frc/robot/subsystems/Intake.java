@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("TY", getTY());
     SmartDashboard.putBoolean("HasNote?", hasNoteInIntake());
-    SmartDashboard.putNumber("bELTS cURRNET", m_intakeMotor.getOutputCurrent());
+    // SmartDashboard.putNumber("bELTS cURRNET", m_intakeMotor.getOutputCurrent());
     SmartDashboard.putBoolean("CurrentHasNote?", currentHasNoteInIntake());
     // SmartDashboard.putNumber("Bot Int Current", getIntakeCurrentDraw());
     // SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());

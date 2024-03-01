@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SSource-EDownstage"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SDownstage-E15"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S15-EDownstage"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SDownstage-E14"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S14-EDownstage"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SDownstage-E13"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S13-EDownstage"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

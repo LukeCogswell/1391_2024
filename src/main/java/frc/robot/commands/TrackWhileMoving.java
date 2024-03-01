@@ -23,7 +23,7 @@ import static frc.robot.Constants.Shooter.*;
 
 public class TrackWhileMoving extends Command {
   private Drivetrain m_drivetrain;
-  private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
+  private PIDController turnController = new PIDController(0.02, kTurnI, 0.0);
   boolean m_PIDcontrol, isRed;
   DoubleSupplier m_x, m_y, m_precision;
   double m_toAngle, m_xSpeed, m_ySpeed, m_thetaSpeed;
@@ -49,6 +49,7 @@ public class TrackWhileMoving extends Command {
   @Override
   public void initialize() {
     isRed = DriverStation.getAlliance().get() == Alliance.Red;
+    turnController.enableContinuousInput(-180, 180);
   }
   
   // Called every time the scheduler runs while the command is scheduled.

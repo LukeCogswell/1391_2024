@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PS3-IS3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S3-E2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S2-E1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S1-E11"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "S11-EUpstage"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

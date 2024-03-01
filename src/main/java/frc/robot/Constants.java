@@ -60,7 +60,7 @@ public final class Constants {
     public static final double kSourceAngle = 50.; //DEGREES - ANGLE TO INTAKE FROM SOURCE
 
     public static final class PID {
-      public static final double kAngleP = 0.018;
+      public static final double kAngleP = 0.021;
       public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
@@ -72,9 +72,9 @@ public final class Constants {
       public static final Double[] entry2 = {2., 41.65};
       public static final Double[] entry3 = {3., 33.35};
       public static final Double[] entry4 = {4., 26.15};
-      public static final Double[] entry5 = {5., 20.47};
-      public static final Double[] entry6 = {6., 18.15};
-      public static final Double[] entry7 = {7., 16.64};
+      public static final Double[] entry5 = {5., 20.8};
+      public static final Double[] entry6 = {6., 19.15};
+      public static final Double[] entry7 = {7., 17.64};
       public static final Double[] entry8 = {8., 15.64};
       public static final Double[] entry9 = {9., 15.02};
       public static final Double[] entry10 = {10., 14.62};
@@ -85,22 +85,22 @@ public final class Constants {
   public static final class Intake {
     public static final double kIntakeEncoderOffset = 0.;
     public static final double kEncoderGearRatio = 1;
-    public static final double kMinRotation = 255.0;  // DEGREES
+    public static final double kMinRotation = 260.0;  // DEGREES
     public static final double kMaxRotation = 181.0; // DEGREES
 
     public static final double kMaxDownPower = -0.3;
     public static final double kMaxUpPower = 0.6;
 
     public static final class PID {
-      public static final double kIAngleP = 0.02;
+      public static final double kIAngleP = 0.01;
       public static final double kIAngleI = 0.0;
-      public static final double kIAngleD = 0.0001;
+      public static final double kIAngleD = 0.001;
     }
   }
 
   public static final class Elevator {
     public static final double kMotorRotationsToMeters = 0.008; // 8 mm per revolution
-    public static final double kMaxHeight = 5.5;
+    public static final double kMaxHeight = 6.5;
     public static final double kMinHeight = 0.03;
 
     public static final double kStallPower = 0.02;
@@ -133,7 +133,7 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
       Swerve.kDriveReduction *
       MeasurementConstants.kWheelDiameterMeters * Math.PI; // ~ 5.2 m/s
-      public static final double kMaxAccelerationMetersPerSecondSquared = 3.55; //3
+      public static final double kMaxAccelerationMetersPerSecondSquared = 2.; //3
     public static final double kMaxAngularSpeedRadiansPerSecond = kMaxSpeedMetersPerSecond /
       Math.hypot(kModuleXOffsetMeters / 2.0, kModuleYOffsetMeters / 2.0);
   
@@ -157,13 +157,13 @@ public final class Constants {
     public static final double kDriveDeadband = 0.05;
     public static final double kAutoDriveSpeedLimiter = 1.;
 
-    public static final double kDriveSlewRateLimit = 5.;
-    public static final double kthetaSlewRateLimit = 7.;
+    public static final double kDriveSlewRateLimit = 50.;
+    public static final double kthetaSlewRateLimit = 50.;
 
     public static final double kMaxVoltage = 13.0;
     public static final double kAccelerationSeconds = 0.2; // 0.5 seconds to reach full speed
 
-    public static final int kDriveMotorCurrentLimit = 40;
+    public static final int kDriveMotorCurrentLimit = 30;
     public static final int kSteerMotorCurrentLimit = 20;
 
     public static final double kDriveReduction = 1 / CTREConfigs.driveGearRatio; // Wheel revolutions per motor revolution`
@@ -186,20 +186,22 @@ public final class Constants {
 
       public static final double peakVoltage = 13.5;
 
-      public static final int driveCurrentLimit = 35;
+      public static final int driveCurrentLimit = 30;
       public static final int driveCurrentThreshold = 60;
       public static final double driveCurrentThresholdTime = 0.1;
       public static final boolean driveEnableCurrentLimit = true;
+      public static final double driveStatorCurrentLimit = 70;
+      public static final boolean driveEnableStatorCurrentLimit = true;
 
-      public static final double openLoopRamp = .1;
-      public static final double closedLoopRamp = .1;
+      public static final double openLoopRamp = .0;
+      public static final double closedLoopRamp = .0;
 
       public static final double driveGearRatio = (5.9 / 1.0);//L2 default is 6.75 //5.9 to 1 with new pinions
 
       public static final InvertedValue driveMotorInvert = chosenModule.driveMotorInvert;
 
       public static final double driveKP = 0.16;
-      public static final double driveKI = 0.0015; // Used in module control TODO: Tune
+      public static final double driveKI = 0.0; // Used in module control TODO: Tune
       public static final double driveKD = 0.0;
     }
     public static final class PID {
@@ -275,7 +277,7 @@ public final class Constants {
     public static final double kGridSize = 0.3;
     public static final class Red {
       public static final Pose2d Source = new Pose2d(0.3, 1.5, new Rotation2d(Math.PI/4));
-      public static final Pose2d Amp = new Pose2d(14.675, 7.6, new Rotation2d(-Math.PI/2));
+      public static final Pose2d Amp = new Pose2d(14.65, 7.7, new Rotation2d(-Math.PI/2));
       public static final Pose2d Speaker = new Pose2d(kFieldX - 8 * kGridSize, 20 * kGridSize, new Rotation2d(0));
       public static final Pose2d CenterStage = new Pose2d(35 * kGridSize, 14 * kGridSize, new Rotation2d(Math.PI));
       public static final Pose2d StageLeft = new Pose2d(40 * kGridSize, 11 * kGridSize, new Rotation2d(Math.PI / 4 * 3));

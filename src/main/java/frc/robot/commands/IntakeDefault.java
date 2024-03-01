@@ -27,7 +27,7 @@ public class IntakeDefault extends Command {
   @Override
   public void execute() {
     if (m_loader.hasNoteInShooter() && m_intake.hasNoteInIntake()) {
-      m_intake.setIntake(-0.6);
+      // m_intake.setIntake(-0.6);
     } else {
       m_intake.stop();
     }
