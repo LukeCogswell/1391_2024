@@ -31,7 +31,8 @@ public class IntakeToAngle extends Command {
     rotController.setSetpoint(angle);
     rotController.setTolerance(0.5);
     if (angle <= 200.) {
-      multiplier = 2.;
+      rotController.setPID(0.01, 0., 0.);
+      multiplier = 1.;
     } else {
       multiplier = 1.;
     }

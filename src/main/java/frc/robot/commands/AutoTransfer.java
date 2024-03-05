@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -31,7 +32,8 @@ public class AutoTransfer extends ParallelDeadlineGroup {
     super(
       new SequentialCommandGroup(
         // new ElevatorToHeight(elevator, 1.), //0.13
-        new WaitUntilCommand(() -> ((intakePivot.getIntakeAngle() <= 189)/* && (elevator.getElevatorHeightL() >= 0.7))*/)),
+        new WaitUntilCommand(() -> ((intakePivot.getIntakeAngle() <= 187)/* && (elevator.getElevatorHeightL() >= 0.7))*/)),
+        new WaitCommand(0.5),
         new RunCommand(() -> {
           loader.setLoaderMotor(.6);
           intake.setIntake(.4);

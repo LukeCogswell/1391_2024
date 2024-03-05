@@ -32,6 +32,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Left Shooter Speed", getLeftShooterSpeed());
     SmartDashboard.putNumber("Right Shooter Speed", getRightShooterSpeed());
+    SmartDashboard.putNumber("Left Shooter Current", m_shooterMotorLeft.getOutputCurrent());
     // This method will be called once per scheduler run
   }
 

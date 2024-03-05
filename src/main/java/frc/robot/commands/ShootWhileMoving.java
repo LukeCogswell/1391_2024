@@ -12,8 +12,10 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
@@ -30,16 +32,17 @@ public class ShootWhileMoving extends Command {
   private Shooter m_shooter;
   private Turret m_turret;
   private Loader m_loader;
+  private LEDs m_leds;
   private PIDController angleController = new PIDController(kAngleP, kAngleI, kAngleD);
   private PIDController turnController = new PIDController(kTurnP, kTurnI, kTurnD);
   private PIDController LLturnController = new PIDController(kLLTurnP, kLLTurnI, kLLTurnD);
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private DoubleSupplier xSpeed, ySpeed, m_precision;
-  private Double X, Y, rot, m_precisionFactor, m_xSpeed, m_ySpeed;
+  private Double X, Y, rot, m_precisionFactor, m_xSpeed, m_ySpeed, dis;
   /** Creates a new ShootWhileMoving. */
   public 
-  ShootWhileMoving(Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision) {
+  ShootWhileMoving(Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, DoubleSupplier x_speed, DoubleSupplier y_speed, DoubleSupplier precision, LEDs leds) {
     m_drivetrain = drivetrain;
     m_shooter = shooter;
     m_loader = loader;
@@ -47,9 +50,10 @@ public class ShootWhileMoving extends Command {
     m_precision = precision;
     xSpeed = x_speed;
     ySpeed = y_speed;
+    m_leds = leds;
     
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter, drivetrain, loader, turret);
+    addRequirements(shooter, drivetrain, loader, turret, leds);
   }
 
   // Called when the command is initially scheduled.
@@ -79,6 +83,7 @@ public class ShootWhileMoving extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
         // SmartDashboard.putNumber("xSpeed", X);
     m_xSpeed =
     -m_xLimiter.calculate(MathUtil.applyDeadband(Math.pow(Y, 2) * Math.signum(Y), kDriveDeadband))
@@ -89,20 +94,30 @@ public class ShootWhileMoving extends Command {
     -m_yLimiter.calculate(MathUtil.applyDeadband(Math.pow(X, 2) * Math.signum(X), kDriveDeadband))
     * kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
 
-    var dis = m_drivetrain.getDistanceToSpeaker();
     var dDis = m_drivetrain.getChangeInDistanceToSpeaker(m_xSpeed, m_ySpeed);
     
     // var dTheta = -m_drivetrain.getChangeInAngleToSpeaker(m_xSpeed, m_ySpeed);
     // dTheta = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue ? -dTheta : dTheta;
     // dTheta = MathUtil.clamp(dTheta, -15, 15);
-  
+    
     // SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
     // SmartDashboard.putNumber("dTheta", dTheta);
-    // if (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4) {
-    //   rot = LLturnController.calculate(m_drivetrain.getTX() + kShootingRotationAdjustmentMultiplier * dTheta);
-    // } else {
-    // }
-    rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
+
+    dis = m_drivetrain.getDistanceToSpeaker();
+
+    if (m_drivetrain.getTV()) {
+      dis = m_drivetrain.getDistanceToSpeakerAprilTag();
+      if (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4) {
+        rot = LLturnController.calculate(m_drivetrain.getTX());
+      } else {
+        dis = m_drivetrain.getDistanceToSpeaker();
+        rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
+      }
+      
+    } else {
+      rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
+      dis = m_drivetrain.getDistanceToSpeaker();
+    }
 
     if (DriverStation.getAlliance().get() == Alliance.Red) {
       m_xSpeed = -m_xSpeed;
@@ -128,18 +143,36 @@ public class ShootWhileMoving extends Command {
     // SmartDashboard.putNumber("required angle", m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI);
 
 
-    m_turret.setAngleMotor(-(angleController.calculate((m_turret.getRequiredShooterAngleFromTable(dis, dDis) * 180 / Math.PI) - m_turret.getShooterAngle())));
+    m_turret.setAngleMotor(-(angleController.calculate((m_turret.getRequiredShooterAngleFromTable(dis)) - m_turret.getShooterAngle())));
 
-    SmartDashboard.putNumber("Required Angle", m_turret.getRequiredShooterAngleFromTable(dis, dDis) * 180 / Math.PI);
+    SmartDashboard.putNumber("Required Angle", m_turret.getRequiredShooterAngleFromTable(dis) * 180 / Math.PI);
 
     
+    if (angleController.atSetpoint()) {
+      m_leds.setTopThird(Color.kGreen);
+    } else {
+      m_leds.setTopThird(Color.kRed);
+    }
+    if (m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8) {
+      m_leds.setMiddleThird(Color.kGreen);
+    } else {
+      m_leds.setMiddleThird(Color.kRed);
+    }
+    if (LLturnController.atSetpoint() || turnController.atSetpoint()) {
+      m_leds.setBottomHalf(Color.kGreen);
+    } else {
+      m_leds.setBottomHalf(Color.kRed);
+    }
+
+    m_leds.start();
+
     SmartDashboard.putBoolean("Angle?", angleController.atSetpoint());
     SmartDashboard.putBoolean("LLTurn?", LLturnController.atSetpoint());
     SmartDashboard.putBoolean("Turn?", turnController.atSetpoint());
     SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8);
     
     m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
-    if (angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && turnController.atSetpoint()) {
+    if (angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && (turnController.atSetpoint() || LLturnController.atSetpoint())) {
       m_loader.setLoaderMotor(1.);
     } else {
       m_loader.stop();

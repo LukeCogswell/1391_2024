@@ -51,7 +51,7 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingRotationAdjustmentMultiplier = 1.75; //
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
-    public static final double kAngleEncoderOffset = 14.27+68.5 - 178;
+    public static final double kAngleEncoderOffset = 14.27+68.5 - 178 +53;
     public static final double kMaxSpeedRPM = 5676;
     public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
 
@@ -60,19 +60,34 @@ public final class Constants {
     public static final double kSourceAngle = 50.; //DEGREES - ANGLE TO INTAKE FROM SOURCE
 
     public static final class PID {
-      public static final double kAngleP = 0.021;
+      public static final double kAngleP = 0.025;
       public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
     }
 
+
+    public static final class RangeTableAprilTag {
+      public static final Double[] entry0 =  {.5 , 84.06};
+      public static final Double[] entry1 =  {1. , 59.58};
+      public static final Double[] entry2 =  {2. , 43.00};
+      public static final Double[] entry3 =  {3. , 35.50};
+      public static final Double[] entry4 =  {4. , 26.1};
+      public static final Double[] entry5 =  {5. , 21.5};
+      public static final Double[] entry6 =  {6. , 22.15};
+      public static final Double[] entry7 =  {7. , 17.64};
+      public static final Double[] entry8 =  {8. , 15.64};
+      public static final Double[] entry9 =  {9. , 14.02};
+      public static final Double[] entry10 = {10., 13.80};
+      public static final Double[] entry11 = {11., 13.00};
+    }
     public static final class RangeTable {
       public static final Double[] entry0 = {.5, 80.06};
       public static final Double[] entry1 = {1., 63.58};
-      public static final Double[] entry2 = {2., 41.65};
-      public static final Double[] entry3 = {3., 33.35};
-      public static final Double[] entry4 = {4., 26.15};
-      public static final Double[] entry5 = {5., 20.8};
+      public static final Double[] entry2 = {2., 42.0};
+      public static final Double[] entry3 = {3., 34.35};
+      public static final Double[] entry4 = {4., 27.5};
+      public static final Double[] entry5 = {5., 21.0};
       public static final Double[] entry6 = {6., 19.15};
       public static final Double[] entry7 = {7., 17.64};
       public static final Double[] entry8 = {8., 15.64};
@@ -85,10 +100,10 @@ public final class Constants {
   public static final class Intake {
     public static final double kIntakeEncoderOffset = 0.;
     public static final double kEncoderGearRatio = 1;
-    public static final double kMinRotation = 260.0;  // DEGREES
+    public static final double kMinRotation = 265.0;  // DEGREES
     public static final double kMaxRotation = 181.0; // DEGREES
 
-    public static final double kMaxDownPower = -0.3;
+    public static final double kMaxDownPower = -0.5;
     public static final double kMaxUpPower = 0.6;
 
     public static final class PID {
@@ -103,7 +118,7 @@ public final class Constants {
     public static final double kMaxHeight = 6.5;
     public static final double kMinHeight = 0.03;
 
-    public static final double kStallPower = 0.02;
+    public static final double kStallPower = 0.002;
 
     public static final double kTransferHeight = 0.03;
 
@@ -133,11 +148,11 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *
       Swerve.kDriveReduction *
       MeasurementConstants.kWheelDiameterMeters * Math.PI; // ~ 5.2 m/s
-      public static final double kMaxAccelerationMetersPerSecondSquared = 2.; //3
+      public static final double kMaxAccelerationMetersPerSecondSquared = 3.; //3
     public static final double kMaxAngularSpeedRadiansPerSecond = kMaxSpeedMetersPerSecond /
       Math.hypot(kModuleXOffsetMeters / 2.0, kModuleYOffsetMeters / 2.0);
   
-
+    public static final Rotation2d kLimelightAngle = new Rotation2d(30 * Math.PI / 180);
 
     public static final double kSpeakerOpeningMinHeight = 1.98; //METERS      
     public static final double kSpeakerOpeningMaxHeight = 2.11; //METERS  
@@ -158,7 +173,7 @@ public final class Constants {
     public static final double kAutoDriveSpeedLimiter = 1.;
 
     public static final double kDriveSlewRateLimit = 50.;
-    public static final double kthetaSlewRateLimit = 50.;
+    public static final double kthetaSlewRateLimit = 75.;
 
     public static final double kMaxVoltage = 13.0;
     public static final double kAccelerationSeconds = 0.2; // 0.5 seconds to reach full speed

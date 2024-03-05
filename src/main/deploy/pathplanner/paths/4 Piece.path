@@ -180,19 +180,19 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoCollect"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Shoot 45"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Spin Up Shooter"
+                "name": null
               }
             }
           ]
@@ -209,13 +209,13 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoCollect"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Spin Up Shooter"
+                "name": null
               }
             }
           ]
@@ -232,19 +232,19 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot 45"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Spin Up Shooter"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Transfer"
+                "name": null
               }
             }
           ]
@@ -261,19 +261,19 @@
             {
               "type": "named",
               "data": {
-                "name": "AutoCollect"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Shoot 45"
+                "name": null
               }
             },
             {
               "type": "named",
               "data": {
-                "name": "Spin Up Shooter"
+                "name": null
               }
             }
           ]
@@ -290,7 +290,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Spin Up Shooter"
+                "name": null
               }
             }
           ]

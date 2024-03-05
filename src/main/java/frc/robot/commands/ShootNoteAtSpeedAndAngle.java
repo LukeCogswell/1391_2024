@@ -47,17 +47,17 @@ public class ShootNoteAtSpeedAndAngle extends Command {
     m_shooter.setRightShooterSpeed(shotSpeed);
 
 
-    if (!angleController.atSetpoint()) {
-      m_turret.setAngleMotor(MathUtil.clamp(angleController.calculate(m_turret.getShooterAngle()), -0.4, 0.4));
-    } else {
-      m_turret.setAngleMotor(0.);
-    }
+    // if (!angleController.atSetpoint()) {
+    m_turret.setAngleMotor(MathUtil.clamp(angleController.calculate(m_turret.getShooterAngle()), -0.4, 0.4));
+    // } else {
+    //   m_turret.setAngleMotor(0.);
+    // }
 
     SmartDashboard.putBoolean("ShotAngle", angleController.atSetpoint());
     SmartDashboard.putBoolean("ShotSpeed", m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed);
 
     if (m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed && angleController.atSetpoint()) {
-        m_loader.setLoaderMotor(0.7);
+        m_loader.setLoaderMotor(1.);
     }
   }
 
@@ -73,6 +73,7 @@ public class ShootNoteAtSpeedAndAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_loader.hasNoteInShooter();
+    // return !m_loader.hasNoteInShooter();
+    return false;
   }
 }

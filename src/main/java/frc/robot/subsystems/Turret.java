@@ -8,12 +8,14 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Shooter.*;
-import static frc.robot.Constants.Shooter.RangeTable.*;
+import static frc.robot.Constants.Shooter.RangeTable;
+import static frc.robot.Constants.Shooter.RangeTableAprilTag.*;
 import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.CANConstants.*;
 
@@ -21,9 +23,22 @@ public class Turret extends SubsystemBase {
   /** Creates a new Turret. */
   private final CANSparkMax m_angleMotor = new CANSparkMax(kTurretMotorID, MotorType.kBrushless);
   private DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
+  private InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
 
   public Turret() {
     m_angleMotor.setInverted(false);
+    angleMap.put(entry0[0], entry0[1]);
+    angleMap.put(entry1[0], entry1[1]);
+    angleMap.put(entry2[0], entry2[1]);
+    angleMap.put(entry3[0], entry3[1]);
+    angleMap.put(entry4[0], entry4[1]);
+    angleMap.put(entry5[0], entry5[1]);
+    angleMap.put(entry6[0], entry6[1]);
+    angleMap.put(entry7[0], entry7[1]);
+    angleMap.put(entry8[0], entry8[1]);
+    angleMap.put(entry9[0], entry9[1]);
+    angleMap.put(entry10[0], entry10[1]);
+    angleMap.put(entry11[0], entry11[1]);
   }
 
   @Override
@@ -52,36 +67,8 @@ public class Turret extends SubsystemBase {
     return theta;
   }
 
-  public double getRequiredShooterAngleFromTable(Double dis, Double dDistanceToSpeaker) {
-    var initialAngle = 0.;
-    if (dis <= entry0[0]) {
-      initialAngle = entry0[1];
-    } else if (dis <= entry1[0]) {
-      initialAngle = MathUtil.interpolate(entry0[1], entry1[1], (dis - entry0[0]) / (entry1[0] - entry0[0]));
-    } else if (dis <= entry2[0]) {
-      initialAngle = MathUtil.interpolate(entry1[1], entry2[1], (dis - entry1[0]) / (entry2[0] - entry1[0]));
-    } else if (dis <= entry3[0]) {
-      initialAngle = MathUtil.interpolate(entry2[1], entry3[1], (dis - entry2[0]) / (entry3[0] - entry2[0]));
-    } else if (dis <= entry4[0]) {
-      initialAngle = MathUtil.interpolate(entry3[1], entry4[1], (dis - entry3[0]) / (entry4[0] - entry3[0]));
-    } else if (dis <= entry5[0]) {
-      initialAngle = MathUtil.interpolate(entry4[1], entry5[1], (dis - entry4[0]) / (entry5[0] - entry4[0]));
-    } else if (dis <= entry6[0]) {
-      initialAngle = MathUtil.interpolate(entry5[1], entry6[1], (dis - entry5[0]) / (entry6[0] - entry5[0]));
-    } else if (dis <= entry7[0]) {
-      initialAngle = MathUtil.interpolate(entry6[1], entry7[1], (dis - entry6[0]) / (entry7[0] - entry6[0]));
-    } else if (dis <= entry8[0]) {
-      initialAngle = MathUtil.interpolate(entry7[1], entry8[1], (dis - entry7[0]) / (entry8[0] - entry7[0]));
-    } else if (dis <= entry9[0]) {
-      initialAngle = MathUtil.interpolate(entry8[1], entry9[1], (dis - entry8[0]) / (entry9[0] - entry8[0]));
-    } else if (dis <= entry10[0]) {
-      initialAngle = MathUtil.interpolate(entry9[1], entry10[1], (dis - entry9[0]) / (entry10[0] - entry9[0]));
-    } else if (dis <= entry11[0]) {
-      initialAngle = MathUtil.interpolate(entry10[1], entry11[1], (dis - entry10[0]) / (entry11[0] - entry10[0]));
-    } else if (dis > entry11[0]) {
-      initialAngle = entry11[1];
-    }
-    return initialAngle * Math.PI / 180;
+  public double getRequiredShooterAngleFromTable(Double dis) {
+    return angleMap.get(dis);
   }
 
   public double getStationaryRobotAngleOffsetMultiplier(Double distanceToSpeaker) {

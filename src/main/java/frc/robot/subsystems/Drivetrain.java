@@ -37,6 +37,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.AprilTags;
 
 import static frc.robot.Constants.MeasurementConstants.*;
 
@@ -73,6 +75,8 @@ public class Drivetrain extends SubsystemBase {
 
   public double desiredVelocityAverage = 0;
   public double actualVelocityAverage = 0;
+
+  private boolean teleop = false;
 
   // private SysIdRoutine m_sysIdRoutine;
 
@@ -125,7 +129,7 @@ public class Drivetrain extends SubsystemBase {
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
         new PIDConstants(4., 0.0, 0.), // Translation PID constants
-        new PIDConstants(4, 0.0, 0.0), // Rotation PID constants
+        new PIDConstants(2, 0.0, 0.0), // Rotation PID constants
         kMaxSpeedMetersPerSecond, // Max module speed, in m/s
         0.3429, // Drive base radius in meters. Distance from robot center to furthest module.
         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -216,13 +220,24 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
-    if (Timer.getFPGATimestamp() % .2 <=0.03) {
+    if (teleop) {
       updateOdometryWithAprilTags();
+    } else {
+      if (DriverStation.isTeleopEnabled()) {
+        updateOdometryWithAprilTags();
+        teleop = true;
+      }
     }
+    // if (Timer.getFPGATimestamp() % .2 <= (0.03)) {
+    // }
     // field.setRobotPose(getFieldPosition());
     // SmartDashboard.putData(field);
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
     SmartDashboard.putNumber("DisToSpeaker", getDistanceToSpeaker());
+    if (getTV()) {
+      SmartDashboard.putNumber("DisToSpeakerAT", getDistanceToSpeakerAprilTag());
+    }
+
   }
   
   public void updateOdometryWithAprilTags() {
@@ -395,6 +410,15 @@ public class Drivetrain extends SubsystemBase {
     System.out.println("FR" + m_frontRight.getAbsoluteAngle());
     System.out.println("BL" + m_backLeft.getAbsoluteAngle());
     System.out.println("BR" + m_backRight.getAbsoluteAngle());
+  }
+
+  public double getDistanceToSpeakerAprilTagAngle() {
+    return AprilTags.ID7.getZ() / Math.tan(getTY()+Constants.MeasurementConstants.kLimelightAngle.getDegrees());
+  }
+
+  public double getDistanceToSpeakerAprilTag() {
+    return Math.sqrt(Math.pow(m_limelight.getEntry("targetpose_cameraspace").getDoubleArray(new Double[0])[2], 2) - Math.pow(Constants.AprilTags.ID7.getZ(), 2));
+
   }
 
   public double getDistanceToSpeaker() {

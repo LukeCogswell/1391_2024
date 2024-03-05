@@ -97,7 +97,7 @@ public class SwerveModule extends SubsystemBase {
     // SmartDashboard.putNumber(m_driveMotor.getDeviceID() +"Motor Position", m_driveMotor.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber(m_driveMotor.getDeviceID() +"Drive Dis", getDriveDistance());
     // This method will be called once per scheduler run
-    // SmartDashboard.putNumber(("Module "+(m_driveMotor.getDeviceId())), getAbsoluteAngle());
+    // SmartDashboard.putNumber(("Module "+(m_driveMotor.getDeviceID())), getAbsoluteAngle());
   }
 
   private void setMotorSettings(CANSparkMax motor, int currentLimit) { // sets the settings of the motor(s)

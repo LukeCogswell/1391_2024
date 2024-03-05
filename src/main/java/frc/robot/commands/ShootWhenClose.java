@@ -54,13 +54,6 @@ public class ShootWhenClose extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_precisionFactor = Math.pow(0.2, m_precision.getAsDouble());
-    X = xSpeed.getAsDouble();
-    Y = ySpeed.getAsDouble();
-    X = X > kAutoDriveSpeedLimiter ? kAutoDriveSpeedLimiter : X;
-    X = X < -kAutoDriveSpeedLimiter ? -kAutoDriveSpeedLimiter : X;
-    Y = Y > kAutoDriveSpeedLimiter ? kAutoDriveSpeedLimiter : Y;
-    Y = Y < -kAutoDriveSpeedLimiter ? -kAutoDriveSpeedLimiter : Y;
     turnController.setTolerance(3);
     turnController.setSetpoint(0.0);
     turnController.enableContinuousInput(-180, 180);
@@ -68,39 +61,23 @@ public class ShootWhenClose extends Command {
     LLturnController.setTolerance(3);
     angleController.setSetpoint(0);
     angleController.setTolerance(0.7);
-    if (X+Y >= 0.6) {
-      turnController.setTolerance(5);
-      LLturnController.setTolerance(5);
-      angleController.setTolerance(1.5);
-    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
+    Y = MathUtil.applyDeadband(ySpeed.getAsDouble(), kDriveDeadband) * m_precisionFactor;
+    X = MathUtil.applyDeadband( xSpeed.getAsDouble(), kDriveDeadband) * m_precisionFactor;
         // SmartDashboard.putNumber("xSpeed", X);
-    m_xSpeed =
-    -m_xLimiter.calculate(MathUtil.applyDeadband(Math.pow(Y, 2) * Math.signum(Y), kDriveDeadband))
-    * kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
-    // SmartDashboard.putNumber("xSpeed after limiting", Y);
+    var speedAdjustmentFactor = kMaxSpeedMetersPerSecond * kSpeedMultiplier;
+    m_xSpeed = -m_xLimiter.calculate(Y * Y * Math.signum(Y) * speedAdjustmentFactor);
     
-    m_ySpeed =
-    -m_yLimiter.calculate(MathUtil.applyDeadband(Math.pow(X, 2) * Math.signum(X), kDriveDeadband))
-    * kMaxSpeedMetersPerSecond * kSpeedMultiplier * m_precisionFactor;
+    m_ySpeed = -m_yLimiter.calculate(X * X * Math.signum(X) * speedAdjustmentFactor);
 
     var dis = m_drivetrain.getDistanceToSpeaker();
     var dDis = m_drivetrain.getChangeInDistanceToSpeaker(m_xSpeed, m_ySpeed);
     
-    // var dTheta = -m_drivetrain.getChangeInAngleToSpeaker(m_xSpeed, m_ySpeed);
-    // dTheta = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue ? -dTheta : dTheta;
-    // dTheta = MathUtil.clamp(dTheta, -15, 15);
-  
-    // SmartDashboard.putNumber("Angle", m_drivetrain.getAngleToSpeaker());
-    // SmartDashboard.putNumber("dTheta", dTheta);
-    // if (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4) {
-    //   rot = LLturnController.calculate(m_drivetrain.getTX() + kShootingRotationAdjustmentMultiplier * dTheta);
-    // } else {
-    // }
     rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
 
     if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -123,13 +100,9 @@ public class ShootWhenClose extends Command {
     m_shooter.setRightShooterSpeed(distanceMultiplier * 5676.0);
     m_shooter.setLeftShooterSpeed(distanceMultiplier * 5676.0 * spinMultiplier);
 
-    // SmartDashboard.putNumber("AnglePID", angleController.calculate((m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI) - m_shooter.getShooterAngle()));
-    // SmartDashboard.putNumber("required angle", m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI);
+    m_turret.setAngleMotor(-(angleController.calculate((m_turret.getRequiredShooterAngleFromTable(dis) * 180 / Math.PI) - m_turret.getShooterAngle())));
 
-
-    m_turret.setAngleMotor(-(angleController.calculate((m_turret.getRequiredShooterAngleFromTable(dis, dDis) * 180 / Math.PI) - m_turret.getShooterAngle())));
-
-    SmartDashboard.putNumber("Required Angle", m_turret.getRequiredShooterAngleFromTable(dis, dDis) * 180 / Math.PI);
+    SmartDashboard.putNumber("Required Angle", m_turret.getRequiredShooterAngleFromTable(dis) * 180 / Math.PI);
 
     
     SmartDashboard.putBoolean("Angle?", angleController.atSetpoint());
@@ -137,17 +110,17 @@ public class ShootWhenClose extends Command {
     SmartDashboard.putBoolean("Turn?", turnController.atSetpoint());
     SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8);
     
-    if (dis <= kConfidentShotRange) {
-      m_drivetrain.drive(0., 0., rot, true);
-    } else {
-      m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
-    }
+    m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
+    // if (dis <= kConfidentShotRange) {
+    //   m_drivetrain.drive(0., 0., rot, true);
+    // } else {
+    // }
 
-    if ((dis <= kConfidentShotRange) && angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && turnController.atSetpoint()) {
-      m_loader.setLoaderMotor(1.);
-    } else {
-      m_loader.stop();
-    }
+    // if ((dis <= kConfidentShotRange) && angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && turnController.atSetpoint()) {
+    //   m_loader.setLoaderMotor(1.);
+    // } else {
+    //   m_loader.stop();
+    // }
   }
 
   // Called once the command ends or is interrupted.
