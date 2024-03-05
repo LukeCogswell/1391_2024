@@ -15,24 +15,24 @@ import frc.robot.subsystems.Turret;
 
 import static frc.robot.Constants.Shooter.PID.*;
 
-public class ShootNoteAtSpeedAndAngle extends Command {
+public class ShootSpeedAngleWithControl extends Command {
   /** Creates a new ShootNote. */
   private Shooter m_shooter;
   private Turret m_turret;
   private Loader m_loader;
   private Double shotSpeed, angle;
   private PIDController angleController = new PIDController(kAngleP, kAngleI, kAngleD);
-  // private Trigger shotTrigger;
+  private Trigger shotTrigger;
 
-  public ShootNoteAtSpeedAndAngle(Shooter shooter, Turret turret, Loader loader, Double speed, Double Angle) {
+  public ShootSpeedAngleWithControl(Shooter shooter, Turret turret, Loader loader, Double speed, Double Angle, Trigger shootingTrigger) {
     m_shooter = shooter;
     m_turret = turret;
     m_loader = loader;
     shotSpeed = speed;
     angle = Angle;
-    // shotTrigger = shootingTrigger;
+    shotTrigger = shootingTrigger;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter);
+    addRequirements(shooter, loader, turret);
   }
 
   // Called when the command is initially scheduled.
@@ -59,11 +59,11 @@ public class ShootNoteAtSpeedAndAngle extends Command {
     SmartDashboard.putBoolean("ShotAngle", angleController.atSetpoint());
     SmartDashboard.putBoolean("ShotSpeed", m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed);
 
-    // m_loader.setLoaderMotor(shotTrigger.getAsBoolean() ? 1. : 0.);
+    m_loader.setLoaderMotor(shotTrigger.getAsBoolean() ? 1. : 0.);
 
-    if (m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed && angleController.atSetpoint()) {
-        m_loader.setLoaderMotor(1.);
-    }
+    // if (m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed && angleController.atSetpoint()) {
+    //     m_loader.setLoaderMotor(1.);
+    // }
   }
 
   // Called once the command ends or is interrupted.

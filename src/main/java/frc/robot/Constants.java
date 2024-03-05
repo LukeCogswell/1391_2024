@@ -81,6 +81,7 @@ public final class Constants {
       public static final Double[] entry10 = {10., 13.80};
       public static final Double[] entry11 = {11., 13.00};
     }
+    
     public static final class RangeTable {
       public static final Double[] entry0 = {.5, 80.06};
       public static final Double[] entry1 = {1., 63.58};

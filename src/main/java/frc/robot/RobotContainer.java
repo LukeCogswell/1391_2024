@@ -146,7 +146,7 @@ public class RobotContainer {
         )
     );
     
-    m_driverController.leftBumper().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2750., 10.));
+    // m_driverController.leftBumper().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2750., 10.));
     // m_driverController.leftBumper().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
 
     // m_driverController.leftBumper().whileTrue(
@@ -179,7 +179,7 @@ public class RobotContainer {
     // // TODO: TUNE THIS
     //   .onFalse(new InstantCommand(() -> {}, m_loader, m_shooter, m_turret));
 
-    m_driverController.b().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(0.9), m_loader));
+    // m_driverController.b().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(0.9), m_loader));
 
     m_driverController.x().whileTrue(new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter())
     .andThen(new ParallelCommandGroup(
@@ -281,15 +281,15 @@ public class RobotContainer {
     m_operatorController.povUp().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(0.3), m_intakePivot));
     m_operatorController.povDown().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(-0.3), m_intakePivot));
 
-    m_operatorController.b().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(0.8), m_loader));
+    // m_operatorController.b().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(0.8), m_loader));
     
-    m_operatorController.a().whileTrue(new ParallelCommandGroup(
-      new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676 * 0.5, 60.),
-      new IntakeToAngle(m_intakePivot, kMinRotation)));
+    // m_operatorController.a().whileTrue(new ParallelCommandGroup(
+    //   new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676 * 0.5, 85.),
+    //   new IntakeToAngle(m_intakePivot, kMinRotation)));
     
     m_operatorController.x().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(-0.4), m_loader));
 
-    m_operatorController.y().whileTrue(new SetTurretAngle(m_turret, 80.));
+    // m_operatorController.y().whileTrue(new SetTurretAngle(m_turret, 80.));
 
     // m_operatorController.back().whileTrue(new ConditionalCommand(
     //     new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0.),
@@ -302,6 +302,12 @@ public class RobotContainer {
     /********* END OPERATOR CONTROLS *********/
     /*-------------------------------------------------- */
     /*********   TESTING  CONTROLS   *********/
+
+    m_operatorController.a().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.5, 60., m_driverController.leftBumper()));
+    m_operatorController.b().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.75, 34., m_driverController.leftBumper()));
+    m_operatorController.y().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 1., 22., m_driverController.leftBumper()));
+
+
 
 
     // m_driverController.y().whileTrue(new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController));

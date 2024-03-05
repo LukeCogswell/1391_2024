@@ -33,7 +33,7 @@ public class AimAtSpeaker extends Command {
   @Override
   public void execute() {
     var dis = m_drivetrain.getDistanceToSpeaker();
-    m_turret.setAngleMotor(-(angleController.calculate((m_turret.getRequiredShooterAngleFromTable(dis, 0.) * 180 / Math.PI) - m_turret.getShooterAngle())));
+    m_turret.setAngleMotor(-(angleController.calculate((m_turret.getRequiredShooterAngleFromTable(dis) * 180 / Math.PI) - m_turret.getShooterAngle())));
   }
 
   // Called once the command ends or is interrupted.
