@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterSpeed(Double speed) {
     m_shooterMotorRight.set(speed/kMaxSpeedRPM);
-    m_shooterMotorLeft.set(speed/kMaxSpeedRPM);
+    m_shooterMotorLeft.set(0.75 * speed/kMaxSpeedRPM);
     
   }
 

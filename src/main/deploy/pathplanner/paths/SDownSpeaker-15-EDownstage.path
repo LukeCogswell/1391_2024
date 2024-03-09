@@ -1,0 +1,107 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7518994781213513,
+        "y": 4.461828723942754
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.138357084132141,
+        "y": 3.899708569745242
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.8481392198162414,
+        "y": 2.79888993444178
+      },
+      "prevControl": {
+        "x": 2.143259468550099,
+        "y": 3.247449776156597
+      },
+      "nextControl": {
+        "x": 2.976958421819838,
+        "y": 2.7169140786213095
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.024328973051668,
+        "y": 0.6792285196553272
+      },
+      "prevControl": {
+        "x": 7.1668028111805135,
+        "y": 1.0891077987576798
+      },
+      "nextControl": {
+        "x": 8.069440636717301,
+        "y": 0.6576661032480761
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.5,
+        "y": 2.3
+      },
+      "prevControl": {
+        "x": 4.733583903687064,
+        "y": 2.1547939244237972
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.1,
+      "rotationDegrees": -44.63159740999963,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": -22.143476148388423,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "ShootingZone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.0,
+      "constraints": {
+        "maxVelocity": 1.4,
+        "maxAcceleration": 2.5,
+        "maxAngularVelocity": 270.0,
+        "maxAngularAcceleration": 360.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.2,
+    "maxAcceleration": 2.6,
+    "maxAngularVelocity": 270.0,
+    "maxAngularAcceleration": 180.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -38.170000000000016,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -46,16 +46,16 @@ public class IntakeToAngle extends Command {
     var pwr = -rotController.calculate(ang);
 
     if (ang >= 180) {
-      MAXDownPWR = 0.3;
+      MAXDownPWR = 0.4;
     }
     if (ang >= 185) {
-      MAXDownPWR = 0.1;
+      MAXDownPWR = 0.4;
     }
     if (ang >= 210) {
-      MAXDownPWR = 0.01;
+      MAXDownPWR = 0.2;
     }
     if (ang >= 240.) {
-    MAXDownPWR = 0.05;
+    MAXDownPWR = 0.1;
     }      
     SmartDashboard.putNumber("MAXDOWN", MAXDownPWR);
     pwr = MathUtil.clamp(pwr, -MAXDownPWR, kMaxUpPower);

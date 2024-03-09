@@ -77,7 +77,8 @@ public class RobotContainer {
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-    autoChooser.addOption("Start_DownSpeaker_End_15_14", Autos.Start_DownSpeaker_End_15_14(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
+    // autoChooser.addOption("Start_DownSpeakerSWM_End_15_14_13", Autos.Start_DownSpeakerSWM_End_15_14_13(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
+    autoChooser.addOption("Start_DownSpeakerSWM_End_15_14", Autos.Start_DownSpeakerSWM_End_15_14(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
     autoChooser.addOption("Start_Source_End_15_14", Autos.Start_Source_End_15_14(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
     autoChooser.addOption("Start_Source_End_14_13", Autos.Start_Source_End_14_13(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
     autoChooser.addOption("Start_1_End_Upstage", Autos.Start_1_End_Upstage(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
@@ -146,7 +147,7 @@ public class RobotContainer {
         
     m_driverController.start().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(1.)));
 
-    // m_driverController.leftTrigger().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0., m_LEDs));
+    m_driverController.leftTrigger().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0., m_LEDs));
 
     m_driverController.rightBumper().whileTrue(
       new DriveWithJoysticksRobotRelative(
@@ -194,7 +195,7 @@ public class RobotContainer {
       
 
     m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 50.));
-    m_driverController.leftTrigger().whileTrue(new SetTurretAngle(m_turret, 20.));
+    // m_driverController.leftTrigger().whileTrue(new SetTurretAngle(m_turret, 20.));
     // m_driverController.back().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(m_drivetrain.getFieldPosition().getX(), m_drivetrain.getFieldPosition().getY(), new Rotation2d(DriverStation.getAlliance().get()==Alliance.Blue ? 0. : Math.PI)))));
     
     // m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
@@ -207,6 +208,7 @@ public class RobotContainer {
     m_operatorController.rightBumper().whileTrue(new PrepToShootFromSetpoint(3500., 50., DriverStation.getAlliance().get() == Alliance.Blue ? -30. : -180 + 30, m_drivetrain, m_shooter, m_turret, m_loader,
       m_driverController.leftBumper(), () -> m_driverController.getLeftX(),() -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
+    // m_operatorController.back().whileTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 2, 7, new Rotation2d(Math.PI)))).andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile("STRAIGHT"))));
     m_operatorController.back().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2500., -25.));
     
     m_operatorController.start().whileTrue(new DepositInAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_driverController.leftBumper()));

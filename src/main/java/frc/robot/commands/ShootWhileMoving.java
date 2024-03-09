@@ -126,13 +126,14 @@ public class ShootWhileMoving extends Command {
     distanceMultiplier = distanceMultiplier > 1 ? 1 : distanceMultiplier;
     distanceMultiplier = distanceMultiplier < 0.8 ? 0.8 : distanceMultiplier;
     
-    var spinMultiplier = 0.75;
+    // var spinMultiplier = 0.75;
     // var spinMultiplier = 0.85 / distanceMultiplier;
     // spinMultiplier = spinMultiplier > 1 ? 1 : spinMultiplier;
     // spinMultiplier = 1.;
 
-    m_shooter.setRightShooterSpeed(distanceMultiplier * 5676.0);
-    m_shooter.setLeftShooterSpeed(distanceMultiplier * 5676.0 * spinMultiplier);
+    m_shooter.setShooterSpeed(distanceMultiplier * 5676.);
+    // m_shooter.setRightShooterSpeed(distanceMultiplier * 5676.0);
+    // m_shooter.setLeftShooterSpeed(distanceMultiplier * 5676.0 * spinMultiplier);
 
     // SmartDashboard.putNumber("AnglePID", angleController.calculate((m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI) - m_shooter.getShooterAngle()));
     // SmartDashboard.putNumber("required angle", m_shooter.getRequiredShooterAngle(dis, dDis)*180 / Math.PI);
@@ -153,10 +154,10 @@ public class ShootWhileMoving extends Command {
     } else {
       m_leds.setMiddleThird(Color.kRed);
     }
-    if (LLturnController.atSetpoint() || turnController.atSetpoint()) {
-      m_leds.setBottomHalf(Color.kGreen);
+    if (LLturnController.atSetpoint()) {
+      m_leds.setBottomThird(Color.kGreen);
     } else {
-      m_leds.setBottomHalf(Color.kRed);
+      m_leds.setBottomThird(Color.kRed);
     }
 
     m_leds.start();
@@ -167,7 +168,7 @@ public class ShootWhileMoving extends Command {
     SmartDashboard.putBoolean("Speed?", m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8);
     
     m_drivetrain.drive(m_xSpeed, m_ySpeed, rot, true);
-    if (angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && (turnController.atSetpoint() || LLturnController.atSetpoint())) {
+    if (angleController.atSetpoint() && m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8 && LLturnController.atSetpoint()) {
       m_loader.setLoaderMotor(1.);
     } else {
       m_loader.stop();
