@@ -29,6 +29,7 @@ public class IntakePivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // SmartDashboard.putNumber("KMAXDOWN",  Math.abs((270 - getIntakeAngle()) / 100.));
     SmartDashboard.putNumber("INTAKE CURRENT", m_pivotMotor.getOutputCurrent());
     SmartDashboard.putNumber("Intake Angle", getIntakeAngle());
     SmartDashboard.putBoolean("IsUp?", isUp());

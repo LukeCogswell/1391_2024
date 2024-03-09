@@ -34,8 +34,10 @@ public class IntakePivotDefault extends Command {
   public void execute() {
     if (m_intakePivot.getIntakeAngle() >= 260.) {
       angleController.setSetpoint(kMinRotation);
+      angleController.setPID(kIAngleP, 0., 0.);
     } else {
       angleController.setSetpoint(kMaxRotation);
+      angleController.setPID(0.01, 0., 0.);
     }
 
     SmartDashboard.putNumber("SETPOINT", angleController.getSetpoint());
@@ -43,7 +45,7 @@ public class IntakePivotDefault extends Command {
     if (!m_intakePivot.isUp()) {
       var pwr = -angleController.calculate(m_intakePivot.getIntakeAngle());
       SmartDashboard.putNumber("PrePower", pwr);
-      pwr = MathUtil.clamp(pwr, kMaxDownPower, kMaxUpPower);
+      pwr = MathUtil.clamp(pwr, -kMaxDownPower, kMaxUpPower);
       SmartDashboard.putNumber("MidPower", pwr);
       m_intakePivot.setAngleMotor(pwr);
     } else {

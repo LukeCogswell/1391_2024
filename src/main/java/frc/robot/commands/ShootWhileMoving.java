@@ -107,15 +107,10 @@ public class ShootWhileMoving extends Command {
 
     if (m_drivetrain.getTV()) {
       dis = m_drivetrain.getDistanceToSpeakerAprilTag();
-      if (m_drivetrain.getTID() == 7 || m_drivetrain.getTID() == 4) {
-        rot = LLturnController.calculate(m_drivetrain.getTX());
-      } else {
-        dis = m_drivetrain.getDistanceToSpeaker();
-        rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
-      }
-      
+      rot = LLturnController.calculate(m_drivetrain.getTX());
     } else {
-      rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
+      // rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
+      rot = 0.;
       dis = m_drivetrain.getDistanceToSpeaker();
     }
 

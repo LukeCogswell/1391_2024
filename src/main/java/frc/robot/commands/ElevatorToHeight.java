@@ -8,11 +8,12 @@ import static frc.robot.Constants.Elevator.kStallPower;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 
 public class ElevatorToHeight extends Command {
-  private PIDController heightController = new PIDController(.5, 0.0, 0);
+  private PIDController heightController = new PIDController(.8, 0.0, 0);
   private Double heightSetpoint;
   private Elevator m_elevator;
 
@@ -28,6 +29,7 @@ public class ElevatorToHeight extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // SmartDashboard.putNumber("ElevatorSetpoint", heightSetpoint);
     heightController.setSetpoint(heightSetpoint);
     heightController.setTolerance(0.1);
   }
@@ -35,9 +37,10 @@ public class ElevatorToHeight extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var pwr = heightController.calculate(m_elevator.getElevatorHeightL());
+    var pwr = heightController.calculate(m_elevator.getElevatorHeightR());
     pwr = MathUtil.clamp(pwr, -0.4, 1.);
-
+    // SmartDashboard.putNumber("ElevatorPWR", pwr);
+    // SmartDashboard.putNumber("EHeightR", m_elevator.getElevatorHeightR());
     m_elevator.setElevator(pwr);
   }
 

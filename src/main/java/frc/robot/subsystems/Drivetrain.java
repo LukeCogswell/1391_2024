@@ -89,7 +89,6 @@ public class Drivetrain extends SubsystemBase {
 
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-    
     m_frontLeft = new SwerveModule(
       kFrontLeftDriveMotorID,
       kFrontLeftSteerMotorID,
@@ -128,7 +127,7 @@ public class Drivetrain extends SubsystemBase {
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-        new PIDConstants(4., 0.0, 0.), // Translation PID constants
+        new PIDConstants(5., 0.0, 0.), // Translation PID constants
         new PIDConstants(2, 0.0, 0.0), // Rotation PID constants
         kMaxSpeedMetersPerSecond, // Max module speed, in m/s
         0.3429, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -147,6 +146,9 @@ public class Drivetrain extends SubsystemBase {
       SmartDashboard.putBoolean("init-RED?", DriverStation.getAlliance().get() == Alliance.Red);
       if (DriverStation.getAlliance().get() == Alliance.Red) {
         setFieldPosition(new Pose2d(new Translation2d(kFieldX-1, kFieldY/2), new Rotation2d(Math.PI)));
+        setLimelightTargetID(4.);
+      } else {
+        setLimelightTargetID(7.);
       }
     }
 
@@ -232,10 +234,13 @@ public class Drivetrain extends SubsystemBase {
     // }
     // field.setRobotPose(getFieldPosition());
     // SmartDashboard.putData(field);
+    SmartDashboard.putNumber("PriorityID", getPriorityID());
     SmartDashboard.putString("Field Position", getFieldPosition().toString());
-    SmartDashboard.putNumber("DisToSpeaker", getDistanceToSpeaker());
+    SmartDashboard.putNumber("DisToSpeakerOdometry", getDistanceToSpeaker());
+    SmartDashboard.putBoolean("TV", getTV());
     if (getTV()) {
       SmartDashboard.putNumber("DisToSpeakerAT", getDistanceToSpeakerAprilTag());
+      SmartDashboard.putNumber("DisToSpeakerAngle", getDistanceToSpeakerAprilTagAngles());
     }
 
   }
@@ -300,6 +305,10 @@ public class Drivetrain extends SubsystemBase {
 
   public double getTID() {
     return m_limelight.getEntry("tid").getDouble(0.);
+  }
+  
+  public double getPriorityID() {
+    return m_limelight.getEntry("priorityid").getDouble(-9999);
   }
 
   public double[] getBOTPOSE() {
@@ -419,6 +428,14 @@ public class Drivetrain extends SubsystemBase {
   public double getDistanceToSpeakerAprilTag() {
     return Math.sqrt(Math.pow(m_limelight.getEntry("targetpose_cameraspace").getDoubleArray(new Double[0])[2], 2) - Math.pow(Constants.AprilTags.ID7.getZ(), 2));
 
+  }
+
+  public void setLimelightTargetID(Double id) {
+    m_limelight.getEntry("priorityid").setDouble(id);
+  }
+
+  public double getDistanceToSpeakerAprilTagAngles() {
+    return Constants.AprilTags.ID7.getZ() / Math.tan((getTY() + 30.) * Math.PI / 180);
   }
 
   public double getDistanceToSpeaker() {

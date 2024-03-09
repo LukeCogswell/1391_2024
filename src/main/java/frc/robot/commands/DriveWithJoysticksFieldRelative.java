@@ -28,14 +28,11 @@ public class DriveWithJoysticksFieldRelative extends Command {
   Trigger m_faceForwards, fieldRelative;
   Rotation2d offsetDirection;
 
-  boolean m_PIDcontrol, isRed;
+  boolean isRed;
 
   private PIDController turnController = new PIDController(.01, kTurnI, 0.002);
   
   double m_toAngle, m_xSpeed, m_ySpeed, m_thetaSpeed;
-
-  boolean m_holdAngle = false;
-
 
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(kDriveSlewRateLimit);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(kDriveSlewRateLimit);
@@ -66,7 +63,6 @@ public class DriveWithJoysticksFieldRelative extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     double m_precisionFactor = Math.pow(kDrivingPrecisionMultiplier, m_precision.getAsDouble());
     double Y = MathUtil.applyDeadband(m_y.getAsDouble(), kDriveDeadband) * m_precisionFactor;
     double X = MathUtil.applyDeadband( m_x.getAsDouble(), kDriveDeadband) * m_precisionFactor;

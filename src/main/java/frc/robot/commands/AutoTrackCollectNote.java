@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
@@ -41,6 +42,10 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
           () -> driverController.getLeftY(), 
           () -> driverController.getRightX(), 
           () -> driverController.getRightTriggerAxis() 
+          // () -> joystick.getX(), 
+          // () -> joystick.getY(), 
+          // () -> joystick.getX(), 
+          // () -> joystick.getY()
           ),
         new SequentialCommandGroup(
           new InstantCommand(() -> intake.stop(), intake),

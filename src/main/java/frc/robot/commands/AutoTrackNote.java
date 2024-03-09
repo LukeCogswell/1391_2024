@@ -23,7 +23,7 @@ public class AutoTrackNote extends Command {
   private Drivetrain m_drivetrain;
   private Intake m_intake;
   private IntakePivot m_intakePivot;
-  private PIDController rotController = new PIDController(0.05, 0.01, 0.0);
+  private PIDController rotController = new PIDController(0.02, 0.0, 0.0);
   private SlewRateLimiter driveLimiter = new SlewRateLimiter(4/kAccelerationSeconds);
   private Double drive, rot, ty;
   /** Creates a new AutoTrackNote. */
@@ -42,7 +42,6 @@ public class AutoTrackNote extends Command {
   public void initialize() {
     rotController.setSetpoint(0.);
     rotController.setTolerance(10);
-    rotController.setTolerance(10);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -51,9 +50,9 @@ public class AutoTrackNote extends Command {
     if (m_intake.getTV()) {
       ty = (m_intake.getTY() + 25.);
       drive = ty/30.;
-      drive = drive > .3 ? .3 : drive;
+      drive = drive > .5 ? .5 : drive;
       rot = rotController.calculate(m_intake.getTX());
-      rot = MathUtil.clamp(rot, -.3, .3);
+      rot = MathUtil.clamp(rot, -.4, .4);
       if (ty < 20) {
         m_intake.setIntake(0.6);
       }

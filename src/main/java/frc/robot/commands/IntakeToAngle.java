@@ -15,7 +15,7 @@ import static frc.robot.Constants.Intake.*;
 
 public class IntakeToAngle extends Command {
   private IntakePivot m_intakePivot;
-  private Double angle, multiplier;
+  private Double angle, multiplier, MAXDownPWR;
   private PIDController rotController = new PIDController(kIAngleP, kIAngleI, kIAngleD);
   /** Creates a new IntakeToAngle. */
   public IntakeToAngle(IntakePivot intakePivot, Double toAngle) {
@@ -36,13 +36,32 @@ public class IntakeToAngle extends Command {
     } else {
       multiplier = 1.;
     }
+    MAXDownPWR = kMaxDownPower;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    var pwr = -rotController.calculate(m_intakePivot.getIntakeAngle());
-    pwr = MathUtil.clamp(pwr, kMaxDownPower, kMaxUpPower);
+    var ang = m_intakePivot.getIntakeAngle();
+    var pwr = -rotController.calculate(ang);
+
+    if (ang >= 180) {
+      MAXDownPWR = 0.3;
+    }
+    if (ang >= 185) {
+      MAXDownPWR = 0.1;
+    }
+    if (ang >= 210) {
+      MAXDownPWR = 0.01;
+    }
+    if (ang >= 240.) {
+    MAXDownPWR = 0.05;
+    }      
+    SmartDashboard.putNumber("MAXDOWN", MAXDownPWR);
+    pwr = MathUtil.clamp(pwr, -MAXDownPWR, kMaxUpPower);
+    // if (m_intakePivot.getIntakeAngle() <= 200 && angle <=200) {
+    //   pwr = MathUtil.clamp(pwr, 0., 0.2);
+    // }
     SmartDashboard.putNumber("?Power", pwr);
     m_intakePivot.setAngleMotor(pwr * multiplier);
   }

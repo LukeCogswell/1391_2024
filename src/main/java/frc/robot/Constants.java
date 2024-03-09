@@ -60,8 +60,8 @@ public final class Constants {
     public static final double kSourceAngle = 50.; //DEGREES - ANGLE TO INTAKE FROM SOURCE
 
     public static final class PID {
-      public static final double kAngleP = 0.025;
-      public static final double kAngleI = 0.0;
+      public static final double kAngleP = 0.036;
+      public static final double kAngleI = 0.003;
       public static final double kAngleD = 0.0;
 
     }
@@ -71,17 +71,17 @@ public final class Constants {
       public static final Double[] entry0 =  {.5 , 84.06};
       public static final Double[] entry1 =  {1. , 59.58};
       public static final Double[] entry2 =  {2. , 43.00};
-      public static final Double[] entry3 =  {3. , 35.50};
-      public static final Double[] entry4 =  {4. , 26.1};
-      public static final Double[] entry5 =  {5. , 21.5};
-      public static final Double[] entry6 =  {6. , 22.15};
+      public static final Double[] entry3 =  {3. , 33.50};
+      public static final Double[] entry4 =  {4. , 27.1};
+      public static final Double[] entry5 =  {5. , 22.};
+      public static final Double[] entry6 =  {6. , 19.65};
       public static final Double[] entry7 =  {7. , 17.64};
       public static final Double[] entry8 =  {8. , 15.64};
       public static final Double[] entry9 =  {9. , 14.02};
       public static final Double[] entry10 = {10., 13.80};
       public static final Double[] entry11 = {11., 13.00};
     }
-    
+
     public static final class RangeTable {
       public static final Double[] entry0 = {.5, 80.06};
       public static final Double[] entry1 = {1., 63.58};
@@ -101,25 +101,25 @@ public final class Constants {
   public static final class Intake {
     public static final double kIntakeEncoderOffset = 0.;
     public static final double kEncoderGearRatio = 1;
-    public static final double kMinRotation = 265.0;  // DEGREES
+    public static final double kMinRotation = 264.0;  // DEGREES
     public static final double kMaxRotation = 181.0; // DEGREES
 
-    public static final double kMaxDownPower = -0.5;
+    public static final double kMaxDownPower = 1;
     public static final double kMaxUpPower = 0.6;
 
     public static final class PID {
       public static final double kIAngleP = 0.01;
       public static final double kIAngleI = 0.0;
-      public static final double kIAngleD = 0.001;
+      public static final double kIAngleD = 0.00;
     }
   }
 
   public static final class Elevator {
     public static final double kMotorRotationsToMeters = 0.008; // 8 mm per revolution
-    public static final double kMaxHeight = 6.5;
+    public static final double kMaxHeight = 8.;
     public static final double kMinHeight = 0.03;
 
-    public static final double kStallPower = 0.002;
+    public static final double kStallPower = 0.008;
 
     public static final double kTransferHeight = 0.03;
 
@@ -170,11 +170,11 @@ public final class Constants {
     public static final double kDrivingPrecisionMultiplier = 0.3;
     public static final double kSpeedMultiplier = 1; // limits robot speed
     public static final double kRotationSpeedMultiplier = 0.6;
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.1; //0.05
     public static final double kAutoDriveSpeedLimiter = 1.;
 
     public static final double kDriveSlewRateLimit = 50.;
-    public static final double kthetaSlewRateLimit = 75.;
+    public static final double kthetaSlewRateLimit = 200.;
 
     public static final double kMaxVoltage = 13.0;
     public static final double kAccelerationSeconds = 0.2; // 0.5 seconds to reach full speed

@@ -16,11 +16,13 @@ import frc.robot.subsystems.*;
 import static frc.robot.Constants.Elevator.*;
 import static frc.robot.Constants.Intake.*;
 import static frc.robot.Constants.LEDs.kConfidentShotRange;
+import static frc.robot.Constants.MeasurementConstants.kFieldX;
 import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Constants.OIConstants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -34,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -61,9 +64,10 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
-      new CommandXboxController(kDriverControllerPort);
+    new CommandXboxController(kDriverControllerPort);
+
   private final CommandXboxController m_operatorController =
-      new CommandXboxController(kOperatorControllerPort);
+    new CommandXboxController(1);
       
       /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -94,9 +98,14 @@ public class RobotContainer {
         )
     );
     
-    m_shooter.setDefaultCommand(new RevShooter(m_drivetrain, m_shooter,  m_loader));
+    // m_shooter.setDefaultCommand(new RevShooter(m_drivetrain, m_shooter,  m_loader));
 
     // m_shooter.setDefaultCommand(new RunCommand(() -> m_shooter.stopShooter(), m_shooter));
+
+    m_shooter.setDefaultCommand(new RunCommand(
+      () -> {
+        m_shooter.setShooterSpeed(m_loader.hasNoteInShooter() ? 2000. : 0.);
+      }, m_shooter));
 
     // m_turret.setDefaultCommand(new SetTurretAngle(m_turret, kTransferAngle));
 
@@ -106,7 +115,7 @@ public class RobotContainer {
 
     m_intakePivot.setDefaultCommand(new IntakePivotDefault(m_intakePivot));
 
-    // m_intakePivot.setDefaultCommand(new RunCommand(() -> m_intakePivot.setAngleMotor(0.008),  m_intakePivot));
+    // m_intakePivot.setDefaultCommand(new RunCommand(() -> m_intakePivot.setAngleMotor(0.00),  m_intakePivot));
 
     // m_intakePivot.setDefaultCommand(new IntakeToAngle(m_intakePivot, kMaxRotation));
 
@@ -135,7 +144,9 @@ public class RobotContainer {
     
     /********   DRIVER  CONTROLS   ********/
         
-    m_driverController.leftTrigger().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0., m_LEDs));
+    m_driverController.start().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(1.)));
+
+    // m_driverController.leftTrigger().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0., m_LEDs));
 
     m_driverController.rightBumper().whileTrue(
       new DriveWithJoysticksRobotRelative(
@@ -145,55 +156,14 @@ public class RobotContainer {
         () -> m_driverController.getRightX()
         )
     );
+
+    m_driverController.x().whileTrue(new SequentialCommandGroup(
+      new ParallelDeadlineGroup(
+        new AutoTrackNote(m_drivetrain, m_intake, m_intakePivot),
+        new IntakeToAngle(m_intakePivot, kMinRotation)),
+      new IntakeToAngle(m_intakePivot, kMaxRotation).until(() -> m_intakePivot.getIntakeAngle() <= 250.)));
     
-    // m_driverController.leftBumper().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2750., 10.));
-    // m_driverController.leftBumper().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
-
-    // m_driverController.leftBumper().whileTrue(
-    //   new ParallelCommandGroup(
-    //     new TrackWhileMoving(m_drivetrain, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()),
-    //     new RevShooter(m_drivetrain, m_shooter, m_loader),
-    //     new AimAtSpeaker(m_turret, m_drivetrain)
-    //     )
-    // );
-    // m_driverController.leftBumper().whileTrue(
-    // new ConditionalCommand(
-    //   new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader),  
-    //   new AutoCollect(m_intakePivot, m_intake, m_turret, m_loader),
-    //   () -> m_intake.hasNoteInIntake()
-    //   ))
-    // .onFalse(new InstantCommand(() -> {
-    //   m_intake.setIntake(0.);
-    //   m_shooter.setShooterSpeed(0.);
-    //   m_loader.setLoaderMotor(0.);
-    // }));
-  
-  
-    m_operatorController.a().whileTrue(new ParallelCommandGroup(
-      new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676 * 0.5, 60.),
-      new IntakeToAngle(m_intakePivot, kMinRotation)));
-    // m_driverController.a().whileTrue(new ShootAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_elevator).unless(() -> !m_loader.hasNoteInShooter()))
-    // .onFalse(new ElevatorToHeight(m_elevator, kMinHeight));
-  
-    // m_driverController.b().whileTrue(new CollectFromSource(m_drivetrain, m_turret, m_shooter, m_loader, m_elevator).unless(() -> m_loader.hasNoteInShooter())) 
-    // // TODO: TUNE THIS
-    //   .onFalse(new InstantCommand(() -> {}, m_loader, m_shooter, m_turret));
-
-    // m_driverController.b().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(0.9), m_loader));
-
-    m_driverController.x().whileTrue(new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController).until(() -> m_loader.hasNoteInShooter())
-    .andThen(new ParallelCommandGroup(
-      new TrackWhileMoving(m_drivetrain, () -> m_driverController.getLeftX(), () -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()),
-      new RevShooter(m_drivetrain, m_shooter, m_loader),
-      new AimAtSpeaker(m_turret, m_drivetrain)
-      ).unless(() -> m_loader.hasNoteInShooter())))
-      .onFalse(new InstantCommand(() -> {
-      m_shooter.setShooterSpeed(0.);
-      m_loader.setLoaderMotor(0.);
-      m_intake.setIntake(0.);
-      }, m_intake, m_shooter, m_turret, m_loader));
-    
-    m_driverController.povUp().whileTrue(new ParallelCommandGroup(new SequentialCommandGroup(
+    m_driverController.y().whileTrue(new ParallelCommandGroup(new SequentialCommandGroup(
       new RunCommand(() -> {
         m_shooter.setLeftShooterSpeed(-3000.);
         m_shooter.setRightShooterSpeed(-2000.);
@@ -206,28 +176,7 @@ public class RobotContainer {
     ),
     new SetTurretAngle(m_turret, kSourceAngle)));
 
-
-    // m_driverController.povUp().whileTrue(
-    //   m_drivetrain.getCommandToPathfindToPoint(DriverStation.getAlliance().get()==Alliance.Blue ? Blue.Source: Red.Source, 0.)
-    //   .until(() -> m_drivetrain.getTV())
-    // .andThen(new ConditionalCommand(
-    //   new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController), 
-    //   new CollectFromSource(m_drivetrain, m_turret, m_shooter, m_loader, m_elevator),
-    //   () -> m_intake.getTV())) //TODO: TEST CONDITION FOR SOURCE PATHFINDING
-    //   );
-    
-    // m_driverController.povDown().whileTrue(
-    //   // TODO: TEST THIS
-    //   m_drivetrain.getCommandToPathfindToPoint(DriverStation.getAlliance().get()==Alliance.Blue ? Blue.Speaker: Red.Speaker, 0.)
-    //   .until(() -> m_drivetrain.getDistanceToSpeaker() <= kConfidentShotRange).unless(() -> !m_loader.hasNoteInShooter())
-    //   .andThen(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 1.).unless(() -> !m_loader.hasNoteInShooter()))
-    //   );
-    // m_driverController.povUp().whileTrue(new RunCommand(() -> m_elevator.setElevator(0.2), m_elevator));
-
-    // m_driverController.povDown().whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.2), m_elevator));
-
-    m_driverController.y().whileTrue(new AutoCollect(m_intakePivot, m_intake, m_turret, m_loader));
-    m_driverController.povDown().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
+    m_driverController.povDown().onTrue(new InstantCommand(() -> m_drivetrain.setLimelightTargetID(7.)));
 
     m_driverController.povLeft().whileTrue(new RunCommand(() -> {
       m_intake.setIntake(-0.4);
@@ -243,37 +192,27 @@ public class RobotContainer {
       m_intake.setIntake(0.);
       m_loader.stop();}, m_intake, m_loader));
       
-    m_driverController.back().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(m_drivetrain.getFieldPosition().getX(), m_drivetrain.getFieldPosition().getY(), new Rotation2d(DriverStation.getAlliance().get()==Alliance.Blue ? 0. : Math.PI)))));
-    // m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
 
+    m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 50.));
+    m_driverController.leftTrigger().whileTrue(new SetTurretAngle(m_turret, 20.));
+    // m_driverController.back().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(m_drivetrain.getFieldPosition().getX(), m_drivetrain.getFieldPosition().getY(), new Rotation2d(DriverStation.getAlliance().get()==Alliance.Blue ? 0. : Math.PI)))));
+    
+    // m_driverController.start().whileTrue(new ElevatorToHeight(m_elevator, kMaxHeight));
     // m_driverController.back().whileTrue(new ElevatorToHeight(m_elevator, kMinHeight));
     
     /*********  END DRIVER CONTROLS  *********/
     /*-------------------------------------------------- */
     /*********   OPERATOR CONTROLS   *********/
 
-    m_operatorController.back().whileTrue(new RunCommand(() -> m_shooter.setShooterSpeed(5676.)));
+    m_operatorController.rightBumper().whileTrue(new PrepToShootFromSetpoint(3500., 50., DriverStation.getAlliance().get() == Alliance.Blue ? -30. : -180 + 30, m_drivetrain, m_shooter, m_turret, m_loader,
+      m_driverController.leftBumper(), () -> m_driverController.getLeftX(),() -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
-    m_operatorController.leftTrigger().whileTrue(
-        new ShootWhenClose(m_drivetrain, m_shooter, m_turret, m_loader, 
-        //ZEROS ACT AS SHOOT WHILE STILL INSTEAD OF WHILE MOVING
-        // () -> 0.,
-        // () -> 0.,
-        // () -> 0.
-        () -> m_driverController.getLeftX(), 
-        () -> m_driverController.getLeftY(), 
-        () -> m_driverController.getRightTriggerAxis()
-        )
-      );
-
-    m_operatorController.leftBumper().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0., m_LEDs));
-
-    m_operatorController.rightBumper().whileTrue(AutoBuilder.followPath(PathPlannerPath.fromPathFile("PS3-IS3")));
-
+    m_operatorController.back().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2500., -25.));
+    
+    m_operatorController.start().whileTrue(new DepositInAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_driverController.leftBumper()));
+    
     m_operatorController.axisGreaterThan(1, 0.4).whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.3), m_elevator));
     m_operatorController.axisLessThan(1, -0.4).whileTrue(new RunCommand(() -> m_elevator.setElevator(0.3), m_elevator));
-
-    m_operatorController.start().whileTrue(new RunCommand(() -> m_climber.runClimber(0.5), m_climber));
 
     m_operatorController.povLeft().whileTrue(new RunCommand(() -> m_turret.setAngleMotor(0.3), m_turret)).onFalse(new RunCommand(() -> m_turret.stop(), m_turret));
     m_operatorController.povRight().whileTrue(new RunCommand(() -> m_turret.setAngleMotor(-0.3), m_turret)).onFalse(new RunCommand(() -> m_turret.stop(), m_turret));
@@ -281,33 +220,35 @@ public class RobotContainer {
     m_operatorController.povUp().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(0.3), m_intakePivot));
     m_operatorController.povDown().whileTrue(new RunCommand(() -> m_intakePivot.setAngleMotor(-0.3), m_intakePivot));
 
-    // m_operatorController.b().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(0.8), m_loader));
+    m_operatorController.x().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
     
-    // m_operatorController.a().whileTrue(new ParallelCommandGroup(
-    //   new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 5676 * 0.5, 85.),
-    //   new IntakeToAngle(m_intakePivot, kMinRotation)));
-    
-    m_operatorController.x().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(-0.4), m_loader));
-
-    // m_operatorController.y().whileTrue(new SetTurretAngle(m_turret, 80.));
-
-    // m_operatorController.back().whileTrue(new ConditionalCommand(
-    //     new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0.),
-    //     new ParallelDeadlineGroup(
-    //       new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader),
-    //       new RevShooter(m_drivetrain, m_shooter, m_loader)).andThen(
-    //         new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0.)).unless(() -> !m_intake.hasNoteInIntake()), 
-    //     () -> m_loader.hasNoteInShooter()));
+    m_operatorController.a().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.5, 60., m_driverController.leftBumper()));
+    m_operatorController.b().whileTrue(new PrepToShootFromSetpoint(
+      5676 * 0.75,
+      35.,
+      DriverStation.getAlliance().get() == Alliance.Blue ? -30 : (-180 + 30.),
+      m_drivetrain, m_shooter, m_turret, m_loader,
+      m_driverController.leftBumper(), 
+      () -> m_driverController.getLeftX(), 
+      () -> m_driverController.getLeftY(), 
+      () -> m_driverController.getRightTriggerAxis()));
+    m_operatorController.y().whileTrue(new PrepToShootFromSetpoint(
+      5676 * 1.,
+      22.5,
+      DriverStation.getAlliance().get() == Alliance.Blue ? 0. : 180.,
+      m_drivetrain, m_shooter, m_turret, m_loader,
+      m_driverController.leftBumper(), 
+      () -> m_driverController.getLeftX(), 
+      () -> m_driverController.getLeftY(), 
+      () -> m_driverController.getRightTriggerAxis()));
     
     /********* END OPERATOR CONTROLS *********/
     /*-------------------------------------------------- */
     /*********   TESTING  CONTROLS   *********/
-
-    m_operatorController.a().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.5, 60., m_driverController.leftBumper()));
-    m_operatorController.b().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.75, 34., m_driverController.leftBumper()));
-    m_operatorController.y().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 1., 22., m_driverController.leftBumper()));
-
-
+    
+    
+    // m_operatorController.y().whileTrue(new SetTurretAngle(m_turret, 80.));
+    
 
 
     // m_driverController.y().whileTrue(new AutoTrackCollectNote(m_elevator, m_drivetrain, m_intake, m_intakePivot, m_loader, m_turret, m_shooter, m_driverController));

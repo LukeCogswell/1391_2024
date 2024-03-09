@@ -7,15 +7,18 @@ package frc.robot.commands;
 
 import static frc.robot.Constants.Shooter.kAmpAngle;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.wpilibj.DriverStation;
+// import edu.wpi.first.wpilibj.DriverStation.Alliance;
+// import edu.wpi.first.wpilibj2.command.InstantCommand;
+// import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.PathfindingPoints.Red;
-import frc.robot.Constants.PathfindingPoints.Blue;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+// import frc.robot.Constants.PathfindingPoints.Red;
+// import frc.robot.Constants.PathfindingPoints.Blue;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -27,28 +30,27 @@ import frc.robot.subsystems.Turret;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DepositInAmp extends SequentialCommandGroup {
-  private Pose2d ampPoint = Red.Amp;
+  // private Pose2d ampPoint = Red.Amp;
   /** Creates a new DepositInAmp. */
-  public DepositInAmp(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator) {
+  public DepositInAmp(Drivetrain drivetrain, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator, Trigger shootButton) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      new InstantCommand(() -> {
-        if (DriverStation.getAlliance().isPresent()) {
-          if (DriverStation.getAlliance().get() == Alliance.Red) {
-            ampPoint = Red.Amp;
-          } else {
-            ampPoint = Blue.Amp;
-          }
-        }
-      }),
-      new ParallelCommandGroup(
-        new DriveToPoint(drivetrain, ampPoint).withTimeout(1.5),
-        new WaitCommand(0.3).andThen(new ElevatorToHeight(elevator, 7.)),
-        new SetTurretAngle(turret, kAmpAngle).until(() -> (turret.getShooterAngle() - kAmpAngle) <= 0.5 && elevator.getElevatorHeightR() >= 6.8),
-        new WaitCommand(0.5).andThen(new InstantCommand(() -> shooter.setShooterSpeed(3000.)))),
-      new ShootNoteAtSpeedAndAngle(shooter, turret, loader, 3000., kAmpAngle)
+      // new InstantCommand(() -> {
+      //   if (DriverStation.getAlliance().isPresent()) {
+      //     if (DriverStation.getAlliance().get() == Alliance.Red) {
+      //       ampPoint = Red.Amp;
+      //     } else {
+      //       ampPoint = Blue.Amp;
+      //     }
+      //   }
+      // }),
+      new ParallelDeadlineGroup(
+        new ShootSpeedAngleWithControl(shooter, turret, loader, 2000., kAmpAngle, shootButton),
+        new ElevatorToHeight(elevator, 7.5)),
+      new ElevatorToHeight(elevator, 0.1)
+        // new DriveToPoint(drivetrain, ampPoint).withTimeout(1.5),
     );
   }
 }
