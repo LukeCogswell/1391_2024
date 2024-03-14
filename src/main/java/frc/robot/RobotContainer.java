@@ -58,7 +58,7 @@ public class RobotContainer {
   public final Loader m_loader = new Loader();
   public final Elevator m_elevator = new Elevator();
   public final Turret m_turret = new Turret();
-  public final Climber m_climber = new Climber();
+  // public final Climber m_climber = new Climber();
   public final LEDs m_LEDs = new LEDs();
   private final SendableChooser<Command> autoChooser;
 
@@ -82,7 +82,7 @@ public class RobotContainer {
     autoChooser.addOption("Start_Source_End_15_14", Autos.Start_Source_End_15_14(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
     autoChooser.addOption("Start_Source_End_14_13", Autos.Start_Source_End_14_13(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
     autoChooser.addOption("Start_1_End_Upstage", Autos.Start_1_End_Upstage(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
-    autoChooser.addOption("Start_3_End_2_1_12", Autos.Start_3_End_2_1_12(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
+    autoChooser.addOption("Start_3_End_2_1_11", Autos.Start_3_End_2_1_11(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
     autoChooser.addOption("Start_3_End_13_14_15", Autos.Start_3_End_13_14_15(m_drivetrain, m_intakePivot, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_LEDs));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -120,16 +120,16 @@ public class RobotContainer {
 
     // m_intakePivot.setDefaultCommand(new IntakeToAngle(m_intakePivot, kMaxRotation));
 
-    m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 10.));
+    m_turret.setDefaultCommand(new SetTurretAngle(m_turret, 13.));
     // m_turret.setDefaultCommand(new RunCommand(() -> m_turret.stop(), m_turret));
 
     m_loader.setDefaultCommand(new RunCommand(() -> m_loader.setLoaderMotor(0.), m_loader));
 
     m_elevator.setDefaultCommand(new RunCommand(() -> m_elevator.setElevator(kStallPower), m_elevator));
 
-    m_LEDs.setDefaultCommand(new LEDDefault(m_LEDs, m_drivetrain, m_intake, m_loader));
+    m_LEDs.setDefaultCommand(new LEDDefault(m_LEDs, m_drivetrain, m_intake, m_loader, m_turret));
 
-    m_climber.setDefaultCommand(new RunCommand(() -> m_climber.runClimber(0.), m_climber));
+    // m_climber.setDefaultCommand(new RunCommand(() -> m_climber.runClimber(0.), m_climber));
   }
 
   /**
@@ -147,7 +147,7 @@ public class RobotContainer {
         
     m_driverController.start().whileTrue(new RunCommand(() -> m_loader.setLoaderMotor(1.)));
 
-    m_driverController.leftTrigger().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0., m_LEDs));
+    m_driverController.leftBumper().whileTrue(new ShootWhileMoving(m_drivetrain, m_shooter, m_turret, m_loader, () -> 0., () -> 0., () -> 0., m_LEDs));
 
     m_driverController.rightBumper().whileTrue(
       new DriveWithJoysticksRobotRelative(
@@ -177,11 +177,11 @@ public class RobotContainer {
     ),
     new SetTurretAngle(m_turret, kSourceAngle)));
 
-    m_driverController.povDown().onTrue(new InstantCommand(() -> m_drivetrain.setLimelightTargetID(7.)));
+    // m_driverController.povDown().onTrue(new InstantCommand(() -> m_drivetrain.setLimelightTargetID(7.)));
 
     m_driverController.povLeft().whileTrue(new RunCommand(() -> {
       m_intake.setIntake(-0.4);
-      m_loader.setLoaderMotor(-0.8);
+      m_loader.setLoaderMotor(-1.);
     }, m_intake, m_loader)).onFalse(new InstantCommand(() ->{
       m_intake.setIntake(0.);
       m_loader.stop();}, m_intake, m_loader));
@@ -195,6 +195,7 @@ public class RobotContainer {
       
 
     m_driverController.povUp().whileTrue(new SetTurretAngle(m_turret, 50.));
+    m_driverController.povDown().whileTrue(new ElevatorToHeight(m_elevator, 6.));
     // m_driverController.leftTrigger().whileTrue(new SetTurretAngle(m_turret, 20.));
     // m_driverController.back().onTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(m_drivetrain.getFieldPosition().getX(), m_drivetrain.getFieldPosition().getY(), new Rotation2d(DriverStation.getAlliance().get()==Alliance.Blue ? 0. : Math.PI)))));
     
@@ -205,13 +206,13 @@ public class RobotContainer {
     /*-------------------------------------------------- */
     /*********   OPERATOR CONTROLS   *********/
 
-    m_operatorController.rightBumper().whileTrue(new PrepToShootFromSetpoint(3500., 50., DriverStation.getAlliance().get() == Alliance.Blue ? -30. : -180 + 30, m_drivetrain, m_shooter, m_turret, m_loader,
-      m_driverController.leftBumper(), () -> m_driverController.getLeftX(),() -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
+    m_operatorController.rightBumper().whileTrue(new PrepToShootFromSetpoint(3500., 50., DriverStation.getAlliance().get() == Alliance.Blue ? -30. : -180 + 30, m_drivetrain, m_shooter, m_turret, m_loader, m_LEDs, 
+      m_driverController.leftTrigger(), () -> m_driverController.getLeftX(),() -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
     // m_operatorController.back().whileTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 2, 7, new Rotation2d(Math.PI)))).andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile("STRAIGHT"))));
-    m_operatorController.back().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2500., -25.));
+    m_operatorController.back().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2500., -27.));
     
-    m_operatorController.start().whileTrue(new DepositInAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_driverController.leftBumper()));
+    m_operatorController.start().whileTrue(new DepositInAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_driverController.leftTrigger()));
     
     m_operatorController.axisGreaterThan(1, 0.4).whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.3), m_elevator));
     m_operatorController.axisLessThan(1, -0.4).whileTrue(new RunCommand(() -> m_elevator.setElevator(0.3), m_elevator));
@@ -224,22 +225,24 @@ public class RobotContainer {
 
     m_operatorController.x().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
     
-    m_operatorController.a().whileTrue(new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.5, 60., m_driverController.leftBumper()));
+    m_operatorController.a().whileTrue(new ParallelCommandGroup(
+      new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.6, 52., m_driverController.leftTrigger()),
+      new IntakeToAngle(m_intakePivot, 210.)));
     m_operatorController.b().whileTrue(new PrepToShootFromSetpoint(
       5676 * 0.75,
-      35.,
-      DriverStation.getAlliance().get() == Alliance.Blue ? -30 : (-180 + 30.),
-      m_drivetrain, m_shooter, m_turret, m_loader,
-      m_driverController.leftBumper(), 
+      31.,
+      DriverStation.getAlliance().get() == Alliance.Blue ? -31 : (-180 + 31.),
+      m_drivetrain, m_shooter, m_turret, m_loader, m_LEDs, 
+      m_driverController.leftTrigger(), 
       () -> m_driverController.getLeftX(), 
       () -> m_driverController.getLeftY(), 
       () -> m_driverController.getRightTriggerAxis()));
     m_operatorController.y().whileTrue(new PrepToShootFromSetpoint(
       5676 * 1.,
-      22.5,
+      17.5,
       DriverStation.getAlliance().get() == Alliance.Blue ? 0. : 180.,
-      m_drivetrain, m_shooter, m_turret, m_loader,
-      m_driverController.leftBumper(), 
+      m_drivetrain, m_shooter, m_turret, m_loader, m_LEDs,
+      m_driverController.leftTrigger(), 
       () -> m_driverController.getLeftX(), 
       () -> m_driverController.getLeftY(), 
       () -> m_driverController.getRightTriggerAxis()));

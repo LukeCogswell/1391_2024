@@ -51,17 +51,17 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingRotationAdjustmentMultiplier = 1.75; //
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
-    public static final double kAngleEncoderOffset = 14.27+68.5 - 178 +53;
+    public static final double kAngleEncoderOffset = -42.23-34.5+109;
     public static final double kMaxSpeedRPM = 5676;
     public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
 
-    public static final double kAmpAngle = -30.;
-    public static final double kTransferAngle = 15.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kAmpAngle = -25.;
+    public static final double kTransferAngle = 20.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
     public static final double kSourceAngle = 50.; //DEGREES - ANGLE TO INTAKE FROM SOURCE
 
     public static final class PID {
-      public static final double kAngleP = 0.036;
-      public static final double kAngleI = 0.003;
+      public static final double kAngleP = 0.045;
+      public static final double kAngleI = 0.0;
       public static final double kAngleD = 0.0;
 
     }
@@ -69,13 +69,13 @@ public final class Constants {
 
     public static final class RangeTableAprilTag {
       public static final Double[] entry0 =  {.5 , 84.06};
-      public static final Double[] entry1 =  {1. , 59.58};
+      public static final Double[] entry1 =  {1. , 53.00};
       public static final Double[] entry2 =  {2. , 43.00};
-      public static final Double[] entry3 =  {3. , 33.50};
-      public static final Double[] entry4 =  {4. , 27.1};
-      public static final Double[] entry5 =  {5. , 22.};
-      public static final Double[] entry6 =  {6. , 19.65};
-      public static final Double[] entry7 =  {7. , 17.64};
+      public static final Double[] entry3 =  {3. , 31.50};
+      public static final Double[] entry4 =  {4. , 27.10};
+      public static final Double[] entry5 =  {5. , 18.75};
+      public static final Double[] entry6 =  {6. , 16.50};
+      public static final Double[] entry7 =  {7. , 16.00};
       public static final Double[] entry8 =  {8. , 15.64};
       public static final Double[] entry9 =  {9. , 14.02};
       public static final Double[] entry10 = {10., 13.80};

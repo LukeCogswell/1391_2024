@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,6 +14,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Loader;
+import frc.robot.subsystems.Turret;
 
 import static frc.robot.Constants.CANConstants.CANivoreID;
 import static frc.robot.Constants.LEDs.*;
@@ -24,13 +26,15 @@ public class LEDDefault extends Command {
   private Drivetrain m_drivetrain;
   private Intake m_intake;
   private Loader m_loader;
+  private Turret m_turret;
   Color allianceColor;
   /** Creates a new LEDDefault. */
-  public LEDDefault(LEDs leds, Drivetrain drivetrain, Intake intake, Loader loader) {
+  public LEDDefault(LEDs leds, Drivetrain drivetrain, Intake intake, Loader loader, Turret turret) {
     m_leds = leds;
     m_drivetrain = drivetrain;
     m_intake = intake;
     m_loader = loader;
+    m_turret = turret;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(leds);
   }
@@ -50,10 +54,18 @@ public class LEDDefault extends Command {
   public void execute() {
     if (m_loader.hasNoteInShooter()) {
       //IF WE HAVE A NOTE IN THE SHOOTER, SET MORE LEDS THE CLOSER WE ARE IN A CERTAIN RANGE, IF WE SEE AN APRILTAG USE WHITE INSTEAD OF GREEN
-      var percent = m_drivetrain.getDistanceToSpeaker() <= kConfidentShotRange ? 1 :
-        1 - ((m_drivetrain.getDistanceToSpeaker() - kConfidentShotRange) / (kMaxShotRange-kConfidentShotRange));
-      percent = MathUtil.clamp(percent, 0., 1.);
-      m_leds.setPercent(percent, m_drivetrain.getTV() ? Color.kWhite : Color.kGreen);
+      if (m_drivetrain.getTV()) {
+        var percent = m_drivetrain.getDistanceToSpeaker() <= kConfidentShotRange ? 1 :
+          1 - ((m_drivetrain.getDistanceToSpeakerAprilTagAngle() - kConfidentShotRange) / (kMaxShotRange-kConfidentShotRange));
+        percent = MathUtil.clamp(percent, 0., 1.);
+        m_leds.setPercent(percent, m_drivetrain.getTV() ? Color.kWhite : Color.kGreen);
+      } else {
+        if (Timer.getFPGATimestamp() % 0.3 <= 0.15) {
+          m_leds.set(Color.kGreen);
+        } else {
+          m_leds.set(Color.kBlack);
+        }
+      }
     } else {
       //IF BLOCK FOR BOTTOM HALF OF LEDS - INTAKE STATUS
       if (m_intake.hasNoteInIntake()) {
@@ -64,10 +76,10 @@ public class LEDDefault extends Command {
         m_leds.setBottomHalf(Color.kBlack);
       }
       //IF BLOCK FOR TOP HALF OF LEDS - APRILTAG LIMELIGHT STATUS
-      if (m_drivetrain.getTV()) {
-        m_leds.setTopHalf(Color.kWhite);
+      if (m_turret.getShooterAngle() <= 19.) {
+        m_leds.setTopHalf(Color.kGreen);
       } else {
-        m_leds.setTopHalf(Color.kBlack);
+        m_leds.setTopHalf(Color.kRed);
       }
     }
   m_leds.start(); 

@@ -48,7 +48,8 @@ public class AutoTrackNote extends Command {
   @Override
   public void execute() {
     if (m_intake.getTV()) {
-      ty = (m_intake.getTY() + 25.);
+      ty = (m_intake.getTY());
+      ty = ty<0 ? 0 : ty;
       drive = ty/30.;
       drive = drive > .5 ? .5 : drive;
       rot = rotController.calculate(m_intake.getTX());

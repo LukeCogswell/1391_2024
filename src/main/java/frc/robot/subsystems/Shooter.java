@@ -20,8 +20,8 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public Shooter() {
-    m_shooterMotorRight.setInverted(false); //false for big shooter
-    m_shooterMotorLeft.setInverted(true);
+    m_shooterMotorRight.setInverted(true); //false for big shooter
+    m_shooterMotorLeft.setInverted(false);
     m_shooterMotorLeft.getEncoder().setVelocityConversionFactor(1.);
     m_shooterMotorRight.getEncoder().setVelocityConversionFactor(1.);
     m_shooterMotorLeft.burnFlash();
@@ -33,6 +33,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Left Shooter Speed", getLeftShooterSpeed());
     SmartDashboard.putNumber("Right Shooter Speed", getRightShooterSpeed());
     SmartDashboard.putNumber("Left Shooter Current", m_shooterMotorLeft.getOutputCurrent());
+    SmartDashboard.putNumber("Right Shooter Current", m_shooterMotorRight.getOutputCurrent());
     // This method will be called once per scheduler run
   }
 

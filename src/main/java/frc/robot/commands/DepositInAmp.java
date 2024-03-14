@@ -47,8 +47,12 @@ public class DepositInAmp extends SequentialCommandGroup {
       //   }
       // }),
       new ParallelDeadlineGroup(
+        new ElevatorToHeight(elevator, 6.5),
+        new SetTurretAngle(turret, 50.)
+        ).withTimeout(0.5),
+      new ParallelDeadlineGroup(
         new ShootSpeedAngleWithControl(shooter, turret, loader, 2000., kAmpAngle, shootButton),
-        new ElevatorToHeight(elevator, 7.5)),
+        new ElevatorToHeight(elevator, 6.5)),
       new ElevatorToHeight(elevator, 0.1)
         // new DriveToPoint(drivetrain, ampPoint).withTimeout(1.5),
     );

@@ -10,9 +10,11 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Loader;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
@@ -32,6 +34,7 @@ public class PrepToShootFromSetpoint extends Command {
   private Shooter m_shooter;
   private Turret m_turret;
   private Loader m_loader;
+  private LEDs m_leds;
 
   private Double shotSpeed, angle, m_xSpeed, m_ySpeed, rotSetpoint, rot;
 
@@ -46,11 +49,12 @@ public class PrepToShootFromSetpoint extends Command {
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(kDriveSlewRateLimit);
   private final SlewRateLimiter m_thetaLimiter = new SlewRateLimiter(kthetaSlewRateLimit);
 
-  public PrepToShootFromSetpoint(Double speed, Double Angle, Double rotation, Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, Trigger shootingTrigger, DoubleSupplier x_input, DoubleSupplier y_input, DoubleSupplier precision_input) {
+  public PrepToShootFromSetpoint(Double speed, Double Angle, Double rotation, Drivetrain drivetrain, Shooter shooter, Turret turret, Loader loader, LEDs leds, Trigger shootingTrigger, DoubleSupplier x_input, DoubleSupplier y_input, DoubleSupplier precision_input) {
     m_drivetrain = drivetrain;
     m_shooter = shooter;
     m_turret = turret;
     m_loader = loader;
+    m_leds = leds;
     shotSpeed = speed;
     angle = Angle;
     shotTrigger = shootingTrigger;
@@ -103,6 +107,12 @@ public class PrepToShootFromSetpoint extends Command {
 
     SmartDashboard.putBoolean("ShotAngle", angleController.atSetpoint());
     SmartDashboard.putBoolean("ShotSpeed", m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed);
+
+    m_leds.setTopThird(m_shooter.getRightShooterSpeed() >= 0.8 * shotSpeed ? Color.kGreen : Color.kBlack);
+    m_leds.setMiddleThird(angleController.atSetpoint() ? Color.kGreen : Color.kBlack);
+    m_leds.setBottomThird(turnController.atSetpoint() ? Color.kGreen : Color.kBlack);
+
+    m_leds.start();
 
     m_loader.setLoaderMotor(shotTrigger.getAsBoolean() ? 1. : 0.);
 

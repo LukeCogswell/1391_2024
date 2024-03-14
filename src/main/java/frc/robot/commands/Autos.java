@@ -41,6 +41,88 @@ public final class Autos {
     throw new UnsupportedOperationException("This is a utility class!");
   }
 
+  public static Command Start_3_End_2_1_11(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator, LEDs leds) {
+    
+    PathPlannerPath path0 = PathPlannerPath.fromPathFile("PS3-IS3");
+    PathPlannerPath path1 = PathPlannerPath.fromPathFile("S3-E2");
+    PathPlannerPath path2 = PathPlannerPath.fromPathFile("S2-E1");
+    PathPlannerPath path3 = PathPlannerPath.fromPathFile("S1-E11");
+    PathPlannerPath path4 = PathPlannerPath.fromPathFile("S11-EUpstage");
+
+    return Commands.sequence(
+      new InstantCommand(
+        () -> {
+          if (DriverStation.getAlliance().get() == Alliance.Blue){
+            drivetrain.setFieldPosition(new Pose2d(new Translation2d(1.44, 4.54), new Rotation2d(0.)));
+          } else {
+            drivetrain.setFieldPosition(new Pose2d(new Translation2d(kFieldX - 1.44, 4.54), new Rotation2d(Math.PI)));
+          }
+        }
+        ),
+      new ParallelCommandGroup(
+        new RunCommand(() -> shooter.setShooterSpeed(5676.*.75), shooter),
+        new SequentialCommandGroup(
+          new ParallelDeadlineGroup(
+            AutoBuilder.followPath(path0),
+            // new AutoCollect(intakePivot, intake, turret, loader),
+            new ParallelDeadlineGroup(
+              new SequentialCommandGroup(
+                new WaitCommand(.7),
+                new RunCommand(() -> loader.setLoaderMotor(1.), loader).until(() -> !loader.hasNoteInShooter())),
+              new SetTurretAngle(turret, 35.)
+                ).andThen(new AutoCollect(intakePivot, intake, turret, loader))
+              ),
+          new AutoCollect(intakePivot, intake, turret, loader).withTimeout(1.5),
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader).withTimeout(1.5),
+          new ParallelDeadlineGroup(
+            AutoBuilder.followPath(path1),
+            new ParallelDeadlineGroup(
+              new SequentialCommandGroup(
+                new WaitCommand(.5),
+                new RunCommand(() -> loader.setLoaderMotor(1.), loader).until(() -> !loader.hasNoteInShooter())),
+              new SetTurretAngle(turret, 37.)
+              ).andThen(new AutoCollect(intakePivot, intake, turret, loader))
+            ),
+          new AutoCollect(intakePivot, intake, turret, loader).withTimeout(1.5),
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader).withTimeout(1.5),
+          new ParallelDeadlineGroup(
+            AutoBuilder.followPath(path2),
+            new ParallelDeadlineGroup(
+              new SequentialCommandGroup(
+                new WaitCommand(.5),
+                new RunCommand(() -> loader.setLoaderMotor(1.), loader).until(() -> !loader.hasNoteInShooter())),
+              new SetTurretAngle(turret, 37.)
+                ).andThen(new AutoCollect(intakePivot, intake, turret, loader))
+              ),
+          new AutoCollect(intakePivot, intake, turret, loader).withTimeout(1.5),
+          new AutoTransfer(intakePivot, intake, elevator, turret, loader).withTimeout(1.5),
+          new ParallelDeadlineGroup(
+            AutoBuilder.followPath(path3),
+            new ParallelDeadlineGroup(
+              new SequentialCommandGroup(
+                new WaitCommand(.5),
+                new RunCommand(() -> loader.setLoaderMotor(1.), loader).until(() -> !loader.hasNoteInShooter())),
+              new SetTurretAngle(turret, 34.)
+                ).andThen(new AutoCollect(intakePivot, intake, turret, loader))
+              ),
+          new ParallelDeadlineGroup(
+            AutoBuilder.followPath(path4),
+            new SequentialCommandGroup(
+              new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+              new SetTurretAngle(turret, 27.)
+            )
+        ))),
+      new ConditionalCommand(
+          new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds),
+          new ParallelDeadlineGroup(
+            new AutoTransfer(intakePivot, intake, elevator, turret, loader),
+            new RevShooter(drivetrain, shooter, loader)).andThen(
+              new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds)).unless(() -> !intake.hasNoteInIntake()), 
+          () -> loader.hasNoteInShooter())
+    );
+
+  }
+
   public static Command Start_DownSpeakerSWM_End_15_14(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator, LEDs leds) {
     PathPlannerPath path0 = PathPlannerPath.fromPathFile("SDownSpeaker-E15");
     PathPlannerPath path1 = PathPlannerPath.fromPathFile("S15-EDownstage");
@@ -497,102 +579,6 @@ public final class Autos {
       //   () -> loader.hasNoteInShooter())
       // //END SHOOT OR TRANSFER THEN SHOOT ------
     );
-  }
-
-  public static Command Start_3_End_2_1_12(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator, LEDs leds) {
-    
-    PathPlannerPath path0 = PathPlannerPath.fromPathFile("PS3-IS3");
-    PathPlannerPath path1 = PathPlannerPath.fromPathFile("S3-E2");
-    PathPlannerPath path2 = PathPlannerPath.fromPathFile("S2-E1");
-    PathPlannerPath path3 = PathPlannerPath.fromPathFile("S1-E11");
-    PathPlannerPath path4 = PathPlannerPath.fromPathFile("S11-EUpstage");
-
-    return Commands.sequence(
-      new InstantCommand(
-        () -> {
-          if (DriverStation.getAlliance().get() == Alliance.Blue){
-            drivetrain.setFieldPosition(new Pose2d(new Translation2d(1.44, 4.54), new Rotation2d(0.)));
-          } else {
-            drivetrain.setFieldPosition(new Pose2d(new Translation2d(kFieldX - 1.44, 4.54), new Rotation2d(Math.PI)));
-          }
-        }
-        ),
-      new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path0),
-        new SetTurretAngle(turret, 38.63),
-        new RunCommand(() -> shooter.setShooterSpeed(5676.*0.5), shooter)),
-      new ShootNoteAtSpeedAndAngle(shooter, turret, loader, 5676*.5, 38.63),
-      // new ParallelDeadlineGroup(
-      //   new AutoCollect(intakePivot, intake, turret, loader).withTimeout(1.5).until(() -> intake.hasNoteInIntake()),
-      //   new DriveWithJoysticksRobotRelative(drivetrain, () -> 0., () -> -0.3,() -> 0.)  
-      // ),
-      // new AutoTransfer(intakePivot, intake, elevator, turret, loader).withTimeout(1.).until(() -> loader.hasNoteInShooter()),
-      // new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake()))),
-      new AutoCollect(intakePivot, intake, turret, loader).withTimeout(1.),
-      new AutoTransfer(intakePivot, intake, elevator, turret, loader).withTimeout(1.),
-      //SHOOT OR TRANSFER THEN SHOOT ---------
-      // new ConditionalCommand(
-      //   new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds),
-      //   new ParallelDeadlineGroup(
-      //     new AutoTransfer(intakePivot, intake, elevator, turret, loader),
-      //     new RevShooter(drivetrain, shooter, loader)).andThen(
-      //       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds)).unless(() -> !intake.hasNoteInIntake()), 
-      //   () -> loader.hasNoteInShooter()),
-      //END SHOOT OR TRANSFER THEN SHOOT ------
-      new ParallelCommandGroup(
-        AutoBuilder.followPath(path1).until(() -> loader.hasNoteInShooter()),
-        new ShootNoteAtSpeedAndAngle(shooter, turret, loader, 5676 * .5, 42.).until(() -> !loader.hasNoteInShooter())
-        // new RevShooter(drivetrain, shooter, loader).withTimeout(2),
-        // new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake()))
-      ),
-      //SHOOT OR TRANSFER THEN SHOOT ---------
-      // new ConditionalCommand(
-      //   new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds),
-      //   new ParallelDeadlineGroup(
-      //     new AutoTransfer(intakePivot, intake, elevator, turret, loader),
-      //     new RevShooter(drivetrain, shooter, loader)).andThen(
-      //       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds)).unless(() -> !intake.hasNoteInIntake()), 
-      //   () -> loader.hasNoteInShooter()),
-      //END SHOOT OR TRANSFER THEN SHOOT ------
-      new AutoCollect(intakePivot, intake, turret, loader).withTimeout(1.),
-      new AutoTransfer(intakePivot, intake, elevator, turret, loader).withTimeout(1.),
-      new ParallelCommandGroup(
-        AutoBuilder.followPath(path2),
-        new ShootNoteAtSpeedAndAngle(shooter, turret, loader, 5676*.5, 37.)
-        // new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
-        // new RevShooter(drivetrain, shooter, loader)
-      ),
-      new AutoCollect(intakePivot, intake, turret, loader).withTimeout(1.),
-      new AutoTransfer(intakePivot, intake, elevator, turret, loader).withTimeout(1.),
-      //SHOOT OR TRANSFER THEN SHOOT ---------
-      // new ConditionalCommand(
-      //   new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds),
-      //   new ParallelDeadlineGroup(
-      //     new AutoTransfer(intakePivot, intake, elevator, turret, loader),
-      //     new RevShooter(drivetrain, shooter, loader)).andThen(
-      //       new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds)).unless(() -> !intake.hasNoteInIntake()), 
-      //   () -> loader.hasNoteInShooter()),
-      //END SHOOT OR TRANSFER THEN SHOOT ------
-      new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path3),
-        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
-        new RevShooter(drivetrain, shooter, loader)
-        ),
-      new ParallelDeadlineGroup(
-        AutoBuilder.followPath(path4),
-        new AutoCollect(intakePivot, intake, turret, loader).andThen(new AutoTransfer(intakePivot, intake, elevator, turret, loader).unless(() -> !intake.hasNoteInIntake())),
-        new RevShooter(drivetrain, shooter, loader)),
-      //SHOOT OR TRANSFER THEN SHOOT ---------
-      new ConditionalCommand(
-        new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds),
-        new ParallelDeadlineGroup(
-          new AutoTransfer(intakePivot, intake, elevator, turret, loader),
-          new RevShooter(drivetrain, shooter, loader)).andThen(
-            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds)).unless(() -> !intake.hasNoteInIntake()), 
-        () -> loader.hasNoteInShooter())
-      //END SHOOT OR TRANSFER THEN SHOOT ------
-    );
-
   }
 
   public static Command Start_3_End_13_14_15(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator, LEDs leds) {

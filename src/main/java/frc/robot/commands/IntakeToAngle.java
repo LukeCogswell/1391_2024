@@ -30,7 +30,7 @@ public class IntakeToAngle extends Command {
   public void initialize() {
     rotController.setSetpoint(angle);
     rotController.setTolerance(0.5);
-    if (angle <= 200.) {
+    if (angle <= 220.) {
       rotController.setPID(0.01, 0., 0.);
       multiplier = 1.;
     } else {
@@ -51,7 +51,7 @@ public class IntakeToAngle extends Command {
     if (ang >= 185) {
       MAXDownPWR = 0.4;
     }
-    if (ang >= 210) {
+    if (ang >= 220) {
       MAXDownPWR = 0.2;
     }
     if (ang >= 240.) {

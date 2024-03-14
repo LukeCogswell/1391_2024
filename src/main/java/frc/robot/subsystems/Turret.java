@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Shooter.*;
-import static frc.robot.Constants.Shooter.RangeTable;
+import static frc.robot.Constants.Shooter.PID.*;
 import static frc.robot.Constants.Shooter.RangeTableAprilTag.*;
 import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.CANConstants.*;
@@ -26,7 +26,10 @@ public class Turret extends SubsystemBase {
   private InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
 
   public Turret() {
-    m_angleMotor.setInverted(false);
+    // SmartDashboard.putNumber("P", kAngleP);
+    // SmartDashboard.putNumber("I", kAngleI);
+    // SmartDashboard.putNumber("D", kAngleD);
+    m_angleMotor.setInverted(true);
     angleMap.put(entry0[0], entry0[1]);
     angleMap.put(entry1[0], entry1[1]);
     angleMap.put(entry2[0], entry2[1]);

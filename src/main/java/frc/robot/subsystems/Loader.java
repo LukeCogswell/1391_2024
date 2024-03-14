@@ -26,6 +26,7 @@ public class Loader extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Note In Shooter", hasNoteInShooter());
     SmartDashboard.putNumber("ShooterBB", m_beamBreakSensor.getValue());
+    SmartDashboard.putNumber("Loader Current", m_loaderMotor.getOutputCurrent());
   }
   
   public void setLoaderMotor(Double power) {

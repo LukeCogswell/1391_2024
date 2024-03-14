@@ -30,13 +30,17 @@ public class SetTurretAngle extends Command {
   @Override
   public void initialize() {
     angleController.setSetpoint(m_angle);
-    angleController.setTolerance(0.5);
+    angleController.setTolerance(0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_turret.setAngleMotor(MathUtil.clamp(angleController.calculate(m_turret.getShooterAngle()), -0.8, 0.8));
+    // angleController.setPID(
+    //   SmartDashboard.getEntry("P").getDouble(kAngleP),
+    //   SmartDashboard.getEntry("I").getDouble(kAngleI),
+    //   SmartDashboard.getEntry("D").getDouble(kAngleD));
+    m_turret.setAngleMotor(MathUtil.clamp(angleController.calculate(m_turret.getShooterAngle()), -1, 1));
     SmartDashboard.putBoolean("Angled?", angleController.atSetpoint());
   }
 

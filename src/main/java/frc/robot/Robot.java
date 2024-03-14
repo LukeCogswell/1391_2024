@@ -71,20 +71,21 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     if (DriverStation.isDisabled()) {
-      m_robotContainer.m_LEDs.setBottomThird(allianceColor);
+      m_robotContainer.m_LEDs.setBottomHalf(allianceColor);
       if (m_robotContainer.m_loader.hasNoteInShooter()) {
-        m_robotContainer.m_LEDs.setMiddleThird(Color.kOrangeRed);
+        m_robotContainer.m_LEDs.setTopHalf(Color.kOrangeRed);
       } else {
-        m_robotContainer.m_LEDs.setMiddleThird(Color.kBlack);
+        m_robotContainer.m_LEDs.setTopHalf(Color.kBlack);
       }
-      //Top THIRD SET TO COLORS BASED ON APRILTAGS - WHITE IF VISIBLE BLACK IF NOT 
-      if (m_robotContainer.m_drivetrain.getTV()) {
-        m_robotContainer.m_LEDs.setTopThird(Color.kWhite);
-        }
-      } else {
-        m_robotContainer.m_LEDs.setTopThird(Color.kBlack);
-      }
-    m_robotContainer.m_LEDs.start();
+      // //Top THIRD SET TO COLORS BASED ON APRILTAGS - WHITE IF VISIBLE BLACK IF NOT 
+      // if (m_robotContainer.m_drivetrain.getTV()) {
+      //   m_robotContainer.m_LEDs.setTopThird(Color.kWhite);
+      //   }
+      // } else {
+      //   m_robotContainer.m_LEDs.setTopThird(Color.kBlack);
+      // }
+      m_robotContainer.m_LEDs.start();
+    }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
