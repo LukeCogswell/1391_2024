@@ -68,17 +68,17 @@ public final class Constants {
 
 
     public static final class RangeTableAprilTag {
-      public static final Double[] entry0 =  {.5 , 84.06};
-      public static final Double[] entry1 =  {1. , 53.00};
-      public static final Double[] entry2 =  {2. , 43.00};
-      public static final Double[] entry3 =  {3. , 31.50};
-      public static final Double[] entry4 =  {4. , 27.10};
-      public static final Double[] entry5 =  {5. , 18.75};
-      public static final Double[] entry6 =  {6. , 16.50};
-      public static final Double[] entry7 =  {7. , 16.00};
-      public static final Double[] entry8 =  {8. , 15.64};
-      public static final Double[] entry9 =  {9. , 14.02};
-      public static final Double[] entry10 = {10., 13.80};
+      public static final Double[] entry0 =  {.5 , 52.06};
+      public static final Double[] entry1 =  {1. , 50.00};
+      public static final Double[] entry2 =  {2. , 34.00};
+      public static final Double[] entry3 =  {3. , 28.50};
+      public static final Double[] entry4 =  {4. , 21.70};
+      public static final Double[] entry5 =  {5. , 16.00};
+      public static final Double[] entry6 =  {6. , 14.70};
+      public static final Double[] entry7 =  {7. , 14.40};
+      public static final Double[] entry8 =  {8. , 13.94};
+      public static final Double[] entry9 =  {9. , 13.82};
+      public static final Double[] entry10 = {10., 13.50};
       public static final Double[] entry11 = {11., 13.00};
     }
 
@@ -206,7 +206,7 @@ public final class Constants {
       public static final int driveCurrentThreshold = 60;
       public static final double driveCurrentThresholdTime = 0.1;
       public static final boolean driveEnableCurrentLimit = true;
-      public static final double driveStatorCurrentLimit = 70;
+      public static final double driveStatorCurrentLimit = 75;
       public static final boolean driveEnableStatorCurrentLimit = true;
 
       public static final double openLoopRamp = .0;

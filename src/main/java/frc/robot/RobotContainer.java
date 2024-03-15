@@ -206,12 +206,20 @@ public class RobotContainer {
     /*-------------------------------------------------- */
     /*********   OPERATOR CONTROLS   *********/
 
-    m_operatorController.rightBumper().whileTrue(new PrepToShootFromSetpoint(3500., 50., DriverStation.getAlliance().get() == Alliance.Blue ? -30. : -180 + 30, m_drivetrain, m_shooter, m_turret, m_loader, m_LEDs, 
+    m_operatorController.rightTrigger().whileTrue(new PrepToShootFromSetpoint(3500., 50., DriverStation.getAlliance().get() == Alliance.Blue ? -30. : -180 + 30, m_drivetrain, m_shooter, m_turret, m_loader, m_LEDs, 
       m_driverController.leftTrigger(), () -> m_driverController.getLeftX(),() -> m_driverController.getLeftY(), () -> m_driverController.getRightTriggerAxis()));
 
+    m_operatorController.rightBumper().whileTrue(new ShootNoteAtSpeed(m_shooter, m_loader, 2000., m_driverController.leftTrigger(), new Trigger(() -> false), new Trigger(() -> false), true));
+
+    m_operatorController.leftBumper().whileTrue(new ParallelCommandGroup(
+      new ElevatorToHeight(m_elevator, 6.5),
+      new SetTurretAngle(m_turret, 150.)
+    ));
+
     // m_operatorController.back().whileTrue(new InstantCommand(() -> m_drivetrain.setFieldPosition(new Pose2d(kFieldX - 2, 7, new Rotation2d(Math.PI)))).andThen(AutoBuilder.followPath(PathPlannerPath.fromPathFile("STRAIGHT"))));
-    m_operatorController.back().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2500., -27.));
-    
+    // m_operatorController.back().whileTrue(new ShootNoteAtSpeedAndAngle(m_shooter, m_turret, m_loader, 2500., -27.));
+    m_operatorController.back().whileTrue(new RunCommand(() -> m_elevator.setElevator(-.5), m_elevator));
+
     m_operatorController.start().whileTrue(new DepositInAmp(m_drivetrain, m_intake, m_loader, m_turret, m_shooter, m_elevator, m_driverController.leftTrigger()));
     
     m_operatorController.axisGreaterThan(1, 0.4).whileTrue(new RunCommand(() -> m_elevator.setElevator(-0.3), m_elevator));
@@ -226,7 +234,7 @@ public class RobotContainer {
     m_operatorController.x().whileTrue(new AutoTransfer(m_intakePivot, m_intake, m_elevator, m_turret, m_loader));
     
     m_operatorController.a().whileTrue(new ParallelCommandGroup(
-      new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.6, 52., m_driverController.leftTrigger()),
+      new ShootSpeedAngleWithControl(m_shooter, m_turret, m_loader, 5676 * 0.6, 52., m_driverController.leftTrigger(), false),
       new IntakeToAngle(m_intakePivot, 210.)));
     m_operatorController.b().whileTrue(new PrepToShootFromSetpoint(
       5676 * 0.75,

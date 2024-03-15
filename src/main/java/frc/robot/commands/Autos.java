@@ -144,7 +144,7 @@ public final class Autos {
         AutoBuilder.followPath(path0),
         new ParallelDeadlineGroup(
           new SequentialCommandGroup(
-            new WaitCommand(.8),
+            new WaitCommand(.75),
             new RunCommand(() -> loader.setLoaderMotor(1.), loader).until(() -> !loader.hasNoteInShooter())),
           new SetTurretAngle(turret, 37.),
           new RunCommand(() -> shooter.setShooterSpeed(5676*0.9), shooter)
@@ -156,7 +156,7 @@ public final class Autos {
             // new RevShooter(drivetrain, shooter, loader).withTimeout(2),
             new AutoTransfer(intakePivot, intake, elevator, turret, loader).until(() -> !intake.hasNoteInIntake() && loader.hasNoteInShooter()).andThen(
               new ParallelCommandGroup(
-                new SetTurretAngle(turret, 23.),
+                new SetTurretAngle(turret, 14.8),
                 // new AimAtSpeaker(turret, drivetrain),
                 new InstantCommand(() -> {
                   loader.stop();
@@ -165,7 +165,7 @@ public final class Autos {
           ),
           //SHOOT OR TRANSFER THEN SHOOT ---------
           new ConditionalCommand(
-            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds),
+            new WaitCommand(0.2).andThen(new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds)),
             new ParallelDeadlineGroup(
               new AutoTransfer(intakePivot, intake, elevator, turret, loader),
               new RevShooter(drivetrain, shooter, loader)).andThen(
@@ -185,7 +185,7 @@ public final class Autos {
             // new RevShooter(drivetrain, shooter, loader).withTimeout(2),
             new AutoTransfer(intakePivot, intake, elevator, turret, loader).until(() -> !intake.hasNoteInIntake() && loader.hasNoteInShooter()).andThen(
               new ParallelCommandGroup(
-                new SetTurretAngle(turret, 22.),
+                new SetTurretAngle(turret, 14.8),
                 // new AimAtSpeaker(turret, drivetrain),
                 new InstantCommand(() -> {
                   loader.stop();
@@ -194,7 +194,7 @@ public final class Autos {
           ),
           //SHOOT OR TRANSFER THEN SHOOT ---------
           new ConditionalCommand(
-            new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds),
+            new WaitCommand(0.2).andThen(new ShootWhileMoving(drivetrain, shooter, turret, loader, () -> 0., () -> 0., () -> 0., leds)),
             new ParallelDeadlineGroup(
               new AutoTransfer(intakePivot, intake, elevator, turret, loader),
               new RevShooter(drivetrain, shooter, loader)).andThen(

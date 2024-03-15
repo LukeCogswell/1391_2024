@@ -39,12 +39,12 @@ public class AutoCollect extends SequentialCommandGroup {
         ),
         new SequentialCommandGroup(
           new RunCommand(() -> {
-            intake.setIntake(1.);
+            intake.setIntake(.5);
           }, intake).until(() -> intake.hasNoteInIntake()),
           new InstantCommand(() -> {
             intake.setIntake(0.2);
           }, intake),
-          new WaitCommand(0.01),
+          new WaitCommand(0.0),
           new InstantCommand(() -> 
             intake.stop(), intake)
         )),

@@ -23,14 +23,16 @@ public class ShootSpeedAngleWithControl extends Command {
   private Double shotSpeed, angle;
   private PIDController angleController = new PIDController(kAngleP, kAngleI, kAngleD);
   private Trigger shotTrigger;
+  private Boolean adj;
 
-  public ShootSpeedAngleWithControl(Shooter shooter, Turret turret, Loader loader, Double speed, Double Angle, Trigger shootingTrigger) {
+  public ShootSpeedAngleWithControl(Shooter shooter, Turret turret, Loader loader, Double speed, Double Angle, Trigger shootingTrigger, Boolean adjustable) {
     m_shooter = shooter;
     m_turret = turret;
     m_loader = loader;
     shotSpeed = speed;
     angle = Angle;
     shotTrigger = shootingTrigger;
+    adj = adjustable;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter, loader, turret);
   }
@@ -45,6 +47,9 @@ public class ShootSpeedAngleWithControl extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (adj) {
+      shotSpeed = SmartDashboard.getEntry("Shot Speed").getDouble(shotSpeed);
+    }
     // m_shooter.setShooterSpeed(shotSpeed);
     m_shooter.setLeftShooterSpeed(shotSpeed*0.85);
     m_shooter.setRightShooterSpeed(shotSpeed);

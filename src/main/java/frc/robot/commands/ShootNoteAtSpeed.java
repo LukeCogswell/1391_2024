@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Loader;
@@ -15,14 +16,16 @@ public class ShootNoteAtSpeed extends Command {
   private Loader m_loader;
   private Double shotSpeed;
   private Trigger shootingTrigger, incrementPowerTrigger, incrementPowerUpTrigger;
+  private Boolean adj;
 
-  public ShootNoteAtSpeed(Shooter shooter, Loader loader, Double speed, Trigger shootTrigger, Trigger incrementPower, Trigger incrementUPP) {
+  public ShootNoteAtSpeed(Shooter shooter, Loader loader, Double speed, Trigger shootTrigger, Trigger incrementPower, Trigger incrementUPP, Boolean adjustable) {
     m_shooter = shooter;
     m_loader = loader;
     shotSpeed = speed;
     shootingTrigger = shootTrigger;
     incrementPowerTrigger = incrementPower;
     incrementPowerUpTrigger = incrementUPP;
+    adj = adjustable;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
   }
@@ -40,6 +43,9 @@ public class ShootNoteAtSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (adj) {
+      shotSpeed = SmartDashboard.getEntry("Shot Speed").getDouble(shotSpeed);
+    }
     if (incrementPowerTrigger.getAsBoolean()) {
       shotSpeed = shotSpeed - 300;
     }

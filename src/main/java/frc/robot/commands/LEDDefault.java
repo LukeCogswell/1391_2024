@@ -58,7 +58,7 @@ public class LEDDefault extends Command {
         var percent = m_drivetrain.getDistanceToSpeaker() <= kConfidentShotRange ? 1 :
           1 - ((m_drivetrain.getDistanceToSpeakerAprilTagAngle() - kConfidentShotRange) / (kMaxShotRange-kConfidentShotRange));
         percent = MathUtil.clamp(percent, 0., 1.);
-        m_leds.setPercent(percent, m_drivetrain.getTV() ? Color.kWhite : Color.kGreen);
+        m_leds.setPercent(percent, Timer.getFPGATimestamp() % 0.3 <= 0.15 ? Color.kWhite : Color.kBlack);
       } else {
         if (Timer.getFPGATimestamp() % 0.3 <= 0.15) {
           m_leds.set(Color.kGreen);

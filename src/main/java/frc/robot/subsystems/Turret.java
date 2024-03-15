@@ -51,7 +51,14 @@ public class Turret extends SubsystemBase {
   }
 
   public void setAngleMotor(Double power) {
-    m_angleMotor.set(power);
+    var pwr = power;
+    var angle = getShooterAngle();
+    if (angle >= -181 && angle <= -60) {
+      pwr = MathUtil.clamp(pwr, -1., 0.);
+    } else if (angle <= -27 && angle >= -50) {
+      pwr = MathUtil.clamp(pwr, 0., 1.);
+    }
+    m_angleMotor.set(pwr);
     // if (getShooterAngle() <= -15 || getShooterAngle() >= 80) {
     //   m_angleMotor.set(0.);
 
