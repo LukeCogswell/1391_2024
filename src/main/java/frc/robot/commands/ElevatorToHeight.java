@@ -38,7 +38,7 @@ public class ElevatorToHeight extends Command {
   @Override
   public void execute() {
     var pwr = heightController.calculate(m_elevator.getElevatorHeightR());
-    pwr = MathUtil.clamp(pwr, -0.4, 1.);
+    pwr = MathUtil.clamp(pwr, -0.4, .6);
     // SmartDashboard.putNumber("ElevatorPWR", pwr);
     // SmartDashboard.putNumber("EHeightR", m_elevator.getElevatorHeightR());
     m_elevator.setElevator(pwr);

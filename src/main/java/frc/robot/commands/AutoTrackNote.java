@@ -50,14 +50,17 @@ public class AutoTrackNote extends Command {
     if (m_intake.getTV()) {
       ty = (m_intake.getTY());
       ty = ty<0 ? 0 : ty;
-      drive = ty/30.;
+      drive = ty/30. + 0.1;
       drive = drive > .5 ? .5 : drive;
       rot = rotController.calculate(m_intake.getTX());
       rot = MathUtil.clamp(rot, -.4, .4);
       if (ty < 20) {
-        m_intake.setIntake(0.6);
+        m_intake.setIntake(1.);
       }
-      if (m_intakePivot.getIntakeAngle() <= 255) {
+      if (ty < 5) {
+        m_intake.setIntake(0.2);
+      }
+      if (m_intakePivot.getIntakeAngle() <= 245) {
         drive = 0.;
       }
       drive = driveLimiter.calculate(drive);

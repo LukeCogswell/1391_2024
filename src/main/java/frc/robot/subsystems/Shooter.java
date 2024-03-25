@@ -26,7 +26,7 @@ public class Shooter extends SubsystemBase {
     m_shooterMotorRight.getEncoder().setVelocityConversionFactor(1.);
     m_shooterMotorLeft.burnFlash();
     m_shooterMotorRight.burnFlash();
-    SmartDashboard.putNumber("Shot Speed", 2000.);
+    SmartDashboard.putNumber("Shot Speed", 950.);
   }
 
   @Override

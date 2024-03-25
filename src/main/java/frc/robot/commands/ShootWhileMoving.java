@@ -38,6 +38,7 @@ public class ShootWhileMoving extends Command {
   private PIDController LLturnController = new PIDController(kLLTurnP, kLLTurnI, kLLTurnD);
   private final SlewRateLimiter m_xLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
   private final SlewRateLimiter m_yLimiter = new SlewRateLimiter(1 / kAccelerationSeconds);
+  private Boolean isRed;
   private DoubleSupplier xSpeed, ySpeed, m_precision;
   private Double X, Y, rot, m_precisionFactor, m_xSpeed, m_ySpeed, dis;
   /** Creates a new ShootWhileMoving. */
@@ -59,6 +60,11 @@ public class ShootWhileMoving extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (DriverStation.getAlliance().get() == Alliance.Red) {
+      isRed = true;
+    } else {
+      isRed = false;
+    }
     m_precisionFactor = Math.pow(0.2, m_precision.getAsDouble());
     X = xSpeed.getAsDouble();
     Y = ySpeed.getAsDouble();
@@ -75,7 +81,7 @@ public class ShootWhileMoving extends Command {
     angleController.setTolerance(0.7);
     if (X+Y >= 0.6) {
       turnController.setTolerance(5);
-      LLturnController.setTolerance(5);
+      LLturnController.setTolerance(5 );
       angleController.setTolerance(1.5);
     }
   }
@@ -106,11 +112,30 @@ public class ShootWhileMoving extends Command {
     dis = m_drivetrain.getDistanceToSpeaker();
 
     if (m_drivetrain.getTV()) {
-      dis = m_drivetrain.getDistanceToSpeakerAprilTag();
+      dis = m_drivetrain.getDistanceToSpeakerAprilTag(); 
+      double Ryaw = m_drivetrain.getFieldPosition().getRotation().getDegrees(); 
+      if (isRed) {
+        if (Ryaw >= -160 && Ryaw < 0.) {
+          LLturnController.setSetpoint(2);
+        } else if (Ryaw <= 160 && Ryaw > 0.) {
+          LLturnController.setSetpoint(-2);
+        } else {
+          LLturnController.setSetpoint(0.);
+        }
+      } else {
+        if (Ryaw <= -20) {
+          LLturnController.setSetpoint(2);
+        } else if (Ryaw >= 20) {
+          LLturnController.setSetpoint(-2);
+        } else {
+          LLturnController.setSetpoint(0.);
+        }
+
+      }
       rot = LLturnController.calculate(m_drivetrain.getTX());
     } else {
-      // rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
-      rot = 0.;
+      rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
+      // rot = 0.;
       dis = m_drivetrain.getDistanceToSpeaker();
     }
 

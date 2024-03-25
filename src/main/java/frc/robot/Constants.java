@@ -51,12 +51,12 @@ public final class Constants {
   public static final class Shooter {
     public static final double kShootingRotationAdjustmentMultiplier = 1.75; //
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
-    public static final double kAngleEncoderOffset = -42.23-34.5+109;
+    public static final double kAngleEncoderOffset = -42.23-34.5+109-60.;
     public static final double kMaxSpeedRPM = 5676;
     public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
 
-    public static final double kAmpAngle = -25.;
-    public static final double kTransferAngle = 20.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kAmpAngle = -30.;
+    public static final double kTransferAngle = 13.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
     public static final double kSourceAngle = 50.; //DEGREES - ANGLE TO INTAKE FROM SOURCE
 
     public static final class PID {
@@ -68,41 +68,56 @@ public final class Constants {
 
 
     public static final class RangeTableAprilTag {
-      public static final Double[] entry0 =  {.5 , 52.06};
-      public static final Double[] entry1 =  {1. , 50.00};
-      public static final Double[] entry2 =  {2. , 34.00};
-      public static final Double[] entry3 =  {3. , 28.50};
-      public static final Double[] entry4 =  {4. , 21.70};
-      public static final Double[] entry5 =  {5. , 16.00};
-      public static final Double[] entry6 =  {6. , 14.70};
-      public static final Double[] entry7 =  {7. , 14.40};
-      public static final Double[] entry8 =  {8. , 13.94};
-      public static final Double[] entry9 =  {9. , 13.82};
-      public static final Double[] entry10 = {10., 13.50};
-      public static final Double[] entry11 = {11., 13.00};
+      public static final Double[] entry0  =  {.5 , 52.06};
+      public static final Double[] entry1  =  {1. , 50.00};
+      public static final Double[] entry2  =  {2. , 38.00};
+      public static final Double[] entry3  =  {3. , 29.70};
+      public static final Double[] entry4  =  {4. , 24.50};
+      public static final Double[] entry40 =  {4.5, 21.75};
+      public static final Double[] entry5  =  {5. , 20.30};
+      public static final Double[] entry50 =  {5.5, 19.60};
+      public static final Double[] entry6  =  {6. , 19.20};
+      public static final Double[] entry7  =  {7. , 18.60};
+      public static final Double[] entry8  =  {8. , 18.54};
+      public static final Double[] entry9  =  {9. , 18.42};
+      public static final Double[] entry10 =  {10., 18.30};
+      public static final Double[] entry11 =  {11., 18.20};
     }
+    // public static final Double[] entry0 =  {.5 , 55.0};
+    //   public static final Double[] entry1 =  {1. , 55.00};
+    //   public static final Double[] entry2 =  {2. , 43.00};
+    //   public static final Double[] entry3 =  {3. , 30.50};
+    //   public static final Double[] entry4 =  {4. , 27.70};
+    //   public static final Double[] entry5 =  {5. , 25.70};
+    //   public static final Double[] entry6 =  {6. , 20.20};
+    //   public static final Double[] entry7 =  {7. , 16.90};
+    //   public static final Double[] entry8 =  {8. , 15.74};
+    //   public static final Double[] entry9 =  {9. , 15.62};
+    //   public static final Double[] entry10 = {10., 15.50};
+    //   public static final Double[] entry11 = {11., 15.30};
 
-    public static final class RangeTable {
-      public static final Double[] entry0 = {.5, 80.06};
-      public static final Double[] entry1 = {1., 63.58};
-      public static final Double[] entry2 = {2., 42.0};
-      public static final Double[] entry3 = {3., 34.35};
-      public static final Double[] entry4 = {4., 27.5};
-      public static final Double[] entry5 = {5., 21.0};
-      public static final Double[] entry6 = {6., 19.15};
-      public static final Double[] entry7 = {7., 17.64};
-      public static final Double[] entry8 = {8., 15.64};
-      public static final Double[] entry9 = {9., 15.02};
-      public static final Double[] entry10 = {10., 14.62};
-      public static final Double[] entry11 = {11., 14.42};
-    }
+    // public static final class RangeTable {
+    //   public static final Double[] entry0 = {.5, 80.06};
+    //   public static final Double[] entry1 = {1., 63.58};
+    //   public static final Double[] entry2 = {2., 42.0};
+    //   public static final Double[] entry3 = {3., 34.35};
+    //   public static final Double[] entry4 = {4., 27.5};
+    //   public static final Double[] entry40 = {4.5, 23.};
+    //   public static final Double[] entry5 = {5., 18.5};
+    //   public static final Double[] entry6 = {6., 16.15};
+    //   public static final Double[] entry7 = {7., 15.64};
+    //   public static final Double[] entry8 = {8., 15.34};
+    //   public static final Double[] entry9 = {9., 15.02};
+    //   public static final Double[] entry10 = {10., 14.62};
+    //   public static final Double[] entry11 = {11., 14.42};
+    // }
   }
 
   public static final class Intake {
     public static final double kIntakeEncoderOffset = 0.;
     public static final double kEncoderGearRatio = 1;
     public static final double kMinRotation = 264.0;  // DEGREES
-    public static final double kMaxRotation = 181.0; // DEGREES
+    public static final double kMaxRotation = 183.0; // DEGREES
 
     public static final double kMaxDownPower = 1;
     public static final double kMaxUpPower = 0.6;
@@ -133,8 +148,8 @@ public final class Constants {
   public static final class MeasurementConstants {
     // This is based on the CAD model (divided by two to represent distance from center of robot) 
     public static final double kInchesToMeters = 39.37;
-    public static final double kModuleXOffsetMeters = 20.75 / kInchesToMeters / 2; //TODO FIX THIS
-    public static final double kModuleYOffsetMeters = 20.75 / kInchesToMeters / 2; //TODO FIX THIS
+    public static final double kModuleXOffsetMeters = 20.5 / kInchesToMeters / 2; //TODO FIX THIS
+    public static final double kModuleYOffsetMeters = 20.5 / kInchesToMeters / 2; //TODO FIX THIS
     public static final double kDiagModuleOffsetMeters = Math.sqrt(Math.pow(kModuleXOffsetMeters, 2) + Math.pow(kModuleYOffsetMeters, 2));
     public static final double kWheelDiameterMeters = 0.1016; // 4 inches - diameter of the wheels == 0.1016
 
@@ -143,7 +158,7 @@ public final class Constants {
 
     public static final double kFrontLeftEncoderOffset = .0;
     public static final double kBackLeftEncoderOffset = 0.;
-    public static final double kFrontRightEncoderOffset = .0;
+    public static final double kFrontRightEncoderOffset = 180.0;
     public static final double kBackRightEncoderOffset = .0; 
 
     public static final double kMaxSpeedMetersPerSecond = 5880 / 60.0 *

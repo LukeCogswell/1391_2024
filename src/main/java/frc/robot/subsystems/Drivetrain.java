@@ -23,6 +23,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -41,6 +42,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.AprilTags;
 
 import static frc.robot.Constants.MeasurementConstants.*;
+import static frc.robot.Constants.Shooter.RangeTableAprilTag.*;
 
 import java.sql.Driver;
 
@@ -58,7 +60,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 public class Drivetrain extends SubsystemBase {
   
   private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
-
+  private InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
   private SwerveModule m_frontLeft, m_frontRight, m_backLeft, m_backRight;
   
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
@@ -209,6 +211,19 @@ public class Drivetrain extends SubsystemBase {
     //           // Tell SysId to make generated commands require this subsystem, suffix test state in
     //           // WPILog with this subsystem's name ("drive")
     //           this));
+    angleMap.put(entry0[0], entry0[1]);
+    angleMap.put(entry1[0], entry1[1]);
+    angleMap.put(entry2[0], entry2[1]);
+    angleMap.put(entry3[0], entry3[1]);
+    angleMap.put(entry4[0], entry4[1]);
+    angleMap.put(entry40[0], entry40[1]);
+    angleMap.put(entry5[0], entry5[1]);
+    angleMap.put(entry6[0], entry6[1]);
+    angleMap.put(entry7[0], entry7[1]);
+    angleMap.put(entry8[0], entry8[1]);
+    angleMap.put(entry9[0], entry9[1]);
+    angleMap.put(entry10[0], entry10[1]);
+    angleMap.put(entry11[0], entry11[1]);
   }
   
   // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -241,6 +256,8 @@ public class Drivetrain extends SubsystemBase {
     if (getTV()) {
       SmartDashboard.putNumber("DisToSpeakerAT", getDistanceToSpeakerAprilTag());
       SmartDashboard.putNumber("DisToSpeakerAngle", getDistanceToSpeakerAprilTagAngles());
+      SmartDashboard.putNumber("ATYaw", getAprilTagYaw());
+      SmartDashboard.putNumber("ATTreeAngle", angleMap.get(getDistanceToSpeakerAprilTag()));
     }
 
   }
@@ -427,7 +444,10 @@ public class Drivetrain extends SubsystemBase {
 
   public double getDistanceToSpeakerAprilTag() {
     return Math.sqrt(Math.pow(m_limelight.getEntry("targetpose_cameraspace").getDoubleArray(new Double[0])[2], 2) - Math.pow(Constants.AprilTags.ID7.getZ(), 2));
+  }
 
+  public double getAprilTagYaw() {
+    return m_limelight.getEntry("targetpose_cameraspace").getDoubleArray(new Double[0])[4];
   }
 
   public void setLimelightTargetID(Double id) {

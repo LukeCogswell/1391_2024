@@ -18,7 +18,7 @@ import static frc.robot.Constants.CANConstants.*;
 public class Intake extends SubsystemBase {
   private final CANSparkMax m_intakeMotor = new CANSparkMax(kIntakeBeltMotorID, MotorType.kBrushless); 
   private NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight-twelve");
-  private AnalogInput m_beamBreakSensor = new AnalogInput(1);
+  private AnalogInput m_beamBreakSensor = new AnalogInput(2);
 
   /** Creates a new Intake. */
   public Intake() {
@@ -31,7 +31,8 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
     // SmartDashboard.putNumber("TY", getTY());
     SmartDashboard.putBoolean("HasNote?", hasNoteInIntake());
-    // SmartDashboard.putNumber("bELTS cURRNET", m_intakeMotor.getOutputCurrent());
+    SmartDashboard.putBoolean("NOTE TV", getTV());
+    SmartDashboard.putNumber("bELTS cURRNET", m_intakeMotor.getOutputCurrent());
     SmartDashboard.putBoolean("CurrentHasNote?", currentHasNoteInIntake());
     // SmartDashboard.putNumber("Bot Int Current", getIntakeCurrentDraw());
     // SmartDashboard.putNumber("BBSEnsorIntake", m_beamBreakSensor.getValue());
@@ -55,7 +56,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean currentHasNoteInIntake() {
-    return getIntakeCurrentDraw() >= 11.;
+    return m_intakeMotor.getOutputCurrent() >= 13.;
   }
 
   public double getIntakeCurrentDraw() {

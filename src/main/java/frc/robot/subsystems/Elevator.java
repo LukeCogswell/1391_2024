@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch.Type;
+
 import static frc.robot.Constants.Elevator.*;
 import static frc.robot.Constants.CANConstants.*;
 
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Elevator extends SubsystemBase {
   private final CANSparkMax m_elevatorMotorLeft = new CANSparkMax(kLeftElevatorMotorID, MotorType.kBrushless);
   private final CANSparkMax m_elevatorMotorRight = new CANSparkMax(kRightElevatorMotorID, MotorType.kBrushless);
+  private Double heightOffset = 0.;
   /** Creates a new Elevator. */
   public Elevator() {
     m_elevatorMotorLeft.setInverted(false);
@@ -25,16 +28,20 @@ public class Elevator extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("L ELEVATOR CURRENT L", m_elevatorMotorLeft.getOutputCurrent());
     SmartDashboard.putNumber("R ELEVATOR CURRENT R", m_elevatorMotorRight.getOutputCurrent());
-    // SmartDashboard.putNumber("Elevator Height L", getElevatorHeightL());
+    SmartDashboard.putNumber("Elevator Height L", getElevatorHeightL());
     SmartDashboard.putNumber("Elevator Height R", getElevatorHeightR());
+    SmartDashboard.putBoolean("ELEVATORDOWN?", m_elevatorMotorRight.getReverseLimitSwitch(Type.kNormallyOpen).isPressed());
+    // if (m_elevatorMotorRight.getReverseLimitSwitch(Type.kNormallyOpen).isPressed()) {
+    //   heightOffset = getElevatorHeightR() + heightOffset;
+    // }b
     // This method will be called once per scheduler run
   }
 
   public double getElevatorHeightR() {
-    return m_elevatorMotorRight.getEncoder().getPosition() * kMotorRotationsToMeters;
+    return m_elevatorMotorRight.getEncoder().getPosition() * kMotorRotationsToMeters - heightOffset;
   }
   public double getElevatorHeightL() {
-    return m_elevatorMotorLeft.getEncoder().getPosition() * kMotorRotationsToMeters;
+    return m_elevatorMotorLeft.getEncoder().getPosition() * kMotorRotationsToMeters - heightOffset;
   }
 
   public void setElevator(Double power) {

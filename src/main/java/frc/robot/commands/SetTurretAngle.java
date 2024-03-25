@@ -31,6 +31,7 @@ public class SetTurretAngle extends Command {
   public void initialize() {
     angleController.setSetpoint(m_angle);
     angleController.setTolerance(0.1);
+    angleController.enableContinuousInput(-180, 180);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -33,10 +33,10 @@ public class AutoTransfer extends ParallelDeadlineGroup {
       new SequentialCommandGroup(
         // new ElevatorToHeight(elevator, 1.), //0.13
         new WaitUntilCommand(() -> ((intakePivot.getIntakeAngle() <= 187)/* && (elevator.getElevatorHeightL() >= 0.7))*/)),
-        new WaitCommand(0.5),
+        // new WaitCommand(0.5),
         new RunCommand(() -> {
           loader.setLoaderMotor(.6);
-          intake.setIntake(.4);
+          intake.setIntake(.5);
         }, intake, loader).until(() -> (loader.hasNoteInShooter())),
         new InstantCommand(() -> {
           intake.setIntake(0.);

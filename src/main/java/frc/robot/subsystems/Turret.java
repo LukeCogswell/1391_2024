@@ -35,6 +35,7 @@ public class Turret extends SubsystemBase {
     angleMap.put(entry2[0], entry2[1]);
     angleMap.put(entry3[0], entry3[1]);
     angleMap.put(entry4[0], entry4[1]);
+    angleMap.put(entry40[0], entry40[1]);
     angleMap.put(entry5[0], entry5[1]);
     angleMap.put(entry6[0], entry6[1]);
     angleMap.put(entry7[0], entry7[1]);
@@ -46,6 +47,9 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // System.out.println(m_angleEncoder.getAbsolutePosition());
+    // System.out.println("FALSE");
+    // System.out.println(getShooterAngle());
     SmartDashboard.putNumber("Angle", getShooterAngle());
     // This method will be called once per scheduler run
   }
@@ -55,7 +59,7 @@ public class Turret extends SubsystemBase {
     var angle = getShooterAngle();
     if (angle >= -181 && angle <= -60) {
       pwr = MathUtil.clamp(pwr, -1., 0.);
-    } else if (angle <= -27 && angle >= -50) {
+    } else if (angle <= -32. && angle >= -50) {
       pwr = MathUtil.clamp(pwr, 0., 1.);
     }
     m_angleMotor.set(pwr);
@@ -122,7 +126,7 @@ public class Turret extends SubsystemBase {
   // } // first iteration
 
   public double getShooterAngle() {
-    var angle = 180 - (m_angleEncoder.getAbsolutePosition()*360 - kAngleEncoderOffset - 180) % 360;
+    var angle = (m_angleEncoder.getAbsolutePosition()*360 - kAngleEncoderOffset) % 360;
     angle = -angle;
     return angle < -180 ? angle + 360: angle;
   }
