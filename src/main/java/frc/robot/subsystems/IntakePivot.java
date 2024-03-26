@@ -13,7 +13,11 @@ import static frc.robot.Constants.CANConstants.kIntakePivotMotorID;
 import static frc.robot.Constants.Intake.*;
 import static frc.robot.Constants.Shooter.kAngleEncoderOffset;
 
+import java.util.Map;
+
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,6 +28,11 @@ public class IntakePivot extends SubsystemBase {
   public IntakePivot() {
     m_pivotMotor.setInverted(true);
     m_pivotMotor.setIdleMode(IdleMode.kBrake);
+    Shuffleboard.getTab("Matches").addNumber("Intake Angle", () -> getIntakeAngle()).withWidget(BuiltInWidgets.kGyro)
+      .withPosition(0, 3)
+      .withSize(4, 4)
+      .withProperties(Map.of("startingAngle", kMaxRotation+180, "counterClockwise", true))
+      ;
   }
 
   @Override

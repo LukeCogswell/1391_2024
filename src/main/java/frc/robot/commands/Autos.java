@@ -142,8 +142,8 @@ public final class Autos {
 
   public static Command Choreo_Start_DownSpeakerSWM_End_15_14(Drivetrain drivetrain, IntakePivot intakePivot, Intake intake, Loader loader, Turret turret, Shooter shooter, Elevator elevator, LEDs leds) {
     PathPlannerPath path0 = PathPlannerPath.fromChoreoTrajectory("SDownSpeaker_E15_14");
-    PathPlannerPath path1 = PathPlannerPath.fromPathFile("SDownSpeaker_E15_14.1");
-    PathPlannerPath path2 = PathPlannerPath.fromPathFile("SDownSpeaker_E15_14.2");
+    PathPlannerPath path1 = PathPlannerPath.fromChoreoTrajectory("SDownSpeaker_E15_14.1");
+    PathPlannerPath path2 = PathPlannerPath.fromChoreoTrajectory("SDownSpeaker_E15_14.2");
 
     return Commands.sequence(
       new InstantCommand(

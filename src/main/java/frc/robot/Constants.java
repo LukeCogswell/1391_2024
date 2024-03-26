@@ -114,7 +114,7 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final double kIntakeEncoderOffset = 0.;
+    public static final double kIntakeEncoderOffset = 55.;
     public static final double kEncoderGearRatio = 1;
     public static final double kMinRotation = 264.0;  // DEGREES
     public static final double kMaxRotation = 183.0; // DEGREES

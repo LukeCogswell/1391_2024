@@ -6,16 +6,22 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.Shooter.*;
 import static frc.robot.Constants.Shooter.PID.*;
 import static frc.robot.Constants.Shooter.RangeTableAprilTag.*;
+
+import java.util.Map;
+
 import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.CANConstants.*;
 
@@ -24,12 +30,13 @@ public class Turret extends SubsystemBase {
   private final CANSparkMax m_angleMotor = new CANSparkMax(kTurretMotorID, MotorType.kBrushless);
   private DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
   private InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
+  public Boolean isAngled = false;
 
   public Turret() {
     // SmartDashboard.putNumber("P", kAngleP);
     // SmartDashboard.putNumber("I", kAngleI);
     // SmartDashboard.putNumber("D", kAngleD);
-    m_angleMotor.setInverted(true);
+    configureMotorController();
     angleMap.put(entry0[0], entry0[1]);
     angleMap.put(entry1[0], entry1[1]);
     angleMap.put(entry2[0], entry2[1]);
@@ -43,6 +50,13 @@ public class Turret extends SubsystemBase {
     angleMap.put(entry9[0], entry9[1]);
     angleMap.put(entry10[0], entry10[1]);
     angleMap.put(entry11[0], entry11[1]);
+    Shuffleboard.getTab("Testing").addNumber("Turret Current", () -> getCurrent()).withWidget(BuiltInWidgets.kGraph);
+    Shuffleboard.getTab("Testing").addNumber("Turret Speed", () -> getVelocity()).withWidget(BuiltInWidgets.kGraph);
+    Shuffleboard.getTab("Matches").addNumber("Turret Angle", () -> getShooterAngle()).withWidget(BuiltInWidgets.kGyro)
+      .withPosition(4, 3)
+      .withSize(4, 4)
+      .withProperties(Map.of("startingAngle", 90, "counterClockwise", true))
+      ;
   }
 
   @Override
@@ -52,6 +66,27 @@ public class Turret extends SubsystemBase {
     // System.out.println(getShooterAngle());
     SmartDashboard.putNumber("Angle", getShooterAngle());
     // This method will be called once per scheduler run
+  }
+
+  public double getVelocity() {
+    return m_angleMotor.getEncoder().getVelocity();
+  }
+
+  public double getCurrent() {
+    return m_angleMotor.getOutputCurrent();
+  }
+
+  public void setMotor(Double pwr) {
+    m_angleMotor.set(pwr);
+  }
+
+  private void configureMotorController() {
+    m_angleMotor.setInverted(true);
+    m_angleMotor.setIdleMode(IdleMode.kBrake);
+    m_angleMotor.setSmartCurrentLimit(30);
+    // m_angleMotor.setIdleMode(IdleMode.kCoast);
+    // m_angleMotor.setSmartCurrentLimit(60);
+    m_angleMotor.burnFlash();
   }
 
   public void setAngleMotor(Double power) {

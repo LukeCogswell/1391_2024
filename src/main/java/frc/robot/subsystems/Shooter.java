@@ -4,11 +4,17 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.CANConstants.*;
 import static frc.robot.Constants.Shooter.*;
+
+import java.util.Map;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -16,6 +22,7 @@ import com.revrobotics.CANSparkMax;
 public class Shooter extends SubsystemBase {
   private final CANSparkMax m_shooterMotorRight = new CANSparkMax(kRightShooterMotorID, MotorType.kBrushless); 
   private final CANSparkMax m_shooterMotorLeft = new CANSparkMax(kLeftShooterMotorID, MotorType.kBrushless);
+  private boolean isRed;
   
 
   /** Creates a new Shooter. */
@@ -27,6 +34,24 @@ public class Shooter extends SubsystemBase {
     m_shooterMotorLeft.burnFlash();
     m_shooterMotorRight.burnFlash();
     SmartDashboard.putNumber("Shot Speed", 950.);
+    if (DriverStation.getAlliance().get()==Alliance.Red) {
+      isRed = true;
+    } else {
+      isRed = false;
+    }
+    Shuffleboard.getTab("Matches").addNumber("Left Shooter RPM", () -> getLeftShooterSpeed())
+      .withWidget(BuiltInWidgets.kNumberBar)
+      .withPosition(4, 1)
+      .withSize(2, 2)
+      .withProperties(Map.of("min", -3000, "max", 5676, "orientation", "VERTICAL"))
+      ;
+
+    Shuffleboard.getTab("Matches").addNumber("Right Shooter RPM", () -> getRightShooterSpeed())
+      .withWidget(BuiltInWidgets.kNumberBar)
+      .withPosition(6, 1)
+      .withSize(2, 2)
+      .withProperties(Map.of("min", -3000, "max", 5676, "orientation", "VERTICAL"))
+      ;
   }
 
   @Override
@@ -39,8 +64,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterSpeed(Double speed) {
-    m_shooterMotorRight.set(speed/kMaxSpeedRPM);
-    m_shooterMotorLeft.set(0.75 * speed/kMaxSpeedRPM);
+    if (isRed) {
+      m_shooterMotorRight.set(0.75 * speed/kMaxSpeedRPM);
+      m_shooterMotorLeft.set(speed/kMaxSpeedRPM);
+    } else {
+      m_shooterMotorRight.set(speed/kMaxSpeedRPM);
+      m_shooterMotorLeft.set(0.75 * speed/kMaxSpeedRPM);
+    }
     
   }
 

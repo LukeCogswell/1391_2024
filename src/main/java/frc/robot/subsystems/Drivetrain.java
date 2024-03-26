@@ -34,6 +34,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,6 +46,7 @@ import static frc.robot.Constants.MeasurementConstants.*;
 import static frc.robot.Constants.Shooter.RangeTableAprilTag.*;
 
 import java.sql.Driver;
+import java.util.Map;
 
 import static frc.robot.Constants.CANConstants.*;
 
@@ -142,10 +144,14 @@ public class Drivetrain extends SubsystemBase {
 
     );
     
-    SmartDashboard.putBoolean("init-PRESENT?", DriverStation.getAlliance().isPresent());
+    Shuffleboard.getTab("Matches").addBoolean("init-PRESENT?", () -> DriverStation.getAlliance().isPresent()).withPosition(2,0).withSize(2,1);
     setFieldPosition(new Pose2d(new Translation2d(1, kFieldY/2), new Rotation2d(0.0)));
     if (DriverStation.getAlliance().isPresent()) {
-      SmartDashboard.putBoolean("init-RED?", DriverStation.getAlliance().get() == Alliance.Red);
+      Shuffleboard.getTab("Matches").addBoolean("init-RED?", () -> DriverStation.getAlliance().get() == Alliance.Red)
+        .withPosition(2,0).withSize(2,1)
+        .withSize(2,1)
+        .withProperties(Map.of("colorWhenFalse", "blue", "colorWhenTrue", "red"))
+        ;
       if (DriverStation.getAlliance().get() == Alliance.Red) {
         setFieldPosition(new Pose2d(new Translation2d(kFieldX-1, kFieldY/2), new Rotation2d(Math.PI)));
         // setLimelightTargetID(4.);

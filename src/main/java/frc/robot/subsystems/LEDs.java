@@ -6,21 +6,60 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.CANConstants.CANivoreID;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardComponent;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
   AddressableLED leds = new AddressableLED(9);
-  AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(54);
+  AddressableLEDBuffer ledBuffer = new AddressableLEDBuffer(54); 
+  SuppliedValueWidget<Boolean> topThirdColorWidget = Shuffleboard.getTab("Matches").addBoolean("TopThird", () -> false)
+    .withPosition(12, 0)
+    .withSize(1, 2)
+    // .withProperties(Map.of("colorWhenFalse", Color.kBlack.toHexString()))
+    ;
+  SuppliedValueWidget<Boolean> midThirdColorWidget = Shuffleboard.getTab("Matches").addBoolean("Middle Third", () -> false)
+    .withPosition(12, 2)
+    .withSize(1, 2)
+    // .withProperties(Map.of("colorWhenFalse", Color.kBlack.toString()))
+    ;
+  SuppliedValueWidget<Boolean> botThirdColorWidget = Shuffleboard.getTab("Matches").addBoolean("Bottom Third", () -> false)
+    .withPosition(12, 4)
+    .withSize(1, 2)
+    // .withProperties(Map.of("colorWhenFalse", Color.kBlack.toString()))
+    ;
+  SuppliedValueWidget<Boolean> topHalfColorWidget = Shuffleboard.getTab("Matches").addBoolean("Top Half", () -> false)
+    .withPosition(11, 0)
+    .withSize(1, 3)
+    // .withProperties(Map.of("colorWhenFalse", Color.kBlack.toString()))
+    ;
+  SuppliedValueWidget<Boolean> botHalfColorWidget = Shuffleboard.getTab("Matches").addBoolean("Bottom Half", () -> false)
+    .withPosition(11, 3)
+    .withSize(1, 3)
+    // .withProperties(Map.of("colorWhenFalse", Color.kBlack.toString()))
+    ;
   /** Creates a new LEDs. */
   public LEDs() {
+    // topThirdColorWidget.withProperties(Map.of("colorWhenFalse", Color.kBlack.toHexString()));
+    // midThirdColorWidget.withProperties(Map.of("colorWhenFalse", Color.kBlack.toHexString()));
+    // botThirdColorWidget.withProperties(Map.of("colorWhenFalse", Color.kBlack.toHexString()));
+    // topHalfColorWidget.withProperties(Map.of("colorWhenFalse", Color.kBlack.toHexString()));
+    // botHalfColorWidget.withProperties(Map.of("colorWhenFalse", Color.kBlack.toHexString()));
     leds.setLength(54);
+    // Shuffleboard.getTab("Testing");
     // setTopThird(Color.kWhite);
     // setBottomThird(Color.kPurple);
     // setMiddleThird(Color.kBrown);
@@ -41,6 +80,11 @@ public class LEDs extends SubsystemBase {
 
   public void start() {
     leds.setData(ledBuffer);
+    topThirdColorWidget.withProperties(Map.of("colorWhenFalse", ledBuffer.getLED(25).toHexString()));
+    midThirdColorWidget.withProperties(Map.of("colorWhenFalse", ledBuffer.getLED(10).toHexString()));
+    botThirdColorWidget.withProperties(Map.of("colorWhenFalse", ledBuffer.getLED(0).toHexString()));
+    topHalfColorWidget.withProperties(Map.of("colorWhenFalse", ledBuffer.getLED(25).toHexString()));
+    botHalfColorWidget.withProperties(Map.of("colorWhenFalse", ledBuffer.getLED(0).toHexString()));
     leds.start();
   }
 
@@ -86,6 +130,7 @@ public class LEDs extends SubsystemBase {
         ledBuffer.setLED(i + (j*27), color);
       }
     }
+    botThirdColorWidget.withProperties(Map.of("colorWhenTrue", color));
     // leds.setData(ledBuffer);
     // leds.start();
   }
