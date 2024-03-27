@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
+import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,6 +26,7 @@ public class Shooter extends SubsystemBase {
   private final CANSparkMax m_shooterMotorRight = new CANSparkMax(kRightShooterMotorID, MotorType.kBrushless); 
   private final CANSparkMax m_shooterMotorLeft = new CANSparkMax(kLeftShooterMotorID, MotorType.kBrushless);
   private boolean isRed;
+  public SimpleWidget shotSpeed, shotSpin;
   
 
   /** Creates a new Shooter. */
@@ -33,24 +37,38 @@ public class Shooter extends SubsystemBase {
     m_shooterMotorRight.getEncoder().setVelocityConversionFactor(1.);
     m_shooterMotorLeft.burnFlash();
     m_shooterMotorRight.burnFlash();
-    SmartDashboard.putNumber("Shot Speed", 950.);
+    // SmartDashboard.putNumber("Shot Speed", 2500.);
     if (DriverStation.getAlliance().get()==Alliance.Red) {
       isRed = true;
     } else {
       isRed = false;
     }
+
+    shotSpeed = Shuffleboard.getTab("Testing").add("Shot Speed", 2500.)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withPosition(6, 0)
+      .withSize(5, 1)
+      .withProperties(Map.of("min", 0, "max", 5676, "step", 100))
+      ;
+    shotSpin = Shuffleboard.getTab("Testing").add("Shot Spin", 0.75)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withPosition(6, 1)
+      .withSize(5, 1)
+      .withProperties(Map.of("min", 0, "max", 1))
+      ;
+
     Shuffleboard.getTab("Matches").addNumber("Left Shooter RPM", () -> getLeftShooterSpeed())
       .withWidget(BuiltInWidgets.kNumberBar)
       .withPosition(4, 1)
-      .withSize(2, 2)
-      .withProperties(Map.of("min", -3000, "max", 5676, "orientation", "VERTICAL"))
+      .withSize(1, 2)
+      .withProperties(Map.of("min", 0, "max", 5676, "orientation", "VERTICAL"))
       ;
 
     Shuffleboard.getTab("Matches").addNumber("Right Shooter RPM", () -> getRightShooterSpeed())
       .withWidget(BuiltInWidgets.kNumberBar)
-      .withPosition(6, 1)
-      .withSize(2, 2)
-      .withProperties(Map.of("min", -3000, "max", 5676, "orientation", "VERTICAL"))
+      .withPosition(5, 1)
+      .withSize(1, 2)
+      .withProperties(Map.of("min", 0., "max", 5676, "orientation", "VERTICAL"))
       ;
   }
 
@@ -63,10 +81,21 @@ public class Shooter extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public double getShotSpin() {
+    return shotSpin.getEntry().getDouble(0.75);
+  }
+
+  public double getShotSpeed() {
+    
+    return shotSpeed.getEntry().getDouble(2370);
+  }
+
   public void setShooterSpeed(Double speed) {
     if (isRed) {
-      m_shooterMotorRight.set(0.75 * speed/kMaxSpeedRPM);
-      m_shooterMotorLeft.set(speed/kMaxSpeedRPM);
+      // m_shooterMotorRight.set(0.75 * speed/kMaxSpeedRPM);
+      // m_shooterMotorLeft.set(speed/kMaxSpeedRPM);
+      m_shooterMotorRight.set(speed/kMaxSpeedRPM);
+      m_shooterMotorLeft.set(0.75 * speed/kMaxSpeedRPM);
     } else {
       m_shooterMotorRight.set(speed/kMaxSpeedRPM);
       m_shooterMotorLeft.set(0.75 * speed/kMaxSpeedRPM);

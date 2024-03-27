@@ -13,6 +13,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,6 +31,7 @@ public class Turret extends SubsystemBase {
   private final CANSparkMax m_angleMotor = new CANSparkMax(kTurretMotorID, MotorType.kBrushless);
   private DutyCycleEncoder m_angleEncoder = new DutyCycleEncoder(0);
   private InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
+  public SimpleWidget p, i, d;
   public Boolean isAngled = false;
 
   public Turret() {
@@ -54,8 +56,26 @@ public class Turret extends SubsystemBase {
     Shuffleboard.getTab("Testing").addNumber("Turret Speed", () -> getVelocity()).withWidget(BuiltInWidgets.kGraph);
     Shuffleboard.getTab("Matches").addNumber("Turret Angle", () -> getShooterAngle()).withWidget(BuiltInWidgets.kGyro)
       .withPosition(4, 3)
-      .withSize(4, 4)
+      .withSize(4, 3)
       .withProperties(Map.of("startingAngle", 90, "counterClockwise", true))
+      ;
+    p = Shuffleboard.getTab("Testing").add("Turret P", kAngleP)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withSize(7, 1)
+      .withPosition(6, 2)
+      .withProperties(Map.of("min", 0, "max", 0.1))
+      ;
+      i = Shuffleboard.getTab("Testing").add("Turret I", kAngleI)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withSize(7, 1)
+      .withPosition(6, 3)
+      .withProperties(Map.of("min", 0, "max", 0.1))
+      ;
+      d = Shuffleboard.getTab("Testing").add("Turret D", kAngleD)
+      .withWidget(BuiltInWidgets.kNumberSlider)
+      .withSize(7, 1)
+      .withPosition(6, 4)
+      .withProperties(Map.of("min", 0, "max", 0.1))
       ;
   }
 
@@ -91,12 +111,12 @@ public class Turret extends SubsystemBase {
 
   public void setAngleMotor(Double power) {
     var pwr = power;
-    var angle = getShooterAngle();
-    if (angle >= -181 && angle <= -60) {
-      pwr = MathUtil.clamp(pwr, -1., 0.);
-    } else if (angle <= -32. && angle >= -50) {
-      pwr = MathUtil.clamp(pwr, 0., 1.);
-    }
+    // var angle = getShooterAngle();
+    // if (angle >= -181 && angle <= -60) {
+    //   pwr = MathUtil.clamp(pwr, -1., 0.);
+    // } else if (angle <= -32. && angle >= -50) {
+    //   pwr = MathUtil.clamp(pwr, 0., 1.);
+    // }
     m_angleMotor.set(pwr);
     // if (getShooterAngle() <= -15 || getShooterAngle() >= 80) {
     //   m_angleMotor.set(0.);

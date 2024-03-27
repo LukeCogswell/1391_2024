@@ -53,16 +53,16 @@ public final class Constants {
     public static final double kStationaryRobotAngleMultiplier = 0.048; // 0.0222 // 0.015 // 0.0101
     public static final double kAngleEncoderOffset = -42.23-34.5+109-60.;
     public static final double kMaxSpeedRPM = 5676;
-    public static final double kMotorToAngleGearRatio = 125 * 42 / 18;
+    public static final double kMotorToAngleGearRatio = 125 * 18 / 16;
 
-    public static final double kAmpAngle = -30.;
-    public static final double kTransferAngle = 13.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
+    public static final double kAmpAngle = -37.;
+    public static final double kTransferAngle = 17.; //DEGREES - ANGLE FOR INTAKE TO SHOOTER TRANSFER
     public static final double kSourceAngle = 50.; //DEGREES - ANGLE TO INTAKE FROM SOURCE
 
     public static final class PID {
-      public static final double kAngleP = 0.045;
+      public static final double kAngleP = 0.035;
       public static final double kAngleI = 0.0;
-      public static final double kAngleD = 0.0;
+      public static final double kAngleD = 0.0001;
 
     }
 
@@ -71,10 +71,10 @@ public final class Constants {
       public static final Double[] entry0  =  {.5 , 52.06};
       public static final Double[] entry1  =  {1. , 50.00};
       public static final Double[] entry2  =  {2. , 38.00};
-      public static final Double[] entry3  =  {3. , 29.70};
+      public static final Double[] entry3  =  {3. , 31.30};
       public static final Double[] entry4  =  {4. , 24.50};
       public static final Double[] entry40 =  {4.5, 21.75};
-      public static final Double[] entry5  =  {5. , 20.30};
+      public static final Double[] entry5  =  {5. , 20.60};
       public static final Double[] entry50 =  {5.5, 19.60};
       public static final Double[] entry6  =  {6. , 19.20};
       public static final Double[] entry7  =  {7. , 18.60};
@@ -116,11 +116,11 @@ public final class Constants {
   public static final class Intake {
     public static final double kIntakeEncoderOffset = 55.;
     public static final double kEncoderGearRatio = 1;
-    public static final double kMinRotation = 264.0;  // DEGREES
-    public static final double kMaxRotation = 183.0; // DEGREES
+    public static final double kMinRotation = 270.0;  // DEGREES
+    public static final double kMaxRotation = 187.0; // DEGREES
 
     public static final double kMaxDownPower = 1;
-    public static final double kMaxUpPower = 0.6;
+    public static final double kMaxUpPower = 1.;
 
     public static final class PID {
       public static final double kIAngleP = 0.01;

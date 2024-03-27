@@ -7,6 +7,7 @@ package frc.robot.commands;
 
 import static frc.robot.Constants.Shooter.kAmpAngle;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import edu.wpi.first.math.geometry.Pose2d;
@@ -56,7 +57,10 @@ public class DepositInAmp extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
           new SequentialCommandGroup(
             new ParallelDeadlineGroup(
-              new RunCommand(() -> shooter.setShooterSpeed(SmartDashboard.getEntry("Shot Speed").getDouble(950.)), shooter).until(() -> !loader.hasNoteInShooter()), 
+              new RunCommand(() -> {
+                shooter.setLeftShooterSpeed(shooter.getShotSpeed());
+                shooter.setRightShooterSpeed(shooter.getShotSpeed()*shooter.getShotSpin());
+              }, shooter).until(() -> !loader.hasNoteInShooter()), 
               new WaitUntilCommand(() -> shootButton.getAsBoolean()).andThen(new RunCommand(() -> loader.setLoaderMotor(1.), loader)),
               new SetTurretAngle(turret, -33.)),
             new InstantCommand(() -> {
@@ -70,7 +74,7 @@ public class DepositInAmp extends SequentialCommandGroup {
             //   new SetTurretAngle(turret, 0.)
             //   ),
           // new ShootSpeedAngleWithControl(shooter, turret, loader, 1000., kAmpAngle, shootButton, true),
-          new ElevatorToHeight(elevator, 6.9)),
+          new ElevatorToHeight(elevator, 8.6)),
       new ElevatorToHeight(elevator, 0.1)
         // new DriveToPoint(drivetrain, ampPoint).withTimeout(1.5),
     );

@@ -48,6 +48,7 @@ public class AutoTrackCollectNote extends SequentialCommandGroup {
           // () -> joystick.getY()
           ),
         new SequentialCommandGroup(
+          new RunCommand(() -> intake.setIntake(0.2), intake).withTimeout(0.16),
           new InstantCommand(() -> intake.stop(), intake),
           new AutoTransfer(intakePivot, intake, elevator, turret, loader)
         )

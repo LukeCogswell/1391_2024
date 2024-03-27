@@ -17,6 +17,7 @@ public class ShootNoteAtSpeed extends Command {
   private Double shotSpeed;
   private Trigger shootingTrigger, incrementPowerTrigger, incrementPowerUpTrigger;
   private Boolean adj;
+  
 
   public ShootNoteAtSpeed(Shooter shooter, Loader loader, Double speed, Trigger shootTrigger, Trigger incrementPower, Trigger incrementUPP, Boolean adjustable) {
     m_shooter = shooter;
@@ -44,7 +45,7 @@ public class ShootNoteAtSpeed extends Command {
   @Override
   public void execute() {
     if (adj) {
-      shotSpeed = SmartDashboard.getEntry("Shot Speed").getDouble(shotSpeed);
+      shotSpeed = m_shooter.getShotSpeed();
     }
     if (incrementPowerTrigger.getAsBoolean()) {
       shotSpeed = shotSpeed - 300;
@@ -53,7 +54,10 @@ public class ShootNoteAtSpeed extends Command {
       shotSpeed = shotSpeed + 300;
     }
 
-    m_shooter.setShooterSpeed(shotSpeed);
+    m_shooter.setLeftShooterSpeed(shotSpeed);
+    m_shooter.setRightShooterSpeed(shotSpeed*0.5);
+
+    // m_shooter.setShooterSpeed(shotSpeed);
     // var botMotSpeed = bottomShooterController.calculate(m_shooter.getBottomShooterSpeed());
     // var topMotSpeed = topShooterController.calculate(m_shooter.getTopShooterSpeed());
     

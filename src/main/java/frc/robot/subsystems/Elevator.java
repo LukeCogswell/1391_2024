@@ -9,8 +9,13 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch.Type;
 
 import static frc.robot.Constants.Elevator.*;
+
+import java.util.Map;
+
 import static frc.robot.Constants.CANConstants.*;
 
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,6 +27,19 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     m_elevatorMotorLeft.setInverted(false);
     m_elevatorMotorRight.setInverted(true);
+    Shuffleboard.getTab("Matches").addNumber("Left Elevator", () -> getElevatorHeightL())
+      .withWidget(BuiltInWidgets.kNumberBar)
+      .withPosition(6, 1)
+      .withSize(1, 2)
+      .withProperties(Map.of("min", 0, "max", 8.7, "orientation", "VERTICAL"))
+      ;
+
+    Shuffleboard.getTab("Matches").addNumber("Right Elevator", () -> getElevatorHeightR())
+      .withWidget(BuiltInWidgets.kNumberBar)
+      .withPosition(7, 1)
+      .withSize(1, 2)
+      .withProperties(Map.of("min", 0, "max", 8.7, "orientation", "VERTICAL"))
+      ;
   }
 
   @Override

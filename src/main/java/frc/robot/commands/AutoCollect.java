@@ -43,9 +43,9 @@ public class AutoCollect extends SequentialCommandGroup {
           }, intake).withTimeout(0.75),
           new RunCommand(() -> {
             intake.setIntake(1.);
-          }, intake).until(() -> intake.currentHasNoteInIntake()),
+          }, intake).until(() -> intake.currentHasNoteInIntake() || intake.hasNoteInIntake()),
           new RunCommand(() -> {
-            intake.setIntake(0.2);
+            intake.setIntake(0.6);
           }, intake).until(() -> intake.hasNoteInIntake()),
           new InstantCommand(() -> 
             intake.stop(), intake)

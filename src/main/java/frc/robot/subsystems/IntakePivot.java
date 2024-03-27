@@ -29,8 +29,8 @@ public class IntakePivot extends SubsystemBase {
     m_pivotMotor.setInverted(true);
     m_pivotMotor.setIdleMode(IdleMode.kBrake);
     Shuffleboard.getTab("Matches").addNumber("Intake Angle", () -> getIntakeAngle()).withWidget(BuiltInWidgets.kGyro)
-      .withPosition(0, 3)
-      .withSize(4, 4)
+      .withPosition(2, 1)
+      .withSize(2, 2)
       .withProperties(Map.of("startingAngle", kMaxRotation+180, "counterClockwise", true))
       ;
   }

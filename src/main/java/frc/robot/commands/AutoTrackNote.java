@@ -48,7 +48,7 @@ public class AutoTrackNote extends Command {
   @Override
   public void execute() {
     if (m_intake.getTV()) {
-      ty = (m_intake.getTY());
+      ty = (m_intake.getTY()) + 11.;
       ty = ty<0 ? 0 : ty;
       drive = ty/30. + 0.1;
       drive = drive > .5 ? .5 : drive;
@@ -57,16 +57,17 @@ public class AutoTrackNote extends Command {
       if (ty < 20) {
         m_intake.setIntake(1.);
       }
-      if (ty < 5) {
-        m_intake.setIntake(0.2);
-      }
-      if (m_intakePivot.getIntakeAngle() <= 245) {
+      // if (m_intake.currentHasNoteInIntake()) {
+      //   m_intake.setIntake(0.4);
+      // }
+      if (m_intakePivot.getIntakeAngle() <= 260) {
         drive = 0.;
       }
       drive = driveLimiter.calculate(drive);
       m_drivetrain.drive(drive, 0., rot, false);
     } else {
-      m_intake.setIntake(m_intake.hasNoteInIntake() ? 0. : 0.2);
+      m_intake.setIntake(m_intake.currentHasNoteInIntake() ? .4 :1.);
+      m_drivetrain.drive(0, 0, 0, false);
     }
   }
 

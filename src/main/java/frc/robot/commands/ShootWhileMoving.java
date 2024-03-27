@@ -113,29 +113,29 @@ public class ShootWhileMoving extends Command {
 
     if (m_drivetrain.getTV()) {
       dis = m_drivetrain.getDistanceToSpeakerAprilTag(); 
-      double Ryaw = m_drivetrain.getFieldPosition().getRotation().getDegrees(); 
-      if (isRed) {
-        if (Ryaw >= -160 && Ryaw < 0.) {
-          LLturnController.setSetpoint(2);
-        } else if (Ryaw <= 160 && Ryaw > 0.) {
-          LLturnController.setSetpoint(-2);
-        } else {
-          LLturnController.setSetpoint(0.);
-        }
-      } else {
-        if (Ryaw <= -20) {
-          LLturnController.setSetpoint(2);
-        } else if (Ryaw >= 20) {
-          LLturnController.setSetpoint(-2);
-        } else {
-          LLturnController.setSetpoint(0.);
-        }
+      // double Ryaw = m_drivetrain.getFieldPosition().getRotation().getDegrees(); 
+      // if (isRed) {
+      //   if (Ryaw >= -160 && Ryaw < 0.) {
+      //     LLturnController.setSetpoint(2);
+      //   } else if (Ryaw <= 160 && Ryaw > 0.) {
+      //     LLturnController.setSetpoint(-2);
+      //   } else {
+      //     LLturnController.setSetpoint(0.);
+      //   }
+      // } else {
+      //   if (Ryaw <= -20) {
+      //     LLturnController.setSetpoint(2);
+      //   } else if (Ryaw >= 20) {
+      //     LLturnController.setSetpoint(-2);
+      //   } else {
+      //     LLturnController.setSetpoint(0.);
+      //   }
 
-      }
+      // }
       rot = LLturnController.calculate(m_drivetrain.getTX());
     } else {
-      rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
-      // rot = 0.;
+      // rot = turnController.calculate(m_drivetrain.getFieldPosition().getRotation().getDegrees() - (m_drivetrain.getAngleToSpeaker() /*+ kShootingRotationAdjustmentMultiplier * dTheta*/));
+      rot = 0.;
       dis = m_drivetrain.getDistanceToSpeaker();
     }
 
@@ -172,12 +172,12 @@ public class ShootWhileMoving extends Command {
     if (angleController.atSetpoint()) {
       m_leds.setTopThird(Color.kGreen);
     } else {
-      m_leds.setTopThird(Color.kRed);
+      m_leds.setTopThird(Color.kGray);
     }
     if (m_shooter.getRightShooterSpeed() >= distanceMultiplier * 5676.0 * 0.8) {
       m_leds.setMiddleThird(Color.kGreen);
     } else {
-      m_leds.setMiddleThird(Color.kRed);
+      m_leds.setMiddleThird(Color.kAliceBlue);
     }
     if (LLturnController.atSetpoint()) {
       m_leds.setBottomThird(Color.kGreen);

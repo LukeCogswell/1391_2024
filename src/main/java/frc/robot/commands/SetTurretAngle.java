@@ -30,6 +30,13 @@ public class SetTurretAngle extends Command {
   @Override
   public void initialize() {
     angleController.setSetpoint(m_angle);
+    angleController.setPID(m_turret.p.getEntry().getDouble(kAngleP), m_turret.i.getEntry().getDouble(kAngleI), m_turret.d.getEntry().getDouble(kAngleD));
+    // if (m_angle <=20) {
+    //   // angleController.setP(0.024);
+    // } else {
+    //   angleController.setP(kAngleP);
+
+    // }
     angleController.setTolerance(0.1);
     angleController.enableContinuousInput(-180, 180);
   }

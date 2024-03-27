@@ -31,7 +31,7 @@ public class ElevatorToHeight extends Command {
   public void initialize() {
     // SmartDashboard.putNumber("ElevatorSetpoint", heightSetpoint);
     heightController.setSetpoint(heightSetpoint);
-    heightController.setTolerance(0.01);
+    heightController.setTolerance(0.03);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

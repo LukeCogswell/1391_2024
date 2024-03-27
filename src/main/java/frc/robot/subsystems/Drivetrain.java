@@ -28,12 +28,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -144,7 +146,7 @@ public class Drivetrain extends SubsystemBase {
 
     );
     
-    Shuffleboard.getTab("Matches").addBoolean("init-PRESENT?", () -> DriverStation.getAlliance().isPresent()).withPosition(2,0).withSize(2,1);
+    Shuffleboard.getTab("Matches").addBoolean("init-PRESENT?", () -> DriverStation.getAlliance().isPresent()).withPosition(0,0).withSize(2,1);
     setFieldPosition(new Pose2d(new Translation2d(1, kFieldY/2), new Rotation2d(0.0)));
     if (DriverStation.getAlliance().isPresent()) {
       Shuffleboard.getTab("Matches").addBoolean("init-RED?", () -> DriverStation.getAlliance().get() == Alliance.Red)
@@ -230,6 +232,26 @@ public class Drivetrain extends SubsystemBase {
     angleMap.put(entry9[0], entry9[1]);
     angleMap.put(entry10[0], entry10[1]);
     angleMap.put(entry11[0], entry11[1]);
+
+    Shuffleboard.getTab("Matches").addBoolean("AprilTag TV", () -> getTV())
+      .withSize(3, 3)
+      .withPosition(8, 0)
+      .withProperties(Map.of("colorWhenFalse", "black", "colorWhenTrue", "white"))  
+    ;
+
+    Shuffleboard.getTab("Matches").addNumber("ATTreeAngle", () -> getTV() ? angleMap.get(getDistanceToSpeakerAprilTag()) : 0.)
+      .withWidget(BuiltInWidgets.kGyro)
+      .withPosition(8, 3)
+      .withSize(3, 3)
+      .withProperties(Map.of("startingAngle", 90, "counterClockwise", true))
+    ;
+    
+    Shuffleboard.getTab("Matches").addNumber("Robot Rotation", () -> getOdometryYaw())
+      .withWidget(BuiltInWidgets.kGyro)
+      .withPosition(0, 3)
+      .withSize(4, 3)
+      .withProperties(Map.of("startingAngle", 0, "counterClockwise", false))
+    ;
   }
   
   // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

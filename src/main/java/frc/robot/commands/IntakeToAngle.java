@@ -52,10 +52,10 @@ public class IntakeToAngle extends Command {
       MAXDownPWR = 0.4;
     }
     if (ang >= 220) {
-      MAXDownPWR = 0.2;
+      MAXDownPWR = 0.4;
     }
     if (ang >= 240.) {
-    MAXDownPWR = 0.1;
+    MAXDownPWR = 0.4;
     }      
     SmartDashboard.putNumber("MAXDOWN", MAXDownPWR);
     pwr = MathUtil.clamp(pwr, -MAXDownPWR, kMaxUpPower);
